@@ -316,8 +316,13 @@ def example3():
                   else "FLIPS: GO only under " + ", ".join(gos))
         res[capex] = (be, vals)
         out.append(f"| {capex/1e6:.0f} | {be:,.0f} | " + " | ".join(fmt_m(v) for v in vals.values()) + f" | {spread} |")
-    out.append("\nThe CCfD vs merchant-credit gap is worth roughly the same $M at every capex level (it is a revenue "
-               "stream), so it decides the investment only for projects whose breakeven sits in the ~$40-$125/t band.")
+    disc = 1.08 ** -np.arange(1, LIFE + 1)
+    lev = {k: float((path * disc).sum() / disc.sum()) for k, path in scen.items()}
+    out.append("\nLevelized (flat-equivalent at 8%) carbon value of each assumption: " +
+               "; ".join(f"{k} ${v:,.0f}/t" for k, v in lev.items()) + ".")
+    out.append(f"The carbon-value assumption decides the investment for any project whose breakeven lies between "
+               f"${min(lev.values()):,.0f} and ${max(lev.values()):,.0f}/t. A CCfD (vs merchant credits with the "
+               f"announced floor) decides it between ${lev['Market + 2030 floor']:,.0f} and ${lev['CCfD $85 to 2040']:,.0f}/t.")
     return "\n".join(out), res
 
 
@@ -337,39 +342,43 @@ def monte_carlo(n=20_000, seed=20260929):
                "credit price sigma 0.35; capex overrun triangular(-10%, 0, +30%); CT-ITC eligibility for a "
                "process heat pump is case-by-case, modelled as p(eligible)=0.6.\n")
 
-    def regime_paths(prov):
+    def regime_paths(prov, shock_sigma=0.35):
+        """Return per-draw realized carbon paths. The log-normal shock applies to the MARKET price;
+        any floor is applied afterwards (a legal floor is not itself shocked)."""
         u = rng.random(n)
-        paths = np.zeros((n, LIFE))
+        market = np.zeros((n, LIFE))
+        floor = np.zeros((n, LIFE))
         if prov == "AB":
-            floor = realized_carbon_path("AB", "market", years)
-            half = np.maximum(20, np.where(yrs >= 2030, floor * 0.5, 0))
-            collapse = np.full(LIFE, 15.0)
+            ann = realized_carbon_path("AB", "market", years)          # max(20, floor) path
+            fl = np.where(yrs >= 2030, ann, 0.0)                        # announced floor (0 before 2030)
             a = u < 0.55; b = (u >= 0.55) & (u < 0.85); c = u >= 0.85
-            paths[a] = floor; paths[b] = half; paths[c] = collapse
-            desc = "AB regimes: floor as announced p=0.55; floor at half strength p=0.30; policy rollback ($15 flat) p=0.15"
+            market[a] = 20.0; floor[a] = fl
+            market[b] = 20.0; floor[b] = 0.5 * fl
+            market[c] = 15.0
+            desc = ("AB regimes: floor as announced p=0.55; floor at half strength p=0.30; policy rollback "
+                    "(market $15, no floor) p=0.15. Shock applies to the $20 market price; floor applied after.")
         elif prov == "BC":
             a = u < 0.6; b = (u >= 0.6) & (u < 0.9); c = u >= 0.9
-            paths[a] = h * 0.68; paths[b] = h * 0.40; paths[c] = np.where(yrs >= 2029, 0.0, h * 0.68)
+            market[a] = h * 0.68; market[b] = h * 0.40; market[c] = np.where(yrs >= 2029, 0.0, h * 0.68)
             desc = "BC regimes: credits at 68% of headline p=0.60; oversupply to 40% p=0.30; OBPS repealed from 2029 p=0.10"
         elif prov == "QC":
             base = realized_carbon_path("QC", "none", years)
             a = u < 0.85
-            paths[a] = base
-            paths[~a] = np.where(yrs >= 2029, 30.0, base)
+            market[a] = base
+            market[~a] = np.where(yrs >= 2029, 30.0, base)
             desc = "QC regimes: cap-and-trade continues (+5%/yr) p=0.85; market breakdown to $30 from 2029 p=0.15"
         else:  # ON
-            full = h * 0.8
-            weak = h * 0.45
-            zero = np.where(yrs >= 2029, 0.0, h * 0.8)
             a = u < 0.6; b = (u >= 0.6) & (u < 0.9); c = u >= 0.9
-            paths[a] = full; paths[b] = weak; paths[c] = zero
+            market[a] = h * 0.8; market[b] = h * 0.45; market[c] = np.where(yrs >= 2029, 0.0, h * 0.8)
             desc = "ON regimes: EPU at 80% of headline p=0.60; oversupply to 45% p=0.30; EPS repealed from 2029 p=0.10"
-        shock = np.exp(rng.normal(0, 0.35, (n, 1)) - 0.35 ** 2 / 2)
-        return paths * shock, desc
+        shock = np.exp(rng.normal(0, shock_sigma, (n, 1)) - shock_sigma ** 2 / 2)
+        return np.maximum(market * shock, floor), desc
 
     tab = ["| Case | Deterministic NPV @ headline $M | Deterministic NPV @ market $M | MC mean $M | P10 | P50 | P90 | P(NPV>0) |",
            "|---|---|---|---|---|---|---|---|"]
     notes = []
+    policy_only = ["| Case | Deterministic @ market $M | Policy-only MC mean $M | P10 | P50 | P90 | P(NPV>0) |",
+                   "|---|---|---|---|---|---|---|"]
     for prov in ("QC", "BC", "AB", "ON"):
         carbon, desc = regime_paths(prov)
         notes.append(desc)
@@ -387,6 +396,12 @@ def monte_carlo(n=20_000, seed=20260929):
         p10, p50, p90 = np.percentile(vals, [10, 50, 90])
         tab.append(f"| Ex1 heat pump, {prov} covered | {fmt_m(d_head)} | {fmt_m(d_mkt)} | {fmt_m(vals.mean())} | "
                    f"{fmt_m(p10)} | {fmt_m(p50)} | {fmt_m(p90)} | {(vals>0).mean()*100:.0f}% |")
+        # policy-only: same regimes, no energy/capex shocks, ITC granted -> isolates policy-regime risk
+        carbon_p, _ = regime_paths(prov)
+        vp = np.array([npv(cashflows(HP_IND, Context(prov=prov, custom_carbon=carbon_p[i])), 0.08) for i in range(n)])
+        q10, q50, q90 = np.percentile(vp, [10, 50, 90])
+        policy_only.append(f"| Ex1 heat pump, {prov} covered | {fmt_m(d_mkt)} | {fmt_m(vp.mean())} | {fmt_m(q10)} | "
+                           f"{fmt_m(q50)} | {fmt_m(q90)} | {(vp>0).mean()*100:.0f}% |")
 
     # Example 3 under AB regimes
     carbon, _ = regime_paths("AB")
@@ -402,7 +417,14 @@ def monte_carlo(n=20_000, seed=20260929):
     for label, v in (("Ex3 AB abatement ($25M capex), merchant credits", v3), ("Ex3 AB abatement ($25M capex), with $85 CCfD to 2040", v3c)):
         p10, p50, p90 = np.percentile(v, [10, 50, 90])
         tab.append(f"| {label} | - | - | {fmt_m(v.mean())} | {fmt_m(p10)} | {fmt_m(p50)} | {fmt_m(p90)} | {(v>0).mean()*100:.0f}% |")
-    out += [f"- {d}" for d in notes] + [""] + tab
+    # policy-only Ex3 (capex fixed)
+    w3 = -pr_capex + pr_capex * tax / 1.08 + ((base_cf + abated * carbon * (1 - tax)) * disc).sum(axis=1)
+    w3c = -pr_capex + pr_capex * tax / 1.08 + ((base_cf + abated * ccfd_carbon * (1 - tax)) * disc).sum(axis=1)
+    for label, v in (("Ex3 AB ($25M), merchant credits", w3), ("Ex3 AB ($25M), $85 CCfD to 2040", w3c)):
+        q10, q50, q90 = np.percentile(v, [10, 50, 90])
+        policy_only.append(f"| {label} | - | {fmt_m(v.mean())} | {fmt_m(q10)} | {fmt_m(q50)} | {fmt_m(q90)} | {(v>0).mean()*100:.0f}% |")
+    out += [f"- {d}" for d in notes] + ["", "**Full uncertainty** (policy regimes + energy prices + capex skew (mean 1.067) + ITC eligibility p=0.6):", ""] + tab
+    out += ["", "**Policy-regime risk only** (same regimes and credit-price shock; energy prices, capex fixed; ITC granted):", ""] + policy_only
     return "\n".join(out)
 
 
@@ -442,7 +464,8 @@ def itc_timing():
     P["itc"]["ct_rate"]["value"] = 0.20
     out.append(f"| Labour requirements not met (20% rate) | {fmt_m(npv(cashflows(HP_IND, Context(prov='QC')), 0.08))} |")
     P["itc"]["ct_rate"]["value"] = 0.15
-    out.append(f"| Available for use in 2034 (15% rate) | {fmt_m(npv(cashflows(HP_IND, Context(prov='QC')), 0.08))} |")
+    out.append(f"| Available for use in 2034 (15% rate, and outside the pre-2030 expensing window) | "
+               f"{fmt_m(npv(cashflows(HP_IND, Context(prov='QC', expensing=False)), 0.08))} |")
     P["itc"]["ct_rate"]["value"] = 0.30
     return "\n".join(out)
 

@@ -142,8 +142,7 @@ Results are also emitted as JSON (schema-versioned) and CSV cash flows.
 
 | Metric | Target by G1 |
 |---|---|
-| Design partners who ran a real case | ≥ 3 |
-| Partners reporting the memo changed or de-risked a decision | ≥ 2 |
+| Design partners who ran a real case **and** reported the memo changed or de-risked a decision (G1 criterion, DECISION.md) | ≥ 3 |
 | Ledger records past freshness SLA | 0 for 60 consecutive days |
 | Maintenance hours/month | ≤ 15 |
 | Reproducibility test failures | 0 |

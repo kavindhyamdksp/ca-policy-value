@@ -13,7 +13,7 @@ This repository holds the research, validation decision, product specification, 
 - **Policy terms flip decisions, but only in specific places.** They matter for covered industrial facilities and near-margin projects:
   - the carbon-value treatment is the largest NPV swing factor;
   - for AB abatement projects with breakevens of $54–117/t the answer depends entirely on the carbon assumption;
-  - a CCfD moves P(NPV>0) from 16% to 72%.
+  - a CCfD moves P(NPV>0) from 0% to 76%.
 
   They do not change building or sub-threshold projects outside QC. → [quantitative validation](docs/research/04_quantitative_validation.md)
 - **Broad incentive coverage is expensive and not decisive.** It would cost about C$200–350k/yr to maintain. The scoped ledger is ~55 records and ~85–130 h/yr. → [data feasibility](docs/analysis/data_feasibility.md)

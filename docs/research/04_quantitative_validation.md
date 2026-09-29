@@ -18,8 +18,8 @@ Same project, five provinces, three carbon-value treatments, with and without th
 | QC | no | −0.13 | −0.13 | −0.13 | 76 |
 | ON | yes | −4.22 | −2.44 | −1.99 | 230 |
 | ON | no | −5.05 | −3.27 | −2.82 | 276 |
-| AB | yes | −3.41 | −2.09 | −1.07 | 177 |
-| AB | no | −4.24 | −2.92 | −1.90 | 221 |
+| AB | yes | −3.41 | −2.11 | −1.07 | 177 |
+| AB | no | −4.24 | −2.93 | −1.90 | 221 |
 | BC | yes | −0.85 | +0.66 | +1.37 | 47 |
 | BC | no | −1.68 | −0.17 | +0.54 | 92 |
 | NS | yes | +1.65 | +2.51 | +3.81 | −93 |
@@ -38,7 +38,7 @@ Same project, five provinces, three carbon-value treatments, with and without th
 4. **ITC details are second-order but not trivial.** On the QC case:
    - a 1–3 year CRA processing lag costs $0.06–0.12M;
    - missing the labour requirements (rate falls to 20%) costs $0.20M;
-   - slipping the in-service date into 2034 (rate falls to 15%) costs $0.30M, against a +$0.70M base.
+   - slipping the in-service date into 2034 costs $0.50M against a +$0.70M base. The rate falls to 15% and the project also misses the pre-2030 Class 43.1 immediate-expensing window.
 5. **Emissions assumptions change the story, even when they don't change the NPV.** Net of added grid emissions (average factors), the heat pump cuts 100% of on-site tonnes in QC, 88% in ON, 47% in AB and **17% in NS**. At an Ontario marginal gas-fired factor (~450 g/kWh) the ON figure falls to 29%. The best financial case (NS) is the worst climate case. A tool that reports "$/t abated" without the grid factor choice misleads.
 
 **Tornado (ON, covered, market carbon, ITC granted; base −$2.44M)**
@@ -74,43 +74,60 @@ Generic project abating 50 kt/yr for 20 years with +$1M/yr net opex. Capex swept
 
 | Capex $M | Breakeven flat $/t | Headline | Market $20, no floor | Market + 2030 floor | CCfD $85 to 2040 | Outcome |
 |---|---|---|---|---|---|---|
-| 15 | 54 | +25.5 | −13.0 | +5.3 | +14.0 | **Flips**: NO-GO only on merchant credits |
-| 25 | 75 | +17.6 | −20.9 | −2.5 | +6.2 | **Flips**: GO only at headline or with CCfD |
-| 35 | 96 | +9.8 | −28.7 | −10.4 | −1.7 | **Flips**: GO only at headline |
-| 45 | 117 | +1.9 | −36.6 | −18.3 | −9.6 | **Flips**: GO only at headline |
-| 60 | 148 | −9.9 | −48.4 | −30.1 | −21.4 | All NO-GO |
+| 15 | 54 | +25.5 | −13.0 | +5.1 | +13.9 | **Flips**: NO-GO only on merchant credits |
+| 25 | 75 | +17.6 | −20.9 | −2.8 | +6.0 | **Flips**: GO only at headline or with CCfD |
+| 35 | 96 | +9.8 | −28.7 | −10.7 | −1.9 | **Flips**: GO only at headline |
+| 45 | 117 | +1.9 | −36.6 | −18.5 | −9.7 | **Flips**: GO only at headline |
+| 60 | 148 | −9.9 | −48.4 | −30.3 | −21.5 | All NO-GO |
 
-**Findings.** For large-emitter abatement with a breakeven between about $40 and $125/t, the carbon-value assumption decides the investment. That band covers much of the real pipeline: efficiency, fuel switching, electrification and cheaper CCS. Across that band the realizable value ranges from $20 (merchant TIER credits) through the announced floor to a CCfD strike. Alberta's floor (from 2030) and CCfDs are the instruments that turn the headline into bankable value, as the Canadian Climate Institute and Clean Prosperity argue (file 03).
+Levelized at 8%, the four assumptions are worth **$20/t** (merchant), **$68/t** (announced floor from 2030, using EY's annual floor table), **$91/t** (CCfD $85 to 2040) and **$122/t** (headline).
+
+**Findings.**
+- For large-emitter abatement with a breakeven anywhere between **~$20 and ~$122/t**, the carbon-value assumption decides the investment. That band covers much of the real pipeline: efficiency, fuel switching, electrification and cheaper CCS.
+- A CCfD (vs merchant credits with the announced floor) is decisive for projects with a breakeven between **~$68 and ~$91/t**.
+- Alberta's floor (from 2030) and CCfDs are the instruments that turn the headline into bankable value, as the Canadian Climate Institute and Clean Prosperity argue (file 03).
+- *Caveat:* credits banked before the floor regulation may still trade below the floor (EY, Blakes). The deterministic floor case is therefore optimistic in the early 2030s.
 
 ## Monte Carlo — explicit policy-regime risk
 
-20,000 draws with seed 20260929. Each draw combines:
-- policy regimes with stated probabilities (e.g., AB: floor as announced 0.55 / floor at half strength 0.30 / rollback 0.15);
-- persistent log-normal shocks: gas σ 0.30, electricity σ 0.15, credit price σ 0.35;
-- a capex overrun, triangular −10% / 0 / +30%;
-- CT-ITC eligibility for a process heat pump at p = 0.6 (NRCan treats these case by case).
+20,000 draws, seed 20260929. Policy regimes are drawn with stated probabilities; for example, AB: floor as announced 0.55 / floor at half strength 0.30 / rollback 0.15. A log-normal shock (σ 0.35) applies to the **market** credit price. Any floor is applied *after* the shock, because a legal floor is not itself uncertain within a regime. Two variants are reported so that policy risk is not confused with other risk.
+
+**Full uncertainty** (policy regimes + gas σ 0.30 + electricity σ 0.15 + capex triangular −10%/0/+30% (mean +6.7%) + CT-ITC eligibility for a process heat pump at p = 0.6, since NRCan treats these case by case):
 
 | Case | Deterministic @ headline | Deterministic @ market | MC mean | P10 | P50 | P90 | P(NPV>0) |
 |---|---|---|---|---|---|---|---|
 | Ex1 heat pump, QC | +0.70 | +0.70 | +0.12 | −1.54 | +0.01 | +1.91 | 50% |
-| Ex1 heat pump, BC covered | +1.37 | +0.66 | −0.17 | −2.05 | −0.30 | +1.88 | 42% |
-| Ex1 heat pump, AB covered | −1.07 | −2.09 | −2.92 | −4.18 | −2.95 | −1.64 | 0% |
-| Ex1 heat pump, ON covered | −1.99 | −2.44 | −3.31 | −4.95 | −3.35 | −1.61 | 1% |
-| Ex3 AB, $25M capex, merchant credits | — | — | −10.5 | −23.7 | −11.8 | +3.9 | 16% |
-| Ex3 AB, $25M capex, $85 CCfD to 2040 | — | — | +3.3 | −2.1 | +2.0 | +10.2 | **72%** |
+| Ex1 heat pump, BC covered | +1.37 | +0.66 | −0.13 | −2.01 | −0.26 | +1.91 | 43% |
+| Ex1 heat pump, AB covered | −1.07 | −2.11 | −2.94 | −4.12 | −2.93 | −1.78 | 0% |
+| Ex1 heat pump, ON covered | −1.99 | −2.44 | −3.32 | −4.95 | −3.37 | −1.63 | 1% |
+| Ex3 AB, $25M capex, merchant credits | — | — | −10.65 | −23.16 | −6.80 | −2.43 | 0% |
+| Ex3 AB, $25M capex, $85 CCfD to 2040 | — | — | +2.46 | −1.83 | +2.65 | +6.29 | **76%** |
+
+**Policy-regime risk only** (same regimes and credit-price shock; energy prices and capex fixed; ITC granted):
+
+| Case | Deterministic @ market | MC mean | P10 | P50 | P90 | P(NPV>0) |
+|---|---|---|---|---|---|---|
+| Ex1 heat pump, QC | +0.70 | +0.60 | +0.02 | +0.54 | +1.24 | 91% |
+| Ex1 heat pump, BC covered | +0.66 | +0.34 | −0.47 | +0.29 | +1.14 | 70% |
+| Ex1 heat pump, AB covered | −2.11 | −2.44 | −3.09 | −2.15 | −2.08 | 0% |
+| Ex1 heat pump, ON covered | −2.44 | −2.83 | −3.80 | −2.90 | −1.85 | 0% |
+| Ex3 AB, $25M, merchant credits | — | −9.32 | −22.27 | −3.61 | −2.20 | 0% |
+| Ex3 AB, $25M, $85 CCfD to 2040 | — | +3.79 | −0.45 | +6.00 | +6.00 | **86%** |
 
 **Findings**
-- **Uncertainty modelling matters only near the margin.** Far from breakeven (AB and ON heat pumps) it adds nothing. The deterministic answer is already clear.
-- **Near the margin it changes the decision quality materially.** Deterministic "GO" cases in QC and BC become roughly coin-flips once ITC eligibility risk, capex skew and policy-regime risk are explicit.
-- **A CCfD moves the probability of a positive NPV from 16% to 72%** for the $25M Alberta project. This is a direct, quantitative expression of the "carbon-pricing certainty gap". It is also the calculation a large emitter needs when deciding whether to bid for a CCfD and at what strike.
+- **Uncertainty modelling matters only near the margin.** Far from breakeven (AB and ON heat pumps) it adds nothing; the deterministic answer is already clear.
+- **Near the margin, policy-regime risk alone is material.** It cuts the probability of a positive NPV to 91% for the QC heat pump and 70% for BC, although both are deterministic "GO"s.
+- **Adding ITC-eligibility risk, capex skew and energy-price risk turns both into roughly coin-flips** (50% and 43%). ITC-eligibility risk is itself a policy-interpretation risk. Energy-price and capex risk are not policy, and they account for much of the remaining drop. A policy-aware tool must still carry them to give an honest answer.
+- **A CCfD moves the probability of a positive NPV from 0% to 76%** (full uncertainty) or **0% to 86%** (policy risk only) for the $25M Alberta project. This is a direct, quantitative expression of the "carbon-pricing certainty gap". It is also the calculation a large emitter needs when deciding whether to bid for a CCfD and at what strike.
+- *Robustness note:* an earlier draft applied the price shock to the floor path itself and reported 16% → 72%. Shocking only the market price is the more defensible treatment and strengthens the conclusion.
 
 ## Overall answer to the test
 
 | Hypothesis | Result |
 |---|---|
-| Policy/incentives materially affect decisions | **Yes, but conditionally.** They matter for covered industrial facilities and for projects near breakeven (≈$40–125/t). They are noise for most building and sub-threshold projects outside Quebec. |
+| Policy/incentives materially affect decisions | **Yes, but conditionally.** They matter for covered industrial facilities and for projects near breakeven (≈$20–122/t). They are noise for most building and sub-threshold projects outside Quebec. |
 | Jurisdiction matters | **Yes, strongly**, but mostly via energy prices. RETScreen and Excel already handle those as inputs. The policy-specific jurisdiction effects are coverage rules, credit-market price and QC cap-and-trade. |
-| Headline vs realized carbon value matters | **Yes.** It is the single largest swing factor for covered facilities and a common analytical error. |
+| Headline vs realized carbon value matters | **Yes.** It is the single largest swing factor for covered facilities. How often practitioners actually use the headline is untested (the evidence is guidance that prescribes headline schedules); this is tested at G0. |
 | Uncertainty matters | **Near the margin only.** There, explicit policy-regime risk (and CCfD value) changes the answer. |
 | Incentive breadth matters | **No.** A few levers (CT/CCUS ITC + CCA expensing, industrial carbon value, QC C&T, CCfD) carry the decision. Utility rebates are noise at industrial scale. |
 

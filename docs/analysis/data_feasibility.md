@@ -4,7 +4,7 @@
 
 ## 1. Verdict
 
-**Feasible as a small, editorially maintained ledger. Not feasible as an automated incentive-data pipeline.** The levers that decide outcomes are few (≈40–60 records for federal + AB/ON/QC/BC). Most are published only as legal or program prose, so they need a human to read them. Price and emissions series are partly machine-readable. Broad incentive coverage (≈120–200 records, 250–500 edits/yr, C$200–350k/yr) is out of scope.
+**Feasible as a small, editorially maintained ledger. Not feasible as an automated incentive-data pipeline.** The levers that decide outcomes are few (≈45 records at v0.1, ~55 at target, for federal + AB/ON/QC/BC). Most are published only as legal or program prose, so they need a human to read them. Price and emissions series are partly machine-readable. Broad incentive coverage (≈120–200 records, 250–500 edits/yr, C$200–350k/yr) is out of scope.
 
 ## 2. Source catalogue for the MVP ledger
 

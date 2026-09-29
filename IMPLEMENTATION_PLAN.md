@@ -1,6 +1,6 @@
 # IMPLEMENTATION_PLAN.md — PolicyValue CA
 
-*Plan version **v1.0** — 2026-09-29. This is the single, living plan for the project. It is updated whenever research or validation changes the product definition. See the [revision history](#12-plan-revision-history) at the end.*
+*Plan version **v1.1** — 2026-09-29. This is the single, living plan for the project. It is updated whenever research or validation changes the product definition. See the [revision history](#12-plan-revision-history) at the end.*
 
 **Governing documents:**
 - [DECISION.md](DECISION.md): the REFOCUS verdict, gates G0–G2 and kill criteria
@@ -13,10 +13,10 @@
 
 | | |
 |---|---|
-| **What we build** | An open, provenance-tracked **ledger** of the ~55 Canadian policy parameters that decide industrial decarbonization projects (federal + AB, ON, BC, QC), plus a deterministic **kernel**. The kernel turns the ledger plus a user's project case into realized after-tax project value, a policy value stack, the breakeven carbon price vs the facility's realizable band, policy-state robustness and optional seeded Monte Carlo. It renders a cited decision memo and re-runs saved cases when the ledger changes (`pv drift`). |
+| **What we build** | An open, provenance-tracked **ledger** of the Canadian policy parameters (~45 records at v0.1, ~55 at target) that decide industrial decarbonization projects (federal + AB, ON, BC, QC), plus a deterministic **kernel**. The kernel turns the ledger plus a user's project case into realized after-tax project value, a policy value stack, the breakeven carbon price vs the facility's realizable band, policy-state robustness and optional seeded Monte Carlo. It renders a cited decision memo and re-runs saved cases when the ledger changes (`pv drift`). |
 | **What we don't build** | Grant discovery, utility-rebate database, buildings/BEPS, MACC portfolio workflow, credit-price forecasting, energy simulation, hosted SaaS. |
 | **Smallest defensible MVP** | Ledger v0.1 (~45 records) + kernel + CLI (`validate`, `run`, `drift`, `ledger show`) + Markdown/HTML memo + 3 golden cases + CI. No UI, no server, no AI. |
-| **Effort** | Phase 0 validation: ~40 h over ≤6 weeks. Phase 1 MVP: ~110–150 h (6–8 weeks at 15–20 h/week). Runs in parallel with Phase 0 from week 2. |
+| **Effort** | Phase 0 validation: ~40 h over ≤6 weeks. Phase 1 MVP: ~110–150 h: 8 weeks at 15–20 h/week to the `v0.1.0` release, then pilots (M7) to week 12. Runs in parallel with Phase 0. |
 | **Operating cost** | $0 (GitHub, Actions, Pages). Maintenance target ≤ 15 h/month. |
 | **Gates** | G0 problem validation → G1 MVP usefulness → G2 expansion (see DECISION.md). |
 
@@ -39,7 +39,8 @@ The research is secondary-only. Phase 0 buys the missing primary evidence cheapl
 
 ### 1.2 G0 acceptance criteria
 - ≥12 interviews completed with the segment mix in DECISION.md.
-- ≥6 interviewees (a) currently value carbon at headline or rebuild it by hand per engagement, **and** (b) state they would use a cited ledger + kernel on a live decision within 6 months.
+- ≥6 interviewees (a) currently value carbon at headline or rebuild it by hand per engagement, **and** (b) would use a cited ledger + kernel on a live decision (per DECISION.md).
+- Fallback: if the kernel criterion fails but ≥3 interviewees would use the ledger alone, continue with M1–M2 only (ledger), per DECISION.md.
 - Competitor demos confirm no incumbent values projects under OBPS mechanics with policy-regime risk. If one does, stop the kernel; see kill criteria.
 - Answers to SPEC §9 open questions recorded.
 
@@ -104,7 +105,7 @@ overrides:
 
 ### 2.4 Phase 1 acceptance criteria (MVP definition of done)
 
-1. **Correctness vs oracle.** With `validation/params.yaml` values injected as overrides, the kernel reproduces `validation/results.md` Example 1 (QC ITC yes/no, BC covered market) and Example 3 ($25M, all four carbon cases). NPV must match within ±$5k and breakeven within ±$1/t.
+1. **Correctness vs oracle.** Run with `validation/params.yaml` values injected as overrides **and** `conventions: validation_v1`. This is a test-only setting that reproduces the oracle's simplifications: credit prices flat nominal, Class 8-like 20% declining balance when clean-tech ineligible, annual floor table as in params. With those settings, the kernel reproduces `validation/results.md` Example 1 (QC ITC yes/no, BC covered market) and Example 3 ($25M, all four carbon cases). NPV must match within ±$5k and breakeven within ±$1/t.
 2. **Ledger integrity.**
    - 100% of records pass schema validation.
    - Every `enacted`/`in_force` record has ≥1 primary source.
@@ -201,7 +202,7 @@ Notation: year index *t* = 1..N (operating years), *y(t)* calendar year, τ tax 
 **4.4 Robustness**
 - **Breakeven carbon price:** the flat nominal `p*` with NPV(v_t = p*) = 0, compared with the realizable band [low, base, high, headline].
 - **Policy-state grid:** Cartesian product of the user-selected discrete dimensions. For each state: NPV and GO/NO-GO. Report the GO share and the minimal set of conditions under which GO holds.
-- **Monte Carlo:** regimes sampled from user probabilities; log-normal, mean-preserving persistent shocks on gas, electricity and credit prices; triangular capex; Bernoulli ITC eligibility with p from the ledger `eligibility_confidence` map (likely = 0.9, case-by-case = 0.6, not listed = 0.1; user-overridable). Numpy `default_rng(seed)`, vectorized over draws. Reports mean, P10/P50/P90 and P(NPV>0).
+- **Monte Carlo:** regimes sampled from user probabilities; the price shock applies to the market price and floors/CCfD strikes are applied after the shock; log-normal, mean-preserving persistent shocks on gas, electricity and credit prices; triangular capex; Bernoulli ITC eligibility with p from the ledger `eligibility_confidence` map (likely = 0.9, case-by-case = 0.6, not listed = 0.1; user-overridable). Numpy `default_rng(seed)`, vectorized over draws. Reports mean, P10/P50/P90 and P(NPV>0).
 
 **4.5 Emissions**
 - On-site: `gas_GJ × EF_gas`.
@@ -215,7 +216,7 @@ Notation: year index *t* = 1..N (operating years), *y(t)* calendar year, τ tax 
 | Layer | What | Tooling |
 |---|---|---|
 | 5.1 Unit | Each formula in §4 against hand-computed fixtures (e.g., a 3-year toy project; ITC on a $1M asset with 1-year lag; floor activation year boundary; QC path for a non-covered site) | pytest |
-| 5.2 Property | NPV monotone non-decreasing in carbon price and ITC rate; zero carbon value for a non-covered non-QC site under any scenario; breakeven round-trip (NPV at p* ≈ 0); CCfD value ≥ 0; MC mean → deterministic value as σ → 0 and regimes collapse | hypothesis |
+| 5.2 Property | NPV monotone non-decreasing in carbon price and ITC rate; zero carbon value for a non-covered non-QC site under any scenario; breakeven round-trip (NPV at p* ≈ 0); CCfD value ≥ 0; MC mean → deterministic value as σ → 0, regimes collapse and capex/eligibility distributions are degenerate | hypothesis |
 | 5.3 Golden / oracle | Kernel vs `validation/results.md` (acceptance §2.4-1); golden case JSON snapshots, regenerated only with a reviewed PR | pytest + snapshot files |
 | 5.4 Ledger | Schema; units whitelist; date logic; no overlapping periods per (id, status); primary source for enacted/in_force; `retrieved` ≤ SLA; URL reachability (weekly, non-blocking) | jsonschema, custom validators, lychee link checker |
 | 5.5 Reproducibility | Byte-identical `results.json` across runs and OS matrix | CI matrix |
@@ -260,7 +261,7 @@ CI gates: lint, type, unit/property/golden, ledger validation and drift on PRs t
 |---|---|---|
 | CCfD bid module: strike solver for a target P(NPV>0) or IRR; volume/term optimization | Developers in G0/G1 ask for it (high a-priori value; see 04, Example 3) | 15 h |
 | Credit-use limits and long/short position modelling (TIER credit-use caps, EPS rules) | Covered-facility partners need it | 15 h |
-| CFR credits (fleets, charging, RNG) | Partner demand; CFR price ~2.5× in 12 months makes it decisive for fleets | 15 h |
+| CFR credits (fleets, charging, RNG) | Partner demand; CFR credit price rose from ~$142 (Q2 2025, ECCC via BC Bioenergy) to ~$358/t (June 2026, MLT Aikins), which makes it decisive for fleets | 15 h |
 | QC ÉcoPerformance large-project stream; BC Clean Industry Fund | QC/BC partners | 10 h |
 | NS, NB, NL, SK, federal-OBPS provinces | Partner demand | 5–8 h per province |
 | Static ledger site (MkDocs), with per-record history and citations | ≥3 external ledger users | 8 h |
@@ -309,4 +310,5 @@ If G0 fails in week 6, stop at M3. Release only the ledger (M2) and archive the 
 | Version | Date | Change | Driver |
 |---|---|---|---|
 | v0 | 2026-09-29 | Starting hypothesis: broad "Canada Climate CapEx Engine" (policy + incentives + energy/emissions + NPV/IRR/payback/uncertainty for corporate decisions) | Assignment brief |
-| v1.0 | 2026-09-29 | **Refocused** to PolicyValue CA:<br>• dropped grant/rebate database, buildings, MACC workflow and generic NPV positioning<br>• added realized carbon value model, legal-status-aware bitemporal ledger, CCfD valuation, policy-state robustness and decision drift<br>• ledger scope cut from ~150+ to ~45–55 records<br>• AI limited to ledger monitoring<br>• gates G0–G2 added | Research 01–04: incumbents solve the math, discovery and workflow; incentive breadth is noise at industrial scale; carbon-value treatment is the top swing factor; CCfD shifts P(NPV>0) 16%→72%; broad demand weakened in 2025–26 |
+| v1.0 | 2026-09-29 | **Refocused** to PolicyValue CA:<br>• dropped grant/rebate database, buildings, MACC workflow and generic NPV positioning<br>• added realized carbon value model, legal-status-aware bitemporal ledger, CCfD valuation, policy-state robustness and decision drift<br>• ledger scope cut from ~150+ to ~45–55 records<br>• AI limited to ledger monitoring<br>• gates G0–G2 added | Research 01–04: incumbents solve the math, discovery and workflow; incentive breadth is noise at industrial scale; carbon-value treatment is the top swing factor; CCfD shifts P(NPV>0) 0%→76%; broad demand weakened in 2025–26 |
+| v1.1 | 2026-09-29 | Independent verification pass:<br>• MC applies price shocks to market price, then floors (CCfD result now 0%→76%)<br>• derived carbon-value bands ($20–122/t) replace hard-coded ones<br>• ITC 2034 case also loses the expensing window<br>• AB floor uses EY's annual table<br>• G0/G1 wording aligned with DECISION.md<br>• oracle acceptance test uses a `validation_v1` conventions mode<br>• ledger size stated as ~45 (v0.1) / ~55 (target) | Reviewer findings; see `docs/research/04` robustness note |

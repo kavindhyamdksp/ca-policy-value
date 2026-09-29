@@ -14,8 +14,8 @@ NPV in $M. Carbon regimes: *none* = site below industrial thresholds; *market* =
 | QC | no | -0.13 | -0.13 | -0.13 | 7.5% | 10.5 | 76 |
 | ON | yes | -4.22 | -2.44 | -1.99 | n/a | >life | 230 |
 | ON | no | -5.05 | -3.27 | -2.82 | n/a | >life | 276 |
-| AB | yes | -3.41 | -2.09 | -1.07 | -7.6% | >life | 177 |
-| AB | no | -4.24 | -2.92 | -1.90 | -8.3% | >life | 221 |
+| AB | yes | -3.41 | -2.11 | -1.07 | -7.7% | >life | 177 |
+| AB | no | -4.24 | -2.93 | -1.90 | -8.4% | >life | 221 |
 | BC | yes | -0.85 | +0.66 | +1.37 | 11.5% | 7.6 | 47 |
 | BC | no | -1.68 | -0.17 | +0.54 | 7.3% | 10.2 | 92 |
 | NS | yes | +1.65 | +2.51 | +3.81 | 19.8% | 4.6 | -93 |
@@ -58,13 +58,14 @@ Generic abatement project at an AB TIER facility: abates 50 kt/yr for 20 years, 
 
 | Capex $M | Breakeven flat $/t | Headline NPV $M | Market $20, no floor NPV $M | Market + 2030 floor NPV $M | CCfD $85 to 2040 NPV $M | Decision spread |
 |---|---|---|---|---|---|---|
-| 15 | 54 | +25.51 | -12.99 | +5.33 | +14.03 | FLIPS: GO only under Headline, Market + 2030 floor, CCfD $85 to 2040 |
-| 25 | 75 | +17.63 | -20.86 | -2.54 | +6.16 | FLIPS: GO only under Headline, CCfD $85 to 2040 |
-| 35 | 96 | +9.76 | -28.73 | -10.41 | -1.71 | FLIPS: GO only under Headline |
-| 45 | 117 | +1.89 | -36.60 | -18.28 | -9.59 | FLIPS: GO only under Headline |
-| 60 | 148 | -9.91 | -48.40 | -30.09 | -21.39 | all NO-GO |
+| 15 | 54 | +25.51 | -12.99 | +5.08 | +13.87 | FLIPS: GO only under Headline, Market + 2030 floor, CCfD $85 to 2040 |
+| 25 | 75 | +17.63 | -20.86 | -2.79 | +6.00 | FLIPS: GO only under Headline, CCfD $85 to 2040 |
+| 35 | 96 | +9.76 | -28.73 | -10.66 | -1.87 | FLIPS: GO only under Headline |
+| 45 | 117 | +1.89 | -36.60 | -18.53 | -9.74 | FLIPS: GO only under Headline |
+| 60 | 148 | -9.91 | -48.40 | -30.33 | -21.54 | all NO-GO |
 
-The CCfD vs merchant-credit gap is worth roughly the same $M at every capex level (it is a revenue stream), so it decides the investment only for projects whose breakeven sits in the ~$40-$125/t band. 
+Levelized (flat-equivalent at 8%) carbon value of each assumption: Headline $122/t; Market $20, no floor $20/t; Market + 2030 floor $68/t; CCfD $85 to 2040 $91/t.
+The carbon-value assumption decides the investment for any project whose breakeven lies between $20 and $122/t. A CCfD (vs merchant credits with the announced floor) decides it between $68 and $91/t. 
 
 ## Tornado - what moves the NPV most? (Example 1, Ontario, covered facility, market carbon, ITC granted)
 
@@ -87,7 +88,7 @@ Base NPV -2.44 $M.
 | ITC received after 2 yr(s) | +0.64 |
 | ITC received after 3 yr(s) | +0.58 |
 | Labour requirements not met (20% rate) | +0.50 |
-| Available for use in 2034 (15% rate) | +0.40 | 
+| Available for use in 2034 (15% rate, and outside the pre-2030 expensing window) | +0.20 | 
 
 ## Monte Carlo - policy-regime and price uncertainty (illustrative probabilities)
 
@@ -95,14 +96,27 @@ n = 20,000 draws, seed 20260929. Persistent log-normal shocks: gas sigma 0.30, e
 
 - QC regimes: cap-and-trade continues (+5%/yr) p=0.85; market breakdown to $30 from 2029 p=0.15
 - BC regimes: credits at 68% of headline p=0.60; oversupply to 40% p=0.30; OBPS repealed from 2029 p=0.10
-- AB regimes: floor as announced p=0.55; floor at half strength p=0.30; policy rollback ($15 flat) p=0.15
+- AB regimes: floor as announced p=0.55; floor at half strength p=0.30; policy rollback (market $15, no floor) p=0.15. Shock applies to the $20 market price; floor applied after.
 - ON regimes: EPU at 80% of headline p=0.60; oversupply to 45% p=0.30; EPS repealed from 2029 p=0.10
+
+**Full uncertainty** (policy regimes + energy prices + capex skew (mean 1.067) + ITC eligibility p=0.6):
 
 | Case | Deterministic NPV @ headline $M | Deterministic NPV @ market $M | MC mean $M | P10 | P50 | P90 | P(NPV>0) |
 |---|---|---|---|---|---|---|---|
 | Ex1 heat pump, QC covered | +0.70 | +0.70 | +0.12 | -1.54 | +0.01 | +1.91 | 50% |
-| Ex1 heat pump, BC covered | +1.37 | +0.66 | -0.17 | -2.05 | -0.30 | +1.88 | 42% |
-| Ex1 heat pump, AB covered | -1.07 | -2.09 | -2.92 | -4.18 | -2.95 | -1.64 | 0% |
-| Ex1 heat pump, ON covered | -1.99 | -2.44 | -3.31 | -4.95 | -3.35 | -1.61 | 1% |
-| Ex3 AB abatement ($25M capex), merchant credits | - | - | -10.51 | -23.71 | -11.80 | +3.94 | 16% |
-| Ex3 AB abatement ($25M capex), with $85 CCfD to 2040 | - | - | +3.27 | -2.11 | +1.99 | +10.15 | 72% |
+| Ex1 heat pump, BC covered | +1.37 | +0.66 | -0.13 | -2.01 | -0.26 | +1.91 | 43% |
+| Ex1 heat pump, AB covered | -1.07 | -2.11 | -2.94 | -4.12 | -2.93 | -1.78 | 0% |
+| Ex1 heat pump, ON covered | -1.99 | -2.44 | -3.32 | -4.95 | -3.37 | -1.63 | 1% |
+| Ex3 AB abatement ($25M capex), merchant credits | - | - | -10.65 | -23.16 | -6.80 | -2.43 | 0% |
+| Ex3 AB abatement ($25M capex), with $85 CCfD to 2040 | - | - | +2.46 | -1.83 | +2.65 | +6.29 | 76% |
+
+**Policy-regime risk only** (same regimes and credit-price shock; energy prices, capex fixed; ITC granted):
+
+| Case | Deterministic @ market $M | Policy-only MC mean $M | P10 | P50 | P90 | P(NPV>0) |
+|---|---|---|---|---|---|---|
+| Ex1 heat pump, QC covered | +0.70 | +0.60 | +0.02 | +0.54 | +1.24 | 91% |
+| Ex1 heat pump, BC covered | +0.66 | +0.34 | -0.47 | +0.29 | +1.14 | 70% |
+| Ex1 heat pump, AB covered | -2.11 | -2.44 | -3.09 | -2.15 | -2.08 | 0% |
+| Ex1 heat pump, ON covered | -2.44 | -2.83 | -3.80 | -2.90 | -1.85 | 0% |
+| Ex3 AB ($25M), merchant credits | - | -9.32 | -22.27 | -3.61 | -2.20 | 0% |
+| Ex3 AB ($25M), $85 CCfD to 2040 | - | +3.79 | -0.45 | +6.00 | +6.00 | 86% |

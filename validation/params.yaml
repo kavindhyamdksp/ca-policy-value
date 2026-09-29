@@ -16,9 +16,9 @@ carbon:
     source: "ICAP news 2026-05-19 'Canada publishes new carbon price trajectory'; Osler, Blakes, EY (May-Jun 2026)"
   ab_tier_credit_market: {value: 20, unit: "$/t", status: verified, source: "Blakes 2026-05 ('as low as C$20'); carboncredits.com 2025-12 (~C$18, ClearBlue)"}
   ab_tier_floor:
-    value: {2030: 60, 2035: 80, 2040: 110}
+    value: {2030: 60, 2031: 63, 2032: 67, 2033: 71, 2034: 75, 2035: 80, 2036: 85, 2037: 90, 2038: 95, 2039: 100, 2040: 110}
     status: verified
-    note: "Minimum transfer price from 2030; regulation due by 2026-12-31 (not yet in force)"
+    note: "Minimum transfer price from 2030 (annual table per EY); regulation due by 2026-12-31 (not yet in force). Pre-regulation banked credits may still trade below the floor - not modelled."
     source: "EY Global Tax News 2026-06-03; GLJ 2026-05-28"
   on_eps_market_discount: {value: 0.20, status: verified, source: "IETA Ontario EPS brief 2025-09: EPUs trade 15-20% below compliance price; carboncredits.com (ClearBlue) ~C$72"}
   bc_obps_market_ratio: {value: 0.68, status: verified, source: "carboncredits.com (ClearBlue): ~C$65 vs $95"}

@@ -25,12 +25,12 @@
 
 1. **Policy terms flip decisions for covered industrial facilities and near-margin projects:**
    - The carbon-value treatment (coverage, credit price vs headline, floor, CCfD) was the **single largest NPV swing factor** for a covered Ontario facility.
-   - Across Alberta abatement projects with breakevens of $54–117/t, the GO/NO-GO answer depended entirely on which carbon-value assumption was used.
-   - A CCfD moved P(NPV>0) from **16% to 72%**.
+   - Across Alberta abatement projects with breakevens of $54–117/t, the GO/NO-GO answer depended entirely on which carbon-value assumption was used. The assumptions are worth $20–122/t levelized.
+   - A CCfD moved P(NPV>0) from **0% to 76%** (0% to 86% on policy risk alone).
    - The ITC flipped heat-pump decisions in QC and BC.
 
    ([04](docs/research/04_quantitative_validation.md))
-2. **The headline-price shortcut is a common and consequential error.** It overstates value 1.25× in Ontario, ~1.5× in BC and ~5× in Alberta before 2030. Credit markets are oversupplied; the CCI finds effective marginal prices ranging from <$50 to >$130/t where market prices look alike, and calls for "transparent analytics".
+2. **The headline-price shortcut is a consequential and likely common error.** How common is untested: the evidence is guidance that prescribes headline or shadow schedules, and G0 tests it. It overstates value 1.25× in Ontario, ~1.5× in BC and ~5× in Alberta before 2030. Credit markets are oversupplied; the CCI finds effective marginal prices ranging from <$50 to >$130/t where market prices look alike, and calls for "transparent analytics".
 3. **No product combines** realized facility-level carbon value, clean-economy tax measures as cash flows, explicit policy-regime/CCfD risk and source-level provenance for Canada. Confidence is moderate (60–75%); enterprise tools are opaque, which is why demos are a gate.
 4. **It is cheap to build and maintain when scoped.** About 55 ledger records and roughly 85–130 h/yr of maintenance ([data feasibility](docs/analysis/data_feasibility.md)). It needs no servers: a git repo, Python and a static site. The open ledger has standalone value (for consultants, researchers and GMF/LCCA studies still pointing at the superseded $170-by-2030 schedule) even if the kernel fails to find buyers.
 
