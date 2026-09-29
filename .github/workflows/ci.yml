@@ -1,0 +1,67 @@
+name: ci
+
+on:
+  push:
+    branches: [main, mvp]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint-type:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12", cache: pip}
+      - run: pip install -e ".[dev]"
+      - name: ruff
+        run: ruff check && ruff format --check
+      - name: mypy (strict)
+        run: mypy src
+
+  ledger-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12", cache: pip}
+      - run: pip install -e .
+      - run: pv validate --strict
+
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python: ["3.11", "3.12", "3.13"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "${{ matrix.python }}", cache: pip}
+      - run: pip install -e ".[dev]"
+      - name: tests + coverage (src/pv excl. cli/report)
+        run: pytest -q --cov=pv --cov-report=term --cov-fail-under=90
+      - name: reproducibility fingerprint
+        run: |
+          mkdir -p out
+          pv run cases/golden_ab_abatement_ccfd.yaml --out out/ab --no-html
+          python -c "import hashlib,sys;print(hashlib.sha256(open('out/ab/results.json','rb').read()).hexdigest())" > out/fingerprint.txt
+          cat out/fingerprint.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fingerprint-${{ matrix.os }}-${{ matrix.python }}
+          path: out/fingerprint.txt
+
+  reproducibility:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: {pattern: "fingerprint-*", path: fp}
+      - name: results.json byte-identical across OS x Python
+        run: |
+          cat fp/*/fingerprint.txt
+          test "$(cat fp/*/fingerprint.txt | sort -u | wc -l)" -eq 1

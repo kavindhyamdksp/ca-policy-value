@@ -6,9 +6,9 @@ Resume: read this + CLAUDE.md only, continue at the first unchecked item. Branch
 - [x] One-time distillation → CLAUDE.md, PROGRESS.md
 
 ## M1 Tooling
-- [ ] pyproject (hatchling), src/pv/, ruff, mypy strict, pytest + hypothesis, pre-commit
-- [ ] GitHub Actions: lint, type, test, ledger-validate; ubuntu + macOS; py3.11–3.13
-- [ ] LICENSE (Apache-2.0), ledger/LICENSE (CC BY 4.0 + OGL-Canada)
+- [x] pyproject (hatchling), src/pv/, ruff, mypy strict, pytest + hypothesis, pre-commit
+- [x] GitHub Actions: lint, type, test, ledger-validate; ubuntu + macOS; py3.11–3.13
+- [x] LICENSE (Apache-2.0), ledger/LICENSE (CC BY 4.0 + OGL-Canada)
 
 ## M2 Ledger
 - [ ] JSON schema + pydantic models
