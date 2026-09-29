@@ -1,0 +1,312 @@
+# IMPLEMENTATION_PLAN.md — PolicyValue CA
+
+*Plan version **v1.0** — 2026-09-29. This is the single, living plan for the project. It is updated whenever research or validation changes the product definition. See the [revision history](#12-plan-revision-history) at the end.*
+
+**Governing documents:**
+- [DECISION.md](DECISION.md): the REFOCUS verdict, gates G0–G2 and kill criteria
+- [SPEC.md](docs/product/SPEC.md): the product specification
+- [ARCHITECTURE.md](docs/architecture/ARCHITECTURE.md) and [ADRs](docs/architecture/adr/): architecture decisions
+
+---
+
+## 0. Summary
+
+| | |
+|---|---|
+| **What we build** | An open, provenance-tracked **ledger** of the ~55 Canadian policy parameters that decide industrial decarbonization projects (federal + AB, ON, BC, QC), plus a deterministic **kernel**. The kernel turns the ledger plus a user's project case into realized after-tax project value, a policy value stack, the breakeven carbon price vs the facility's realizable band, policy-state robustness and optional seeded Monte Carlo. It renders a cited decision memo and re-runs saved cases when the ledger changes (`pv drift`). |
+| **What we don't build** | Grant discovery, utility-rebate database, buildings/BEPS, MACC portfolio workflow, credit-price forecasting, energy simulation, hosted SaaS. |
+| **Smallest defensible MVP** | Ledger v0.1 (~45 records) + kernel + CLI (`validate`, `run`, `drift`, `ledger show`) + Markdown/HTML memo + 3 golden cases + CI. No UI, no server, no AI. |
+| **Effort** | Phase 0 validation: ~40 h over ≤6 weeks. Phase 1 MVP: ~110–150 h (6–8 weeks at 15–20 h/week). Runs in parallel with Phase 0 from week 2. |
+| **Operating cost** | $0 (GitHub, Actions, Pages). Maintenance target ≤ 15 h/month. |
+| **Gates** | G0 problem validation → G1 MVP usefulness → G2 expansion (see DECISION.md). |
+
+---
+
+## 1. Phase 0 — Problem validation (Gate G0)
+
+The research is secondary-only. Phase 0 buys the missing primary evidence cheaply, using the validation artefacts already in this repo.
+
+### 1.1 Work items
+
+| # | Task | Output | Est. |
+|---|---|---|---|
+| P0.1 | Recruitment list:<br>• 20 covered-facility analysts/finance leads (AB TIER, ON EPS, BC OBPS, QC SPEDE), found via ECCC facility data, IETA/CME/CIAC contacts, LinkedIn<br>• 10 consultants/ESCOs (Dunsky, Blackstone, Enerlife, Introba, WSP, Stantec, Ameresco)<br>• 5 CCUS/CCfD developers | `docs/validation/recruitment.md` (no personal data committed) | 4 h |
+| P0.2 | Interview guide covering current carbon-value method, ITC handling, how often assumptions are rebuilt, tools and advisors, last decision where policy mattered, willingness to use or pay | `docs/validation/interview_guide.md` | 3 h |
+| P0.3 | Demo kit: 2-page PDF/HTML built from `docs/research/04_quantitative_validation.md` (Examples 1, 3 and the MC table), plus a mock memo | `docs/validation/demo_kit/` | 6 h |
+| P0.4 | ≥12 interviews, 30 min each | Anonymized notes in `docs/validation/interviews/` | 15 h |
+| P0.5 | Competitor demos: SINAI Reduce, ClearBlue Vantage (plus VadiMAP for completeness). Checklist: OBPS mechanics, credit vs headline, floors/CCfD, ITC timing and eligibility, policy-regime risk, provenance | `docs/validation/competitor_demos.md` | 6 h |
+| P0.6 | Synthesis against the G0 criteria; update DECISION.md, SPEC.md and this plan | Gate memo | 4 h |
+
+### 1.2 G0 acceptance criteria
+- ≥12 interviews completed with the segment mix in DECISION.md.
+- ≥6 interviewees (a) currently value carbon at headline or rebuild it by hand per engagement, **and** (b) state they would use a cited ledger + kernel on a live decision within 6 months.
+- Competitor demos confirm no incumbent values projects under OBPS mechanics with policy-regime risk. If one does, stop the kernel; see kill criteria.
+- Answers to SPEC §9 open questions recorded.
+
+---
+
+## 2. Phase 1 — MVP build (Gate G1)
+
+### 2.1 Milestones
+
+| Milestone | Scope | Depends on | Est. |
+|---|---|---|---|
+| **M1** Repo & tooling | `pyproject.toml` (hatchling), `src/pv/`, ruff, mypy (strict on `src/`), pytest + hypothesis, pre-commit, GitHub Actions (lint, type, test, ledger-validate), Apache-2.0 + CC BY 4.0 notices | — | 6 h |
+| **M2** Ledger schema + seed records | JSON Schema; pydantic models; loader with `as_of` and `min_status` filters; ~45 seed records (§3); validators (§5.4); `ledger/CHANGELOG.md`; tag `ledger-v2026.10.0` | M1 | 30–40 h |
+| **M3** Kernel core | `carbon`, `tax`, `cashflow`, `emissions` per §4 formulas; typed `Case` model (§2.3) | M2 | 25–30 h |
+| **M4** Robustness | Breakeven solver; discrete policy-state grid; vectorized seeded MC | M3 | 12–15 h |
+| **M5** Reporting + CLI | Jinja2 memo (Markdown → HTML via `markdown-it-py`); JSON results schema v1; CSV cash flows; Typer CLI: `pv validate`, `pv run`, `pv drift`, `pv ledger show` | M3–M4 | 15–20 h |
+| **M6** Golden cases, drift CI, docs | 3 golden cases; drift job on ledger PRs; README quick-start; user guide; methodology doc (formulas and caveats) | M5 | 12–15 h |
+| **M7** Design-partner pilots | ≥3 partners run real cases; collect feedback; fix issues | M6, G0 pass | 10–15 h |
+
+### 2.2 Target layout
+See [ARCHITECTURE.md § Repository layout](docs/architecture/ARCHITECTURE.md#repository-layout-target).
+
+### 2.3 Case input model (YAML → pydantic `Case`)
+
+```yaml
+case_id: hp-qc-demo
+as_of: 2026-10-15              # ledger view date
+min_legal_status: enacted       # announced|proposed|enacted|in_force; lower-status records become scenarios
+facility:
+  province: QC                  # AB|ON|BC|QC
+  system: spede                 # tier|eps|bc_obps|fed_obps|spede|none
+  covered: true
+  entity: taxable_corp          # taxable_corp|reit|crown|municipal|tax_exempt
+  labour_requirements_met: true
+  tax_capacity: full            # full|none (deferred: Phase 2)
+project:
+  in_service: 2027-06-30
+  life_years: 20
+  capex: [{year: 0, amount: 3500000}]
+  technology_class: heat_pump_process   # maps to ledger eligibility table
+  itc_eligible_share: 0.85              # optional override of ledger default
+  other_assistance: 0                   # reduces ITC base and UCC
+  energy_deltas: {natural_gas_gj: -50824, electricity_mwh: 4000}
+  opex_delta: 30000
+  covered_emissions_delta_t: null       # default: computed from gas EF
+prices:                                  # user tariffs; ledger reference defaults if omitted
+  natural_gas_gj: 8.8
+  electricity_mwh: 60.5
+  escalation: 0.02
+finance: {discount_rate: 0.08, itc_receipt_lag_years: 1}
+policy:
+  credit_price_scenario: base            # low|base|high|upper_bound_headline
+  ccfd: {strike: 85, term_end: 2040, volume_share: 1.0}   # optional
+  grid_factor: average                   # average|marginal
+  marginal_grid_ef_g_kwh: null
+robustness:
+  grid: [floor_status, itc_granted, ccfd]
+  monte_carlo: {draws: 10000, seed: 20260929, regimes: {...}, shocks: {...}}
+overrides:
+  - {record: ab.tier.credit_obs, value: 25, reason: "broker quote 2026-10-10"}
+```
+
+### 2.4 Phase 1 acceptance criteria (MVP definition of done)
+
+1. **Correctness vs oracle.** With `validation/params.yaml` values injected as overrides, the kernel reproduces `validation/results.md` Example 1 (QC ITC yes/no, BC covered market) and Example 3 ($25M, all four carbon cases). NPV must match within ±$5k and breakeven within ±$1/t.
+2. **Ledger integrity.**
+   - 100% of records pass schema validation.
+   - Every `enacted`/`in_force` record has ≥1 primary source.
+   - Zero records past their freshness SLA at release.
+3. **Provenance.** Every memo lists 100% of ledger records used, with value, status, source URL and retrieved date. It warns on any `announced`/`proposed` record used in the base case, any override, and any stale record.
+4. **Reproducibility.** Same case + ledger tag + seed → byte-identical `results.json` across two runs and two machines (CI matrix: ubuntu, macOS; Python 3.11–3.13).
+5. **Drift.**
+   - `pv drift --from <tag> --to <tag>` lists changed records and value deltas per case, and flags flipped decisions.
+   - A test fixture that changes `ab.tier.floor` from `announced` to `in_force` produces the expected flip on `golden_ab_abatement_ccfd`.
+6. **Quality.**
+   - ≥90% line coverage on `src/pv` (excluding `cli`/`report`).
+   - mypy strict passes; ruff clean.
+7. **Performance.** A single case with a 3-dimension grid runs in < 1 s. 10k-draw MC runs in < 10 s on a 2020-class laptop.
+8. **Docs.** A new user can run `pip install -e . && pv run cases/golden_hp_qc.yaml` and get an HTML memo in < 10 minutes by following the README.
+
+---
+
+## 3. Data sources — seed ledger (v0.1)
+
+Each record's source is taken from the research files and re-verified when entered. **[V]** = verified in research; **[C]** = confirm before entry (flagged [inferred] in research).
+
+| Record id | Content | Legal status (as of 2026-09) | Primary / secondary source | |
+|---|---|---|---|---|
+| `fed.carbon.benchmark_path` | $95 (2026) → $100 (2027–29) → $115 (2030) → +$3/yr → $130 (2035) → 1.5%/yr → $140 (2040) | announced (benchmark publication "later in 2026") | ICAP 2026-05-19; Osler; Blakes; EY | V |
+| `fed.ggppa.schedule4` | Legislated OBPS excess-emissions charge ($110 for 2026, etc.) | in_force (pending amendment) | Justice Laws GGPPA Sch. 4 | V |
+| `fed.fuel_charge` | $0 from 2025-04-01 | in_force | ECCC | V |
+| `fed.obps.thresholds` | 50 kt mandatory; 10 kt opt-in | in_force | ECCC OBPS page | C |
+| `fed.obps.credit_obs` | ~$37.50/t (Dec 2025 observation) | observation | carboncredits.com citing ClearBlue | V |
+| `fed.ct_itc.rate_schedule` | 30% until 2033; 15% in 2034; 0 after | in_force | ITA s.127.45; CRA | V |
+| `fed.ct_itc.labour_rate` | 20% if labour requirements not met | in_force | CRA | V |
+| `fed.ct_itc.entities` | Taxable Canadian corporations; certain REITs | in_force | CRA | V |
+| `fed.ct_itc.eligibility_classes` | ASHP/GSHP: likely; process/waste-heat HP: case-by-case; electrode/resistance boilers: not listed; solar/wind/storage: likely | in_force (guidance) | NRCan CT property technical guidance | V (classes) / C (per-class mapping) |
+| `fed.ct_itc.domestic_content` | Consultation 2026-02-13 to 03-13; outcome pending | proposed | Finance Canada | V |
+| `fed.ccus_itc.rates` | 60% DAC / 50% capture / 37.5% T&S&U to 2035; half 2036–2040 | in_force (C-15) | ITA; Gowling; Torys | V |
+| `fed.ce_itc.rate` | 15%; eligible entities incl. Crowns, municipal, Indigenous-owned corps | in_force (C-15, 2026-03-26) | Finance; Torys | V |
+| `fed.cca.expensing` | 100% first-year for Classes 43.1/53 (and ZEV classes) available for use before 2030; phase-out 2030–2033 | in_force (C-15) | EY tax alert | V (phase-out schedule: C) |
+| `fed.cca.class_rates` | 43.1 = 30%, 43.2 = 50%, 53 = 50% DB (normal rates) | in_force | ITR Schedule II | C |
+| `fed.nir.grid_ef` | Average grid factors: QC 2.5, ON 73.8, AB 335, BC 22.8 g/kWh (+NS 528 reference) | observation (annual) | NIR 2026 CSV (ECCC Data Mart); HQ; BC gov; Alberta.ca; TAF/IESO | V (switch to NIR CSV at entry) |
+| `fed.nir.gas_ef` | ~50 kg CO2e/GJ (HHV) | observation | NIR Annex 6 | C |
+| `fed.cgf.ccfd` | Program exists; bilateral terms | in_force (program) | CGF; Budget 2025 | V |
+| `ab.tier.fund_price` | $95 for 2026; national path after | in_force (2026) / announced (2027+) | EY 2026-06-03; Blakes | V |
+| `ab.tier.floor` | Minimum transfer price $60 (2030) → $80 (2035) → $110 (2040); regulation due 2026-12-31 | announced | EY; GLJ | V |
+| `ab.tier.credit_obs` | ~$18–20/t | observation | Blakes 2026-05; carboncredits (ClearBlue) | V |
+| `ab.tier.dic_cap` | Direct-investment credits ≤50% of capex/opex net of public support | announced | Blakes | V |
+| `ab.tier.threshold` | 100 kt (opt-in below) | in_force | TIER Reg. | C |
+| `ab.ccfd.joint_pool` | Up to $1.2B (≤$600M each govt), up to 75 Mt | announced | Blakes; Osler | V |
+| `on.eps.price_schedule` | $50 (2022) + $15/yr; alignment with national path pending | in_force (O. Reg. 241/19) | Enbridge; IETA brief | V (alignment: C) |
+| `on.eps.epu_obs` | 15–20% below compliance price (2025); ~$72 (Dec 2025) | observation | IETA 2025-09; carboncredits (ClearBlue) | V |
+| `on.eps.thresholds` | 50 kt mandatory; 10 kt opt-in | in_force | IETA; O. Reg. 241/19 | V |
+| `bc.obps.price` | Regulatory level ~$80 (per ClearBlue); path alignment pending | C | BC gov; carboncredits | C |
+| `bc.obps.credit_obs` | ~$65/t | observation | carboncredits (ClearBlue) | V |
+| `bc.carbon_tax` | Repealed 2025-04-01 | in_force | BC gov | V |
+| `bc.obps.threshold` | 10 kt | in_force | BC OBPS Reg. | C |
+| `qc.spede.coverage` | Emitters ≥25 kt plus fuel distributors, so all gas users carry the price | in_force | MELCCFP; ICAP | V |
+| `qc.spede.auction_obs` | C$45.11 settlement (Aug 2026); reserve C$38.81 | observation | CARB/MELCCFP auction summary | V |
+| `qc.spede.reserve_escalation` | 5% + inflation per year | in_force | WCI regs | C |
+| `ref.electricity.{prov}` | HQ comparison 2025 large/medium ¢/kWh (reference default only) | observation | HQ comparison 2025 | V |
+| `ref.gas.{prov}` | Delivered gas reference (default only; user tariff expected) | observation | OEB QRAM; AUC; Régie; BCUC | C |
+| `ref.tax.{prov}` | Combined general corporate rates | in_force | CRA / provincial finance | C |
+
+**Entry rule:** a **[C]** record may be committed only after its primary source is fetched and cited. Otherwise it stays out of v0.1 and the kernel requires a user input for it.
+
+---
+
+## 4. Models (formulas the kernel implements)
+
+Notation: year index *t* = 1..N (operating years), *y(t)* calendar year, τ tax rate, *r* discount rate.
+
+**4.1 Realized carbon value per tonne, `v_t`** (ADR-0005)
+- Not covered and province ≠ QC → `v_t = 0`.
+- QC (covered or not) → `v_t = p^{C&T}_{y}` for the chosen scenario (default: last auction settlement escalated at the reserve rate).
+- Covered (AB, ON, BC, fed OBPS):
+  - `m_t = min(market^{s}_{y}, fund_{y})`, where `market^{s}` is built from dated observations: base = the latest observation held flat in real terms, or the ratio-to-headline method for ON/BC; low and high as ledger-defined bands.
+  - If the floor record passes `min_legal_status` and `y ≥ floor.effective_from`: `m_t = max(m_t, floor_{y})`. Otherwise the floor is available only as a grid dimension.
+  - CCfD: for `y ≤ term_end`, `v_t = volume_share·max(strike, m_t) + (1−volume_share)·m_t`; else `v_t = m_t`.
+- `upper_bound_headline`: `v_t = headline_{y}`. Always labelled as such.
+- Carbon cash flow: `C_t = ΔE^{covered}_t · v_t`, where `ΔE` = avoided covered tonnes (gas GJ × EF unless supplied).
+
+**4.2 Tax measures**
+- ITC rate: `ρ = schedule(y_in_service)`; if `!labour_ok` and the measure has a labour rule → reduced rate. ITC is zero if the entity is not eligible for that measure.
+- `ITC = ρ · s_elig · (capex − assistance)`, received at `t = lag`.
+- UCC base: `U = capex − ITC − assistance`.
+- CCA: if the class is expensing-eligible and in-service within the window → `CCA_1 = U·expensing_pct(y)`, and the remainder follows the declining balance at the class rate. Otherwise declining balance with the half-year rule.
+- If `tax_capacity = none` or the entity is non-taxable: no tax on operating flows, no CCA shield, and ITC only if the measure is refundable and the entity is eligible.
+
+**4.3 Cash flow and metrics**
+- `CF_0 = −capex_0`
+- `CF_t = (1−τ)·(S^{gas}_t + C_t − E^{el}_t − O_t) + τ·CCA_t + ITC·[t = lag]`
+- NPV at *r*.
+- IRR via `brentq` on [−0.99, 3]. Returns `null` (with a warning) if there are multiple sign changes and multiple roots.
+- Simple and discounted payback.
+- **Value stack:** NPV(base without policy) → +carbon → +ITC → +CCA-timing → +CCfD. Computed sequentially and reported with order noted, since interactions are non-additive.
+
+**4.4 Robustness**
+- **Breakeven carbon price:** the flat nominal `p*` with NPV(v_t = p*) = 0, compared with the realizable band [low, base, high, headline].
+- **Policy-state grid:** Cartesian product of the user-selected discrete dimensions. For each state: NPV and GO/NO-GO. Report the GO share and the minimal set of conditions under which GO holds.
+- **Monte Carlo:** regimes sampled from user probabilities; log-normal, mean-preserving persistent shocks on gas, electricity and credit prices; triangular capex; Bernoulli ITC eligibility with p from the ledger `eligibility_confidence` map (likely = 0.9, case-by-case = 0.6, not listed = 0.1; user-overridable). Numpy `default_rng(seed)`, vectorized over draws. Reports mean, P10/P50/P90 and P(NPV>0).
+
+**4.5 Emissions**
+- On-site: `gas_GJ × EF_gas`.
+- Grid: `MWh × EF_grid` (average from the ledger; marginal from user input).
+- Report net annual and lifetime tonnes, and abatement cost as `−NPV / discounted tonnes` (both the on-site and net bases).
+
+---
+
+## 5. Test strategy
+
+| Layer | What | Tooling |
+|---|---|---|
+| 5.1 Unit | Each formula in §4 against hand-computed fixtures (e.g., a 3-year toy project; ITC on a $1M asset with 1-year lag; floor activation year boundary; QC path for a non-covered site) | pytest |
+| 5.2 Property | NPV monotone non-decreasing in carbon price and ITC rate; zero carbon value for a non-covered non-QC site under any scenario; breakeven round-trip (NPV at p* ≈ 0); CCfD value ≥ 0; MC mean → deterministic value as σ → 0 and regimes collapse | hypothesis |
+| 5.3 Golden / oracle | Kernel vs `validation/results.md` (acceptance §2.4-1); golden case JSON snapshots, regenerated only with a reviewed PR | pytest + snapshot files |
+| 5.4 Ledger | Schema; units whitelist; date logic; no overlapping periods per (id, status); primary source for enacted/in_force; `retrieved` ≤ SLA; URL reachability (weekly, non-blocking) | jsonschema, custom validators, lychee link checker |
+| 5.5 Reproducibility | Byte-identical `results.json` across runs and OS matrix | CI matrix |
+| 5.6 Drift | Synthetic ledger change → expected flip detected | pytest fixture ledgers |
+| 5.7 Report | Memo contains every used record id; warnings present for announced/override/stale | pytest (string/HTML assertions) |
+
+CI gates: lint, type, unit/property/golden, ledger validation and drift on PRs touching `ledger/` must all pass.
+
+---
+
+## 6. Dependencies
+
+| Type | Dependency | Notes |
+|---|---|---|
+| Runtime | Python ≥3.11, numpy, scipy, pydantic v2, PyYAML, jsonschema, Jinja2, markdown-it-py, Typer | All permissive licences; no network at runtime |
+| Dev | pytest, hypothesis, ruff, mypy, pre-commit, lychee (CI) | |
+| Data | ECCC NIR CSV; CARB auction results; government and legal pages (§3) | OGL / public; no paid data |
+| People | Tax-literate reviewer for ITC/CCA records (~5 h per release; e.g., a CPA contact or design-partner tax team) | Required before v0.1 release |
+| People | 3+ design partners (G1) | From Phase 0 interviews |
+| Accounts | GitHub repo under `kavindhyamdksp`; GitHub Actions; Pages (Phase 2) | Free tier |
+
+---
+
+## 7. Policy events to track (drive ledger releases)
+
+| Event | Expected | Records affected |
+|---|---|---|
+| Updated federal carbon-pricing benchmark published | "Later in 2026" | `fed.carbon.benchmark_path` (announced → enacted), `on.eps.*`, `bc.obps.*`, `fed.ggppa.schedule4` |
+| Alberta TIER floor regulation | By 2026-12-31 | `ab.tier.floor`, `ab.tier.dic_cap` |
+| CT/CE ITC domestic-content decision | Pending (consultation closed 2026-03-13) | `fed.ct_itc.*`, `fed.ce_itc.*` |
+| Ontario EPS amendments to the new path | Pending | `on.eps.price_schedule` |
+| NIR 2027 release | April 2027 | `fed.nir.*` |
+| HQ price comparison 2026 edition | 2026 | `ref.electricity.*` |
+| Quarterly QC/CA auctions | Quarterly | `qc.spede.auction_obs` |
+| Federal Budget / Fall Economic Statement | Annual | all tax records |
+
+---
+
+## 8. Phase 2 — Expansion (only after G1 pass)
+
+| Item | Trigger / justification | Est. |
+|---|---|---|
+| CCfD bid module: strike solver for a target P(NPV>0) or IRR; volume/term optimization | Developers in G0/G1 ask for it (high a-priori value; see 04, Example 3) | 15 h |
+| Credit-use limits and long/short position modelling (TIER credit-use caps, EPS rules) | Covered-facility partners need it | 15 h |
+| CFR credits (fleets, charging, RNG) | Partner demand; CFR price ~2.5× in 12 months makes it decisive for fleets | 15 h |
+| QC ÉcoPerformance large-project stream; BC Clean Industry Fund | QC/BC partners | 10 h |
+| NS, NB, NL, SK, federal-OBPS provinces | Partner demand | 5–8 h per province |
+| Static ledger site (MkDocs), with per-record history and citations | ≥3 external ledger users | 8 h |
+| AI-assisted source monitoring → draft ledger PRs (ADR-0006) | Maintenance > 10 h/month | 15 h |
+| Excel add-in or CSV round-trip template | Consultant partners | 10 h |
+
+## 9. Phase 3 — Only if G2 passes
+
+- Hosted read-only ledger API (static JSON on Pages first; a serverless function only if needed).
+- Institutional co-maintenance (NGO, university energy-modelling hub) or a data-licence partnership (e.g., for licensed credit-price feeds).
+- Optional hosted memo generation for non-technical users.
+
+---
+
+## 10. Risks and mitigations
+
+| Risk | Likelihood | Impact | Mitigation |
+|---|---|---|---|
+| No primary demand (G0 fails) | Medium | High | Gate before most build effort; the ledger alone remains a low-cost fallback |
+| Incumbent (SINAI, ClearBlue+Deloitte) ships an equivalent | Medium | High | Open-source/provenance positioning; partner rather than compete; kill criterion |
+| Policy change outpaces maintenance | Medium | Medium | Narrow scope; legal-status model; drift CI; events calendar (§7); AI monitoring in Phase 2 |
+| ITC eligibility misstatement → user harm | Medium | High | Confidence levels, not binaries; tax-reviewer sign-off; prominent not-advice notice |
+| Credit-price data thin or proprietary | High | Medium | Dated public observations + scenario bands + local overrides |
+| Scope creep toward a broad platform | Medium | Medium | ADR-0001; expansion only via gate triggers |
+
+---
+
+## 11. Timeline (indicative, part-time 15–20 h/week)
+
+| Week | Phase 0 | Phase 1 |
+|---|---|---|
+| 1 | P0.1–P0.3 (recruit, guide, demo kit) | M1 |
+| 2–3 | Interviews begin; competitor demos | M2 (ledger) |
+| 4–5 | Interviews continue | M3 (kernel) |
+| 6 | **G0 decision** | M4 (robustness) |
+| 7 | — | M5 (report + CLI) |
+| 8 | — | M6 (golden, drift, docs) → release `v0.1.0` |
+| 9–12 | — | M7 pilots → **G1 decision** |
+
+If G0 fails in week 6, stop at M3. Release only the ledger (M2) and archive the kernel branch.
+
+---
+
+## 12. Plan revision history
+
+| Version | Date | Change | Driver |
+|---|---|---|---|
+| v0 | 2026-09-29 | Starting hypothesis: broad "Canada Climate CapEx Engine" (policy + incentives + energy/emissions + NPV/IRR/payback/uncertainty for corporate decisions) | Assignment brief |
+| v1.0 | 2026-09-29 | **Refocused** to PolicyValue CA:<br>• dropped grant/rebate database, buildings, MACC workflow and generic NPV positioning<br>• added realized carbon value model, legal-status-aware bitemporal ledger, CCfD valuation, policy-state robustness and decision drift<br>• ledger scope cut from ~150+ to ~45–55 records<br>• AI limited to ledger monitoring<br>• gates G0–G2 added | Research 01–04: incumbents solve the math, discovery and workflow; incentive breadth is noise at industrial scale; carbon-value treatment is the top swing factor; CCfD shifts P(NPV>0) 16%→72%; broad demand weakened in 2025–26 |

@@ -1,0 +1,62 @@
+# Illustrative parameter set for the validation examples (NOT production data).
+# Every value carries a source and a status: verified (seen in a fetched source during
+# research, 2026-09) or inferred (analyst assumption / not re-confirmed).
+# Currency: CAD nominal. Retrieved: 2026-09-29.
+
+meta:
+  as_of: "2026-09-29"
+  purpose: "Validation-phase decision-sensitivity examples"
+
+carbon:
+  headline_path:          # national industrial benchmark path after the Canada-Alberta agreement
+    value: {2026: 95, 2027: 100, 2028: 100, 2029: 100, 2030: 115, 2031: 118, 2032: 121,
+            2033: 124, 2034: 127, 2035: 130, 2040: 140}
+    interp: "linear 2035-2040 (~1.5%/yr escalator), flat after 2040"
+    status: verified
+    source: "ICAP news 2026-05-19 'Canada publishes new carbon price trajectory'; Osler, Blakes, EY (May-Jun 2026)"
+  ab_tier_credit_market: {value: 20, unit: "$/t", status: verified, source: "Blakes 2026-05 ('as low as C$20'); carboncredits.com 2025-12 (~C$18, ClearBlue)"}
+  ab_tier_floor:
+    value: {2030: 60, 2035: 80, 2040: 110}
+    status: verified
+    note: "Minimum transfer price from 2030; regulation due by 2026-12-31 (not yet in force)"
+    source: "EY Global Tax News 2026-06-03; GLJ 2026-05-28"
+  on_eps_market_discount: {value: 0.20, status: verified, source: "IETA Ontario EPS brief 2025-09: EPUs trade 15-20% below compliance price; carboncredits.com (ClearBlue) ~C$72"}
+  bc_obps_market_ratio: {value: 0.68, status: verified, source: "carboncredits.com (ClearBlue): ~C$65 vs $95"}
+  fed_obps_market_ratio: {value: 0.40, status: verified, source: "carboncredits.com (ClearBlue): 'as low as ~C$37.50'"}
+  qc_cap_and_trade_2026: {value: 45.11, unit: "C$/t", status: verified, source: "CARB/MELCCFP joint auction Aug 2026 summary"}
+  qc_cat_escalation: {value: 0.05, status: inferred, note: "auction reserve escalates 5% + inflation; market assumed to track"}
+  non_covered_price: {value: 0, status: verified, source: "Fuel charge set to $0 on 2025-04-01; BC carbon tax repealed 2025-04-01"}
+
+gas_ef_t_per_gj: {value: 0.0500, status: inferred, source: "NIR natural gas combustion factor ~49-51 kg CO2e/GJ"}
+
+itc:
+  ct_rate: {value: 0.30, status: verified, source: "CRA / IEA: 30% to 2033, 15% in 2034, nil after; 20% if labour requirements not met"}
+  ct_eligible_to: "taxable Canadian corporations (and certain REITs); not tax-exempt MUSH entities"
+  immediate_expensing_43_1: {value: true, status: verified, source: "EY on Bill C-15 (RA 2026-03-26): 100% first-year for Class 43.1/53 available for use before 2030"}
+
+tax_rate:   # combined general corporate rate, inferred
+  "ON": 0.265
+  QC: 0.265
+  AB: 0.23
+  BC: 0.27
+  NS: 0.29
+
+electricity_large_cents_kwh:   # 5 MW / 3.06 GWh class, HQ comparison (rates at 2025-04-01)
+  value: {QC: 6.05, "ON": 12.80, AB: 8.02, BC: 8.42, NS: 13.43}
+  status: verified
+  note: "QC = 5.83 x 1.038 (HQ +3.8% business increase 2026-04-01). ON is Class B; Class A materially lower. AB pool prices fell sharply in 2026."
+  source: "Hydro-Quebec, Comparison of Electricity Prices in Major North American Cities 2025"
+
+electricity_medium_cents_kwh:  # 1 MW / 400 MWh class
+  value: {QC: 10.08, "ON": 17.27, AB: 11.07, BC: 9.73, NS: 16.61}
+  status: verified
+  source: "Hydro-Quebec comparison 2025 (QC scaled by +3.8%)"
+
+gas_delivered_ex_carbon_gj:   # industrial / large commercial delivered, excluding any carbon cost
+  value: {QC: 8.8, "ON": 5.5, AB: 4.0, BC: 10.0, NS: 20.0}
+  status: inferred
+  note: "Largest single uncertainty in the examples; regulator tariffs (OEB QRAM, Regie, BCUC, AUC, NSUARB) needed for production use"
+
+finance:
+  discount_rate_nominal: {value: 0.08, status: inferred}
+  energy_escalation: {value: 0.02, status: inferred}
