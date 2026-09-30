@@ -67,6 +67,7 @@ class Model:
     lag: int
     warnings: list[str] = field(default_factory=list)
     _view: LedgerView | None = None
+    _cca_cache: dict[tuple[bool, float], F] = field(default_factory=dict)
 
     @property
     def n(self) -> int:
@@ -76,10 +77,13 @@ class Model:
     def disc(self) -> F:
         return (1 + self.rate) ** -np.arange(self.n + 1, dtype=float)
 
-    def cca(self, granted: bool, itc: float, expensing: bool = True) -> F:
-        assert self._view is not None
-        ucc = max(self.capex_total - itc - self.case.project.other_assistance, 0.0)
-        return tax.cca_schedule(self.case, self._view, ucc, granted, self.n, expensing_allowed=expensing)
+    def cca(self, granted: bool, itc: float) -> F:
+        key = (granted, round(itc, 6))
+        if key not in self._cca_cache:
+            assert self._view is not None
+            ucc = max(self.capex_total - itc - self.case.project.other_assistance, 0.0)
+            self._cca_cache[key] = tax.cca_schedule(self.case, self._view, ucc, granted, self.n)
+        return self._cca_cache[key]
 
     def itc(self, granted: bool) -> float:
         if not granted:
@@ -194,4 +198,7 @@ def build(case: Case, view: LedgerView) -> Model:
         warnings=[*ci.warnings, *ti.notes],
         _view=view,
     )
+    m.cca(False, 0.0)  # resolve CCA inputs eagerly so missing ledger values fail at build time
+    if ti.granted:
+        m.cca(True, m.itc(True))
     return m

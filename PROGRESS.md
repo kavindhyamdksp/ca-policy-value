@@ -18,10 +18,10 @@ Resume: read this + CLAUDE.md only, continue at the first unchecked item. Branch
 - [x] ledger/CHANGELOG.md; tag ledger-v2026.10.0
 
 ## M3 Kernel
-- [ ] pv.carbon, pv.tax, pv.cashflow, pv.emissions
-- [ ] Case model (§2.3)
-- [ ] conventions: validation_v1 (test-only)
-- [ ] oracle tests: NPV ±$5k, breakeven ±$1/t
+- [x] pv.carbon, pv.tax, pv.cashflow, pv.emissions
+- [x] Case model (§2.3)
+- [x] conventions: validation_v1 (test-only)
+- [x] oracle tests: NPV ±$5k, breakeven ±$1/t — actual max |ΔNPV| $0.00, |ΔBE| 1e-12 $/t (16 NPVs, 8 BEs)
 
 ## M4 Robustness
 - [ ] breakeven vs realizable band
