@@ -1,0 +1,38 @@
+# PolicyValue CA case template — direct abatement at a large emitter (e.g. CCUS, process change), with a CCfD.
+# EVERY VALUE BELOW IS A SYNTHETIC PLACEHOLDER. Replace each one marked REPLACE with your project data.
+# Field reference: docs/user_guide.md §2 · editor schema: `pv schema case --out case.schema.json`
+case_id: my-abatement                    # REPLACE: output folder name
+as_of: 2026-10-15                        # REPLACE: ledger view date
+min_legal_status: enacted
+facility:
+  province: AB                           # REPLACE
+  system: tier                           # REPLACE
+  covered: true
+  entity: taxable_corp
+project:
+  in_service: 2027-12-31                 # REPLACE
+  life_years: 20
+  capex: [{year: 0, amount: 20000000}]   # REPLACE
+  technology_class: generic_abatement
+  itc_measure: none                      # ccus needs fed.ccus_itc.rates (proposed: lower min_legal_status or override)
+  cca_class: "43.1"                      # REPLACE with your tax advisor's class
+  opex_delta: 800000                     # REPLACE: $/yr
+  covered_emissions_delta_t: -40000      # REPLACE: t/yr covered emissions change (negative = abatement)
+prices: {escalation: 0.02}
+finance: {discount_rate: 0.08}
+policy:
+  credit_price_scenario: base
+  itc_granted: true                      # no ITC measure; keeps the class eligible for expensing
+  ccfd: {strike: 80, term_end: 2040, volume_share: 1.0}   # REPLACE or delete if no contract
+robustness:
+  grid: [floor_status, ccfd, credit_scenario]
+  sensitivity: {capex: 0.2, opex: 0.2, credit_price: 0.3, discount_rate: 0.02}
+  ccfd_strike: {target_p: 0.8}           # minimum strike for NPV >= 0 and for P(NPV>0) >= 80%
+  monte_carlo:
+    draws: 10000
+    seed: 1                              # any fixed integer; results are reproducible for a given seed
+    regimes:                             # REPLACE: your own policy judgements; probabilities sum to 1
+      policy_as_announced: {p: 0.6, floor_scale: 1.0}
+      weaker_floor: {p: 0.3, floor_scale: 0.5}
+      rollback: {p: 0.1, market_value: 15, floor_scale: 0.0}
+    shocks: {credit_sigma: 0.35, capex_triangular: [0.9, 1.0, 1.3]}

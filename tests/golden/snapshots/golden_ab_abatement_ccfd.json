@@ -71,6 +71,7 @@
     "conventions": "standard",
     "ledger_sha256": "9b073b615b9cbc5b10611d66339880e11a358b6a487117561d76a6f2982dabec",
     "min_legal_status": "enacted",
+    "overrides_file": null,
     "seed": 20260929
   },
   "metrics": {
@@ -381,9 +382,9 @@
     "ccfd_strike": {
       "hurdle_rate": null,
       "note": null,
-      "npv_zero_strike": 91.598511,
+      "npv_zero_strike": 91.6,
       "target_p": 0.8,
-      "target_p_strike": 94.337463,
+      "target_p_strike": 94.34,
       "term_end": 2040,
       "volume_share": 1.0
     },

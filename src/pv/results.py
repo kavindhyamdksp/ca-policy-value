@@ -43,7 +43,10 @@ def run_hash(case: Case, ledger: Ledger, seed: int | None) -> str:
     return hashlib.sha256(f"{case.digest()}|{ledger.digest}|{seed}".encode()).hexdigest()
 
 
-def evaluate(case: Case, ledger: Ledger) -> tuple[dict[str, Any], Model, LedgerView]:
+def evaluate(
+    case: Case, ledger: Ledger, *, overrides_file: str | None = None
+) -> tuple[dict[str, Any], Model, LedgerView]:
+    """Value a case. `overrides_file` labels overrides merged from outside it (case.with_overrides)."""
     view = ledger.view(case.as_of, case.min_legal_status, case.overrides)
     m = build(case, view)
     pol = case.policy
@@ -84,6 +87,7 @@ def evaluate(case: Case, ledger: Ledger) -> tuple[dict[str, Any], Model, LedgerV
             "as_of": case.as_of.isoformat(),
             "min_legal_status": case.min_legal_status,
             "conventions": case.conventions,
+            "overrides_file": overrides_file,
         },
         "decision": {
             "answer": answer,
@@ -128,7 +132,7 @@ def evaluate(case: Case, ledger: Ledger) -> tuple[dict[str, Any], Model, LedgerV
             "grid": _grid_json(g) if g else None,
             "monte_carlo": mc.as_dict() if mc else None,
             "sensitivity": _sensitivity_json(sens) if sens else None,
-            "ccfd_strike": strike,
+            "ccfd_strike": _strike_json(strike) if strike else None,
         },
         "emissions": m.em.as_dict(disc_sum, value),
         "warnings": sorted(set(warnings)),
@@ -172,6 +176,10 @@ def _grid_json(g: dict[str, Any]) -> dict[str, Any]:
         "minimal_go_conditions": g["minimal_go_conditions"],
         "states": [{"state": s["state"], "npv": _r(s["npv"]), "go": s["go"]} for s in g["states"]],
     }
+
+
+def _strike_json(s: dict[str, Any]) -> dict[str, Any]:
+    return {**s, "npv_zero_strike": _r(s["npv_zero_strike"]), "target_p_strike": _r(s["target_p_strike"])}
 
 
 def _sensitivity_json(s: dict[str, Any]) -> dict[str, Any]:

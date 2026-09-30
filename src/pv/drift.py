@@ -6,8 +6,8 @@ import datetime as dt
 from pathlib import Path
 from typing import Any
 
-from pv.case import Case, load_case
-from pv.ledger import Ledger, LedgerError, Record
+from pv.case import Case, load_case, with_overrides
+from pv.ledger import Ledger, LedgerError, Override, Record
 from pv.results import evaluate
 
 
@@ -59,12 +59,14 @@ def rerun(case: Case, led: Ledger) -> dict[str, Any]:
     }
 
 
-def drift(case_paths: list[Path], a: Ledger, b: Ledger) -> dict[str, Any]:
+def drift(
+    case_paths: list[Path], a: Ledger, b: Ledger, *, extra_overrides: tuple[Override, ...] = ()
+) -> dict[str, Any]:
     changes = diff_ledgers(a, b)
     changed_ids = {c["id"] for c in changes}
     cases = []
     for p in case_paths:
-        case = load_case(p)
+        case = with_overrides(load_case(p), extra_overrides)
         ra, rb = rerun(case, a), rerun(case, b)
         flipped = (
             "answer" in ra

@@ -207,3 +207,19 @@ class Case(_M):
 def load_case(path: str | Path) -> Case:
     raw = yaml.safe_load(Path(path).read_text())
     return Case.model_validate(raw)
+
+
+def load_overrides(path: str | Path) -> tuple[Override, ...]:
+    """Overrides kept outside the case file (e.g. licensed prices that must never be committed).
+
+    The file is a YAML list of {record, value, reason}, or a mapping with an `overrides:` list."""
+    raw = yaml.safe_load(Path(path).read_text())
+    items = raw.get("overrides") if isinstance(raw, dict) else raw
+    if not isinstance(items, list) or not items:
+        raise ValueError(f"{path}: expected a non-empty list of overrides (record, value, reason)")
+    return tuple(Override.model_validate(o) for o in items)
+
+
+def with_overrides(case: Case, extra: tuple[Override, ...]) -> Case:
+    """Case with `extra` overrides applied after its own (a later override of the same record wins)."""
+    return case.model_copy(update={"overrides": (*case.overrides, *extra)})
