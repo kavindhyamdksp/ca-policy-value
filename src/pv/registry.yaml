@@ -1,0 +1,46 @@
+# Kernel wiring (not policy data). Maps each model role to the ledger record id that supplies it, plus the
+# plan-level model assumptions. Policy *values* live in ledger/records with sources; nothing here is a number
+# the ledger should carry. To plug in a new pricing system or province, add its records to the ledger, a
+# system entry here, and the code to the Province/System literals in pv/case.py (see docs/developer_guide.md).
+version: 1
+
+carbon:
+  headline: fed.carbon.benchmark_path          # upper-bound scenario only (ADR-0005)
+  output_based:                                 # covered facilities; value = min(market, price) then floor/CCfD
+    tier:     {method: flat,  obs: ab.tier.credit_obs,  price: ab.tier.fund_price,     floor: ab.tier.floor}
+    eps:      {method: ratio, obs: on.eps.epu_obs,      price: on.eps.price_schedule}
+    bc_obps:  {method: ratio, obs: bc.obps.credit_obs,  price: bc.obps.price}
+    fed_obps: {method: ratio, obs: fed.obps.credit_obs, price: fed.ggppa.schedule4}
+  cap_and_trade:                                # by province: every gas user carries the price, covered or not
+    QC: {system: spede, obs: qc.spede.auction_obs, escalation: qc.spede.reserve_escalation}
+
+tax:
+  corporate_rate: ref.tax.corporate
+  itc:
+    ct:
+      rate: fed.ct_itc.rate_schedule
+      labour_rate: fed.ct_itc.labour_rate
+      entities: fed.ct_itc.entities
+      eligibility: fed.ct_itc.eligibility_classes
+    ce: {rate: fed.ce_itc.rate}
+    ccus: {rate: fed.ccus_itc.rates}
+  cca:
+    expensing: fed.cca.expensing
+    expensing_classes: fed.cca.expensing_classes
+    class_rates: fed.cca.class_rates
+    # Used only with ledgers that predate fed.cca.expensing_classes (ledger-v2026.10.0): the classes named in
+    # that release's fed.cca.expensing sources, so drift against the old tag compares like with like.
+    expensing_classes_fallback: ["43.1", "53"]
+
+emissions:
+  gas_ef: fed.nir.gas_ef
+  grid_ef: fed.nir.grid_ef
+
+prices:
+  gas_reference: ref.gas.delivered
+  electricity_reference: ref.electricity.large
+
+assumptions:
+  # Plan §4.4: Bernoulli ITC-eligibility probability by the ledger's eligibility confidence.
+  # A modelling judgement, overridable per case (robustness.monte_carlo.itc_probability).
+  itc_eligibility_probability: {likely: 0.9, case_by_case: 0.6, not_listed: 0.1}

@@ -12,6 +12,7 @@ import yaml
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from pv.ledger import MinStatus, Override
+from pv.registry import registry
 
 Province = Literal["AB", "ON", "BC", "QC"]
 System = Literal["tier", "eps", "bc_obps", "fed_obps", "spede", "none"]
@@ -154,8 +155,8 @@ class Case(_M):
 
     @property
     def carbon_kind(self) -> Literal["none", "qc", "covered"]:
-        if self.facility.province == "QC":
-            return "qc"
+        if self.facility.province in registry().carbon.cap_and_trade:
+            return "qc"  # cap-and-trade (results schema v1 label)
         if self.facility.covered and self.facility.system != "none":
             return "covered"
         return "none"

@@ -180,10 +180,8 @@ def monte_carlo(m: Model, mc: MonteCarlo) -> McResult:
     elig = m.ti.eligibility
     if mc.itc_probability is not None:
         p_itc: float | None = mc.itc_probability
-    elif c.project.itc_measure == "ct" and elig in tax.ELIGIBILITY_P:
-        p_itc = tax.ELIGIBILITY_P[elig]
     else:
-        p_itc = None
+        p_itc = tax.eligibility_probability(elig) if c.project.itc_measure == "ct" else None
     granted = rng.random(n) < p_itc if p_itc is not None else np.full(n, m.ti.granted)
 
     # cash flows, vectorized; ITC and UCC are affine in the capex multiplier

@@ -10,15 +10,25 @@ from numpy.typing import NDArray
 from pv.carbon import step_lookup
 from pv.case import Case
 from pv.ledger import LedgerError, LedgerView
+from pv.registry import registry
 
 F = NDArray[np.float64]
 
-ELIGIBILITY_P = {"likely": 0.9, "case_by_case": 0.6, "not_listed": 0.1}
-# Classes named for immediate expensing in fed.cca.expensing sources (EY on Bill C-15); 43.2 is not named.
-EXPENSING_CLASSES = frozenset({"43.1", "53"})
 VALIDATION_DB_RATE = 0.20  # validation_v1: Class-8-like declining balance when clean-tech ineligible
 
-ITC_RECORDS = {"ct": "fed.ct_itc.rate_schedule", "ce": "fed.ce_itc.rate", "ccus": "fed.ccus_itc.rates"}
+
+def eligibility_probability(eligibility: str) -> float | None:
+    """Plan §4.4 Bernoulli p for an eligibility confidence level (registry assumption)."""
+    return registry().assumptions.itc_eligibility_probability.get(eligibility)
+
+
+def expensing_classes(view: LedgerView) -> frozenset[str]:
+    """CCA classes eligible for immediate expensing (ledger), or the registry fallback for older ledgers."""
+    cca = registry().tax.cca
+    if view.has(cca.expensing_classes):
+        table = view.get(cca.expensing_classes).table()
+        return frozenset(k for k, v in table.items() if _truthy(v))
+    return frozenset(cca.expensing_classes_fallback)
 
 
 @dataclass(frozen=True)
@@ -41,18 +51,19 @@ def _truthy(v: object) -> bool:
 
 
 def eligibility(case: Case, view: LedgerView) -> str:
-    if case.project.itc_measure != "ct":
+    rid = registry().tax.itc.get(case.project.itc_measure)
+    if rid is None or rid.eligibility is None:
         return "n/a"
-    if not view.has("fed.ct_itc.eligibility_classes"):
+    if not view.has(rid.eligibility):
         return "case_by_case"
-    table = view.get("fed.ct_itc.eligibility_classes").table()
+    table = view.get(rid.eligibility).table()
     return str(table.get(case.project.technology_class, "not_listed"))
 
 
 def tax_rate(case: Case, view: LedgerView) -> float:
     if case.finance.tax_rate is not None:
         return case.finance.tax_rate
-    rec = view.get("ref.tax.corporate")
+    rec = view.get(registry().tax.corporate_rate)
     return rec.num(case.facility.province)
 
 
@@ -63,23 +74,25 @@ def itc_rate(case: Case, view: LedgerView) -> tuple[float, list[str]]:
     if measure == "none":
         return 0.0, notes
     y = case.project.in_service.year
-    if measure == "ct":
-        entities = view.get("fed.ct_itc.entities").table()
+    ids = registry().tax.itc[measure]
+    if ids.entities is not None:
+        entities = view.get(ids.entities).table()
         if not _truthy(entities.get(case.facility.entity, False)):
             notes.append(f"CT ITC: entity type {case.facility.entity} is not eligible")
             return 0.0, notes
-        sched = view.get("fed.ct_itc.rate_schedule").series()
+    if measure == "ct":
+        sched = view.get(ids.rate).series()
         rho = step_lookup(sched, y) or 0.0
-        if not case.facility.labour_requirements_met and rho > 0:
-            lab = view.get("fed.ct_itc.labour_rate")
+        if ids.labour_rate is not None and not case.facility.labour_requirements_met and rho > 0:
+            lab = view.get(ids.labour_rate)
             if lab.effective_to is not None and y > lab.effective_to.year:
                 raise LedgerError(
-                    f"fed.ct_itc.labour_rate has no rate for {y}; supply it via overrides[] with a reason"
+                    f"{ids.labour_rate} has no rate for {y}; supply it via overrides[] with a reason"
                 )
             rho = min(rho, lab.num())
             notes.append(f"labour requirements not met: CT ITC rate reduced to {rho:.0%}")
         return rho, notes
-    rec = view.get(ITC_RECORDS[measure])  # CE / CCUS: user override required if not in the ledger
+    rec = view.get(ids.rate)  # CE / CCUS: user override required if not in the ledger
     if isinstance(rec.value, dict):
         key = "rate" if "rate" in rec.table() else next(iter(rec.table()))
         return rec.num(key), notes
@@ -123,24 +136,25 @@ def cca_schedule(
         pct = 0.0
     else:
         pct = 0.0
-        if expensing_allowed and cls in EXPENSING_CLASSES and view.has("fed.cca.expensing"):
-            sched = view.get("fed.cca.expensing").series()
+        ids = registry().tax.cca
+        if expensing_allowed and view.has(ids.expensing) and cls in expensing_classes(view):
+            sched = view.get(ids.expensing).series()
             got = sched.get(y)
             if got is None:
                 if y < min(sched) or y > max(sched):
                     got = 0.0
                 else:
                     raise LedgerError(
-                        f"fed.cca.expensing has no value for available-for-use year {y} (phase-out "
+                        f"{ids.expensing} has no value for available-for-use year {y} (phase-out "
                         "unverified); supply it via overrides[] with a reason"
                     )
             pct = got
-        rates = view.get("fed.cca.class_rates").table() if case.conventions != "validation_v1" else {}
+        rates = view.get(ids.class_rates).table() if case.conventions != "validation_v1" else {}
         if case.conventions == "validation_v1":
             rate = VALIDATION_DB_RATE
         else:
             if cls not in rates:
-                raise LedgerError(f"CCA class {cls} not in fed.cca.class_rates; supply it via overrides[]")
+                raise LedgerError(f"CCA class {cls} not in {ids.class_rates}; supply it via overrides[]")
             rate = float(rates[cls])
     first = ucc * pct
     bal = ucc - first

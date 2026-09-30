@@ -11,6 +11,7 @@ from scipy.optimize import brentq
 from pv import carbon, emissions, tax
 from pv.case import Case, Ccfd, Scenario
 from pv.ledger import LedgerError, LedgerView
+from pv.registry import registry
 
 F = NDArray[np.float64]
 
@@ -152,12 +153,15 @@ def _price(case: Case, view: LedgerView, carrier: str) -> float:
     if carrier == "gas":
         if p.natural_gas_gj is not None:
             return p.natural_gas_gj
-        if view.has("ref.gas.delivered"):
-            return view.get("ref.gas.delivered").num(case.facility.province)
+        ref = registry().prices.gas_reference
+        if view.has(ref):
+            return view.get(ref).num(case.facility.province)
         raise LedgerError("no delivered gas reference price in the ledger; supply prices.natural_gas_gj")
     if p.electricity_mwh is not None:
         return p.electricity_mwh
-    return view.get("ref.electricity.large").num(case.facility.province) * 10.0  # ¢/kWh → $/MWh
+    return (
+        view.get(registry().prices.electricity_reference).num(case.facility.province) * 10.0
+    )  # ¢/kWh → $/MWh
 
 
 def build(case: Case, view: LedgerView) -> Model:

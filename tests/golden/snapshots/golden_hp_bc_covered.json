@@ -65,7 +65,7 @@
     "as_of": "2026-10-15",
     "case_sha256": "50b17fa75cb253f26f0cb9de62a1738aab52cbae9de43ffa4d1f3543bb87ba7e",
     "conventions": "standard",
-    "ledger_sha256": "7559cefc78444e20b3c9dd51f0fcf60411352ca33e76862477c27b2c4f591297",
+    "ledger_sha256": "9b073b615b9cbc5b10611d66339880e11a358b6a487117561d76a6f2982dabec",
     "min_legal_status": "enacted",
     "seed": 20260929
   },
@@ -258,6 +258,44 @@
         "2028": 1.0,
         "2029": 1.0,
         "2034": 0.0
+      }
+    },
+    {
+      "effective_from": "2025-01-01",
+      "id": "fed.cca.expensing_classes",
+      "legal_status": "in_force",
+      "overridden": false,
+      "override_reason": null,
+      "retrieved": "2026-09-29",
+      "sources": [
+        {
+          "publisher": "EY",
+          "retrieved": "2026-09-29",
+          "title": "Canada substantively enacts capital cost allowance and other business income tax measures in Bill C-15",
+          "url": "https://www.ey.com/en_gl/technical/tax-alerts/canada-substantively-enacts-capital-cost-allowance-and-other-business-income-tax-measures-in-bill-c-15"
+        },
+        {
+          "publisher": "EY",
+          "retrieved": "2026-09-29",
+          "title": "Canada substantively enacts capital cost allowance and other business income tax measures in Bill C-15",
+          "url": "https://www.ey.com/en_gl/technical/tax-alerts/canada-substantively-enacts-capital-cost-allowance-and-other-business-income-tax-measures-in-bill-c-15"
+        },
+        {
+          "publisher": "Department of Finance Canada",
+          "retrieved": "2026-09-29",
+          "title": "Legislation passes to implement Budget 2025: Canada Strong",
+          "url": "https://www.canada.ca/en/department-finance/news/2026/03/legislation-passes-to-implement-budget-2025-canada-strong.html"
+        }
+      ],
+      "stale": false,
+      "unit": "text",
+      "used_in": "base",
+      "value": {
+        "43.1": "eligible",
+        "53": "eligible",
+        "54": "eligible",
+        "55": "eligible",
+        "56": "eligible"
       }
     },
     {
@@ -624,7 +662,7 @@
       "seed": 20260929
     }
   },
-  "run_hash": "461144bcc014d2f5e8b589169a30f1c06edf9d613c5c495c6e4323782ef1115b",
+  "run_hash": "2f5d427da338ec5e8cdd30caa69e2372aa528df23f974e0268c1608808f23d02",
   "schema": "pv.results/v1",
   "tax": {
     "cca_class": "43.1",

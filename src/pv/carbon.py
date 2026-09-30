@@ -9,28 +9,14 @@ from numpy.typing import NDArray
 
 from pv.case import Case, Ccfd, Scenario
 from pv.ledger import LedgerView
+from pv.registry import OutputBased, registry
 
 F = NDArray[np.float64]
 
-HEADLINE = "fed.carbon.benchmark_path"
 
-
-@dataclass(frozen=True)
-class SystemSpec:
-    obs: str  # credit-price observation record
-    method: str  # "flat": obs held flat in real terms; "ratio": obs / compliance price, applied to the path
-    price: str  # fund / compliance price series (cap on realized value)
-    floor: str | None = None
-
-
-SYSTEMS: dict[str, SystemSpec] = {
-    "tier": SystemSpec("ab.tier.credit_obs", "flat", "ab.tier.fund_price", "ab.tier.floor"),
-    "eps": SystemSpec("on.eps.epu_obs", "ratio", "on.eps.price_schedule"),
-    "bc_obps": SystemSpec("bc.obps.credit_obs", "ratio", "bc.obps.price"),
-    "fed_obps": SystemSpec("fed.obps.credit_obs", "ratio", "fed.ggppa.schedule4"),
-}
-QC_OBS = "qc.spede.auction_obs"
-QC_ESC = "qc.spede.reserve_escalation"
+def system_spec(system: str) -> OutputBased | None:
+    """Record wiring for an output-based system (None if the system is not output-based)."""
+    return registry().carbon.output_based.get(system)
 
 
 def path_from_series(series: dict[int, float], years: NDArray[np.int64], *, zero_before: bool = False) -> F:
@@ -83,10 +69,11 @@ def resolve(case: Case, view: LedgerView, years: NDArray[np.int64]) -> CarbonInp
         )
 
     if kind == "qc":
-        obs = view.get(QC_OBS)
+        cat = registry().carbon.cap_and_trade[case.facility.province]
+        obs = view.get(cat.obs)
         t = obs.table()
         y0 = int(t.get("year", obs.effective_from.year))
-        esc = view.get(QC_ESC).table()
+        esc = view.get(cat.escalation).table()
         real = float(esc["real_rate"])
         g = (
             real
@@ -108,18 +95,19 @@ def resolve(case: Case, view: LedgerView, years: NDArray[np.int64]) -> CarbonInp
             ("QC cap-and-trade applies to all gas users; the C&T path is also the upper bound.",),
         )
 
-    spec = SYSTEMS.get(case.facility.system)
+    spec = system_spec(case.facility.system)
     if spec is None:
         raise ValueError(
             f"system {case.facility.system!r} is not an output-based system for {case.facility.province}"
         )
-    headline = path_from_series(view.series(HEADLINE, trusted=False, scenario=True), years)
+    headline_id = registry().carbon.headline
+    headline = path_from_series(view.series(headline_id, trusted=False, scenario=True), years)
 
     if view.entries(spec.price):
         price_series = view.series(spec.price)
         fund = path_from_series(price_series, years)
     else:
-        price_series = view.series(HEADLINE, trusted=False, scenario=True)
+        price_series = view.series(headline_id, trusted=False, scenario=True)
         fund = headline
         warns.append(
             f"{spec.price} not trusted at min_legal_status={case.min_legal_status}; "
