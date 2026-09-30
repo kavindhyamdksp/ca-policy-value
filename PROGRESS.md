@@ -45,8 +45,10 @@ Resume: read this + CLAUDE.md only, continue at the first unchecked item. Branch
 - [x] docs/validation/pilot_kit.md
 
 ## Release
-- [ ] DoD checklist (8)
-- [ ] IMPLEMENTATION_PLAN.md: ticks, deviations, §12 row
+- [x] DoD checklist (8): 1 oracle ΔNPV $0.00 / ΔBE 1e-12 · 2 validate 0 errors, 0 stale · 3 memo lists 100% records + warnings (test) ·
+  4 byte-identical (local reruns + CI 6-job fingerprint) · 5 floor drift flip (test) · 6 coverage 95%, mypy strict, ruff clean ·
+  7 grid 0.8 ms, 10k MC 5.5 ms, CLI run 0.4 s · 8 fresh clone → HTML memo in 18 s
+- [x] IMPLEMENTATION_PLAN.md: ticks, deviations (§2.5 D1–D13), §12 row v1.2
 - [ ] tag v0.1.0, gh release, PR mvp→main, merge on green
 
 ## Unverified (omitted from ledger; kernel requires user input)
@@ -59,4 +61,4 @@ Resume: read this + CLAUDE.md only, continue at the first unchecked item. Branch
   fed.ccus_itc.rates entered as proposed (secondary sources only)
 
 ## Deviations
-(none yet)
+Recorded in IMPLEMENTATION_PLAN.md §2.5 (D1–D13). Biggest: D12 tax review not done; D1 four records left to user input.

@@ -57,8 +57,8 @@ Carbon cash flow C_t = ΔE · v_t, where ΔE is avoided covered tonnes per year:
   `not_listed`). By default the claim is granted unless the class is `not_listed`; set `policy.itc_granted`
   to assert your own view, and use the `itc_granted` grid dimension to test it.
 - ITC = ρ · s_elig · (capex − other assistance), received at t = lag.
-- UCC U = capex − ITC − assistance. If the claim is granted and the class (43.1/43.2/53) is in the
-  immediate-expensing window for the in-service year: CCA_1 = U · expensing%, remainder by declining balance
+- UCC U = capex − ITC − assistance. If the claim is granted and the class (43.1 or 53; the fetched source does not
+  name 43.2) is in the immediate-expensing window for the in-service year: CCA_1 = U · expensing%, remainder by declining balance
   at the class rate with the half-year rule. Otherwise declining balance at `cca_class_if_ineligible`.
 - Non-taxable entities or `tax_capacity: none`: no tax on operating flows and no CCA shield; the ITC is kept
   only where the entity is eligible (the CT/CE ITCs are refundable for eligible entities).

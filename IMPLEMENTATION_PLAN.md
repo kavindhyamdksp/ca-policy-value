@@ -1,6 +1,6 @@
 # IMPLEMENTATION_PLAN.md — PolicyValue CA
 
-*Plan version **v1.1** — 2026-09-29. This is the single, living plan for the project. It is updated whenever research or validation changes the product definition. See the [revision history](#12-plan-revision-history) at the end.*
+*Plan version **v1.2** — 2026-09-29. This is the single, living plan for the project. It is updated whenever research or validation changes the product definition. See the [revision history](#12-plan-revision-history) at the end.*
 
 **Governing documents:**
 - [DECISION.md](DECISION.md): the REFOCUS verdict, gates G0–G2 and kill criteria
@@ -50,15 +50,15 @@ The research is secondary-only. Phase 0 buys the missing primary evidence cheapl
 
 ### 2.1 Milestones
 
-| Milestone | Scope | Depends on | Est. |
-|---|---|---|---|
-| **M1** Repo & tooling | `pyproject.toml` (hatchling), `src/pv/`, ruff, mypy (strict on `src/`), pytest + hypothesis, pre-commit, GitHub Actions (lint, type, test, ledger-validate), Apache-2.0 + CC BY 4.0 notices | — | 6 h |
-| **M2** Ledger schema + seed records | JSON Schema; pydantic models; loader with `as_of` and `min_status` filters; ~45 seed records (§3); validators (§5.4); `ledger/CHANGELOG.md`; tag `ledger-v2026.10.0` | M1 | 30–40 h |
-| **M3** Kernel core | `carbon`, `tax`, `cashflow`, `emissions` per §4 formulas; typed `Case` model (§2.3) | M2 | 25–30 h |
-| **M4** Robustness | Breakeven solver; discrete policy-state grid; vectorized seeded MC | M3 | 12–15 h |
-| **M5** Reporting + CLI | Jinja2 memo (Markdown → HTML via `markdown-it-py`); JSON results schema v1; CSV cash flows; Typer CLI: `pv validate`, `pv run`, `pv drift`, `pv ledger show` | M3–M4 | 15–20 h |
-| **M6** Golden cases, drift CI, docs | 3 golden cases; drift job on ledger PRs; README quick-start; user guide; methodology doc (formulas and caveats) | M5 | 12–15 h |
-| **M7** Design-partner pilots | ≥3 partners run real cases; collect feedback; fix issues | M6, G0 pass | 10–15 h |
+| Milestone | Scope | Depends on | Est. | Status |
+|---|---|---|---|---|
+| **M1** Repo & tooling | `pyproject.toml` (hatchling), `src/pv/`, ruff, mypy (strict on `src/`), pytest + hypothesis, pre-commit, GitHub Actions (lint, type, test, ledger-validate), Apache-2.0 + CC BY 4.0 notices | — | 6 h | ✅ done (v0.1.0) |
+| **M2** Ledger schema + seed records | JSON Schema; pydantic models; loader with `as_of` and `min_status` filters; ~45 seed records (§3); validators (§5.4); `ledger/CHANGELOG.md`; tag `ledger-v2026.10.0` | M1 | 30–40 h | ✅ done — 34 entries; tag `ledger-v2026.10.0` (§2.5) |
+| **M3** Kernel core | `carbon`, `tax`, `cashflow`, `emissions` per §4 formulas; typed `Case` model (§2.3) | M2 | 25–30 h | ✅ done — oracle reproduced exactly |
+| **M4** Robustness | Breakeven solver; discrete policy-state grid; vectorized seeded MC | M3 | 12–15 h | ✅ done |
+| **M5** Reporting + CLI | Jinja2 memo (Markdown → HTML via `markdown-it-py`); JSON results schema v1; CSV cash flows; Typer CLI: `pv validate`, `pv run`, `pv drift`, `pv ledger show` | M3–M4 | 15–20 h | ✅ done |
+| **M6** Golden cases, drift CI, docs | 3 golden cases; drift job on ledger PRs; README quick-start; user guide; methodology doc (formulas and caveats) | M5 | 12–15 h | ✅ done |
+| **M7** Design-partner pilots | ≥3 partners run real cases; collect feedback; fix issues | M6, G0 pass | 10–15 h | ⏳ kit ready (`docs/validation/`); needs G0 pass and partners |
 
 ### 2.2 Target layout
 See [ARCHITECTURE.md § Repository layout](docs/architecture/ARCHITECTURE.md#repository-layout-target).
@@ -120,6 +120,26 @@ overrides:
    - mypy strict passes; ruff clean.
 7. **Performance.** A single case with a 3-dimension grid runs in < 1 s. 10k-draw MC runs in < 10 s on a 2020-class laptop.
 8. **Docs.** A new user can run `pip install -e . && pv run cases/golden_hp_qc.yaml` and get an HTML memo in < 10 minutes by following the README.
+
+### 2.5 MVP build record and deviations (v0.1.0, 2026-09-29)
+
+All eight §2.4 criteria were checked at release; results are in the v0.1.0 release notes and PR. Deviations from this plan:
+
+| # | Plan | As built | Why |
+|---|---|---|---|
+| D1 | ~45 seed records | 34 entries / 33 ids. Not verified within the fetch budget, so omitted and left to user input: `fed.nir.grid_ef`, `fed.ce_itc.rate`, `bc.carbon_tax`, `ref.gas.delivered` | §3 entry rule: no value without a fetched source |
+| D2 | `fed.ccus_itc.rates` in_force | `proposed` | Only secondary sources stated the rates; the CRA page gave none |
+| D3 | Process heat pumps case-by-case | `fed.ct_itc.eligibility_classes`: process/waste-heat heat pumps and electric boilers `not_listed` | NRCan guidance does not mention them; base case denies the CT ITC unless the user asserts it |
+| D4 | CCA expensing 2030–33 phase-out; Classes 43.1/43.2/53 | Only 2025–29 (100%) and 2034 (0%) entered; kernel expenses 43.1 and 53 only | The fetched sources give no phase-out percentages and do not name 43.2; in-service 2030–33 requires an override |
+| D5 | Gas EF from NIR Annex 6 (~50 kg/GJ) | Province-specific CO2 factors from ECCC *Emission factors and reference values* v4.0 (0.0500–0.0512 t/GJ) | NIR Annex 6 not retrievable; ECCC table is primary |
+| D6 | Benchmark path $100 for 2027–29 | Record holds only stated years (2026, 2027, 2030, 2035, 2040); the kernel interpolates linearly (2028 ≈ $105) | ICAP states 2027 and 2030 only; the headline is an upper-bound scenario, so the base case is unaffected |
+| D7 | ON/BC "ratio-to-headline" | Ratio to the system's **in-force** compliance schedule (ON EPS, BC OBPS reach $170 in 2030), capped at that schedule | Legal-status-aware: no alignment with the May 2026 national path was recorded; the "high" band can exceed the headline |
+| D8 | Answer GO/NO-GO/DEPENDS-ON | Answer from the policy-state grid (all/none/some GO) plus `base_case` (NPV sign); `pv drift` flags a flip in either | The drift acceptance test concerns the base case; the grid answer is invariant to a floor's legal status |
+| D9 | — | `pv drift` evaluates each case as of max(case `as_of`, ledger's latest `recorded_at`) | Otherwise records recorded after a saved case's date are invisible to drift |
+| D10 | Per-province MC regimes | Generic regimes (`market_scale`, `market_value`, `floor_scale`, `from_year`) set in the case | Same expressiveness; reproduces the oracle Ex3 distribution (CCfD P(NPV>0) ≈ 76%) |
+| D11 | Timing | t=0 is `project.in_service`; y(t) = in_service.year + t; multi-year capex treated as available at t=0 for ITC/CCA | Matches the oracle; documented in docs/methodology.md |
+| D12 | Tax-literate review before v0.1 (§6) | **Not done.** ITC/CCA records carry `reviewer: … human tax review pending` | No reviewer available in the build; open risk for pilots |
+| D13 | mypy strict | Strict, with `python_version = 3.12` for type-checking | numpy ≥2.3 stubs use PEP 695 syntax; runtime 3.11 is tested in CI |
 
 ---
 
@@ -312,3 +332,4 @@ If G0 fails in week 6, stop at M3. Release only the ledger (M2) and archive the 
 | v0 | 2026-09-29 | Starting hypothesis: broad "Canada Climate CapEx Engine" (policy + incentives + energy/emissions + NPV/IRR/payback/uncertainty for corporate decisions) | Assignment brief |
 | v1.0 | 2026-09-29 | **Refocused** to PolicyValue CA:<br>• dropped grant/rebate database, buildings, MACC workflow and generic NPV positioning<br>• added realized carbon value model, legal-status-aware bitemporal ledger, CCfD valuation, policy-state robustness and decision drift<br>• ledger scope cut from ~150+ to ~45–55 records<br>• AI limited to ledger monitoring<br>• gates G0–G2 added | Research 01–04: incumbents solve the math, discovery and workflow; incentive breadth is noise at industrial scale; carbon-value treatment is the top swing factor; CCfD shifts P(NPV>0) 0%→76%; broad demand weakened in 2025–26 |
 | v1.1 | 2026-09-29 | Independent verification pass:<br>• MC applies price shocks to market price, then floors (CCfD result now 0%→76%)<br>• derived carbon-value bands ($20–122/t) replace hard-coded ones<br>• ITC 2034 case also loses the expensing window<br>• AB floor uses EY's annual table<br>• G0/G1 wording aligned with DECISION.md<br>• oracle acceptance test uses a `validation_v1` conventions mode<br>• ledger size stated as ~45 (v0.1) / ~55 (target) | Reviewer findings; see `docs/research/04` robustness note |
+| v1.2 | 2026-09-29 | **MVP v0.1.0 built** (M1–M6; M7 kit prepared):<br>• ledger `ledger-v2026.10.0`, 34 source-verified entries, 4 records left to user input<br>• kernel reproduces the oracle exactly (ΔNPV < $0.01, Δbreakeven < 10⁻¹² $/t)<br>• 3 golden cases, drift CI, docs; deviations D1–D13 in §2.5 | Build session; source fetches 2026-09-29 |

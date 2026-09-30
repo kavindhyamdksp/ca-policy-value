@@ -14,7 +14,8 @@ from pv.ledger import LedgerError, LedgerView
 F = NDArray[np.float64]
 
 ELIGIBILITY_P = {"likely": 0.9, "case_by_case": 0.6, "not_listed": 0.1}
-EXPENSING_CLASSES = frozenset({"43.1", "43.2", "53"})
+# Classes named for immediate expensing in fed.cca.expensing sources (EY on Bill C-15); 43.2 is not named.
+EXPENSING_CLASSES = frozenset({"43.1", "53"})
 VALIDATION_DB_RATE = 0.20  # validation_v1: Class-8-like declining balance when clean-tech ineligible
 
 ITC_RECORDS = {"ct": "fed.ct_itc.rate_schedule", "ce": "fed.ce_itc.rate", "ccus": "fed.ccus_itc.rates"}

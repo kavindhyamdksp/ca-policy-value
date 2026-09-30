@@ -36,7 +36,7 @@ project:
   technology_class: heat_pump_process   # required; looked up in fed.ct_itc.eligibility_classes
   itc_measure: ct                  # ct | ccus | ce | none
   itc_eligible_share: 0.85         # share of capex eligible for the ITC (default 1.0)
-  cca_class: "43.1"                # class if clean-tech eligible (expensing window applies to 43.1/43.2/53)
+  cca_class: "43.1"                # class if clean-tech eligible (expensing window applies to 43.1 and 53)
   cca_class_if_ineligible: "8"     # class used when the ITC claim is denied
   other_assistance: 0              # grants etc.; reduces the ITC base and UCC
   energy_deltas: {natural_gas_gj: -50824, electricity_mwh: 4000}   # per year; negative = avoided
