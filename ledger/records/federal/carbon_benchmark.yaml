@@ -1,0 +1,162 @@
+# federal/carbon_benchmark.yaml — PolicyValue CA ledger (CC BY 4.0). Quote the key "ON".
+records:
+- id: fed.carbon.benchmark_path
+  jurisdiction: FED
+  instrument: benchmark
+  parameter: minimum_industrial_carbon_price
+  value:
+    2026: 95
+    2027: 100
+    2030: 115
+    2035: 130
+    2040: 140
+  unit: CAD/t
+  currency_basis: nominal
+  effective_from: 2026-01-01
+  effective_to: null
+  legal_status: announced
+  confidence: medium
+  freshness: announcement
+  sources:
+  - url: https://icapcarbonaction.com/en/news/canada-publishes-new-carbon-price-trajectory
+    title: Canada publishes new carbon price trajectory
+    publisher: International Carbon Action Partnership (ICAP)
+    published: 2026-05-27
+    retrieved: 2026-09-29
+    locator: news item, paragraph on revised price trajectory (2026-2027)
+    excerpt: The revised price trajectory keeps the headline carbon price at CAD 95 in 2026 (unchanged from 2025),
+      then increases it to CAD 100 in 2027.
+    source_type: secondary
+  - url: https://icapcarbonaction.com/en/news/canada-publishes-new-carbon-price-trajectory
+    title: Canada publishes new carbon price trajectory
+    publisher: International Carbon Action Partnership (ICAP)
+    published: 2026-05-27
+    retrieved: 2026-09-29
+    locator: news item, paragraph on 2030-2035 path
+    excerpt: It rises to CAD 115 in 2030, and then by CAD 3 each year thereafter until it reaches CAD 130 in 2035.
+    source_type: secondary
+  - url: https://icapcarbonaction.com/en/news/canada-publishes-new-carbon-price-trajectory
+    title: Canada publishes new carbon price trajectory
+    publisher: International Carbon Action Partnership (ICAP)
+    published: 2026-05-27
+    retrieved: 2026-09-29
+    locator: news item, paragraph on post-2035 path and benchmark publication
+    excerpt: From 2036 onward, the price is indexed to inflation with a 1.5% annual escalator, reaching CAD 140
+      by 2040.
+    source_type: secondary
+  notes: 'Only years explicitly stated by ICAP are in the series; the source implies 2031-34 = 118/121/124/127 (+3/yr)
+    but does not explicitly state 2028-29 = 100. ICAP: new trajectory is part of an updated federal benchmark ''that
+    will be published later in 2026''. The canada.ca industrial carbon pricing page (modified 2026-07-23) was fetched
+    but the trajectory was not found in its extracted text; Osler/GLJ not fetched (2-fetch cap).'
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending
+- id: fed.ggppa.schedule4
+  jurisdiction: FED
+  instrument: ggppa
+  parameter: excess_emissions_charge
+  value:
+    2018: 10
+    2019: 20
+    2020: 30
+    2021: 40
+    2022: 50
+    2023: 65
+    2024: 80
+    2025: 95
+    2026: 110
+    2027: 125
+    2028: 140
+    2029: 155
+    2030: 170
+  unit: CAD/t
+  currency_basis: nominal
+  effective_from: 2018-01-01
+  effective_to: null
+  legal_status: in_force
+  confidence: high
+  freshness: statute
+  sources:
+  - url: https://laws-lois.justice.gc.ca/eng/acts/G-11.55/page-29.html
+    title: Greenhouse Gas Pollution Pricing Act (S.C. 2018, c. 12, s. 186)
+    publisher: Department of Justice Canada (Justice Laws Website)
+    published: null
+    retrieved: 2026-09-29
+    locator: Schedule 4 (Excess Emissions Charge), table of calendar year and charge per CO2e tonne
+    excerpt: SCHEDULE 4 (Excess Emissions Charge) ... SOR/2022-211, s. 1
+    source_type: primary_legal
+  notes: Page states 'Act current to 2026-09-21 and last amended on 2025-06-02'; the statutory schedule still runs
+    to $170 in 2030 and has not been amended to the May 2026 announced trajectory ($95 in 2026).
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending
+- id: fed.fuel_charge
+  jurisdiction: FED
+  instrument: fuel_charge
+  parameter: rate
+  value: 0
+  unit: CAD/t
+  currency_basis: nominal
+  effective_from: 2025-04-01
+  effective_to: null
+  legal_status: in_force
+  confidence: high
+  freshness: statute
+  sources:
+  - url: https://www.canada.ca/en/department-finance/news/2025/03/removing-the-consumer-carbon-price-effective-april-1-2025.html
+    title: Removing the consumer carbon price, effective April 1, 2025
+    publisher: Department of Finance Canada
+    published: 2025-03-22
+    retrieved: 2026-09-29
+    locator: news release body
+    excerpt: After March 31, 2025, the applicable fuel charge rates for all types of fuel and for combustible waste
+      will be set to zero.
+    source_type: primary_gov
+  notes: Fuel charge rates are statutorily per unit of fuel; all set to zero, recorded as 0 CAD/t equivalent. Release
+    also states 'Beginning on April 1, 2025, the fuel charge ceases to apply.'
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending
+- id: fed.obps.thresholds
+  jurisdiction: FED
+  instrument: obps
+  parameter: coverage_thresholds
+  value:
+    mandatory_kt: 50
+    opt_in_kt: 10
+  unit: kt
+  currency_basis: n/a
+  effective_from: 2019-01-01
+  effective_to: null
+  legal_status: in_force
+  confidence: medium
+  freshness: guidance
+  sources:
+  - url: https://www.canada.ca/en/services/environment/weather/climatechange/climate-action/pricing-carbon-pollution/output-based-pricing-system.html
+    title: 'Carbon pricing: regulatory framework for the output-based pricing system'
+    publisher: Government of Canada (Canada.ca)
+    published: 2018-01-31
+    retrieved: 2026-09-29
+    locator: Coverage section, mandatory threshold
+    excerpt: the OBPS will apply to industrial facilities that emit 50 kilotonnes (kt) CO2e or more and for which
+      an output-based standard is specified
+    source_type: primary_gov
+  - url: https://www.canada.ca/en/services/environment/weather/climatechange/climate-action/pricing-carbon-pollution/output-based-pricing-system.html
+    title: 'Carbon pricing: regulatory framework for the output-based pricing system'
+    publisher: Government of Canada (Canada.ca)
+    published: 2018-01-31
+    retrieved: 2026-09-29
+    locator: Coverage section, voluntary opt-in
+    excerpt: facilities in backstop jurisdictions with annual emissions between 10 kt CO2e and 50 kt CO2e...will
+      be able to opt-in
+    source_type: primary_gov
+  - url: https://www.canada.ca/en/environment-climate-change/services/climate-change/pricing-pollution-how-it-will-work/output-based-pricing-system.html
+    title: Output-Based Pricing System
+    publisher: Environment and Climate Change Canada
+    published: 2026-02-06
+    retrieved: 2026-09-29
+    locator: voluntary participation / cancellation of designation
+    excerpt: was designated on the expectation it would emit at least 10 kt of carbon dioxide equivalent (CO2e)
+    source_type: primary_gov
+  notes: Thresholds stated in the 2018 regulatory framework page (date modified 2018-01-31); the current ECCC OBPS
+    page (modified 2026-02-06) confirms the 10 kt voluntary figure but its text did not state 50 kt. OBPS Regulations
+    s. 8 not fetched; effective_from is the OBPS start year.
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending

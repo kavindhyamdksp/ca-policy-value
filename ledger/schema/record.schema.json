@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kavindhyamdksp/ca-policy-value/ledger/schema/record.schema.json",
+  "title": "PolicyValue CA ledger file",
+  "type": "object",
+  "required": ["records"],
+  "additionalProperties": false,
+  "properties": {
+    "records": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/record"}}
+  },
+  "$defs": {
+    "date": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+    "scalar": {"oneOf": [{"type": "number"}, {"type": "string"}, {"type": "boolean"}]},
+    "value": {
+      "oneOf": [
+        {"type": "number"},
+        {"type": "string"},
+        {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {"$ref": "#/$defs/scalar"}
+        }
+      ]
+    },
+    "source": {
+      "type": "object",
+      "required": ["url", "title", "publisher", "published", "retrieved", "locator", "source_type"],
+      "additionalProperties": false,
+      "properties": {
+        "url": {"type": "string", "pattern": "^https?://"},
+        "title": {"type": "string", "minLength": 1},
+        "publisher": {"type": "string", "minLength": 1},
+        "published": {"oneOf": [{"$ref": "#/$defs/date"}, {"type": "null"}]},
+        "retrieved": {"$ref": "#/$defs/date"},
+        "locator": {"type": "string", "minLength": 1},
+        "excerpt": {"type": "string"},
+        "source_type": {"enum": ["primary_legal", "primary_gov", "secondary"]}
+      }
+    },
+    "record": {
+      "type": "object",
+      "required": [
+        "id", "jurisdiction", "instrument", "parameter", "value", "unit", "currency_basis",
+        "effective_from", "legal_status", "confidence", "freshness", "sources", "recorded_at"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string", "pattern": "^(fed|ab|on|bc|qc|ref)\\.[a-z0-9_]+(\\.[a-z0-9_]+)*$"},
+        "jurisdiction": {"enum": ["FED", "AB", "ON", "BC", "QC"]},
+        "instrument": {"type": "string", "minLength": 1},
+        "parameter": {"type": "string", "minLength": 1},
+        "value": {"$ref": "#/$defs/value"},
+        "unit": {"type": "string"},
+        "currency_basis": {"type": "string", "pattern": "^(nominal|real-[0-9]{4}|n/a)$"},
+        "effective_from": {"$ref": "#/$defs/date"},
+        "effective_to": {"oneOf": [{"$ref": "#/$defs/date"}, {"type": "null"}]},
+        "legal_status": {
+          "enum": ["announced", "proposed", "enacted", "in_force", "superseded", "repealed", "observation"]
+        },
+        "confidence": {"enum": ["high", "medium", "low"]},
+        "eligibility_confidence": {
+          "type": "object",
+          "additionalProperties": {"enum": ["likely", "case_by_case", "not_listed"]}
+        },
+        "freshness": {"enum": ["statute", "guidance", "announcement", "market_observation", "statistic"]},
+        "sources": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/source"}},
+        "notes": {"type": "string"},
+        "reviewer": {"type": "string"},
+        "recorded_at": {"$ref": "#/$defs/date"},
+        "supersedes": {"type": "string"}
+      }
+    }
+  }
+}

@@ -1,0 +1,37 @@
+# Golden case 3 — large Alberta TIER emitter, 50 kt/yr abatement with a CCfD (validation Example 3).
+# The announced TIER floor is not yet law: with min_legal_status=enacted it is only a scenario.
+# When the floor regulation comes into force, `pv drift` should show this decision flip.
+case_id: golden_ab_abatement_ccfd
+as_of: 2026-10-15
+min_legal_status: enacted
+facility:
+  province: AB
+  system: tier
+  covered: true
+  entity: taxable_corp
+project:
+  in_service: 2026-12-31
+  life_years: 20
+  capex: [{year: 0, amount: 28000000}]
+  technology_class: generic_abatement
+  itc_measure: none
+  cca_class: "43.1"
+  opex_delta: 1000000
+  covered_emissions_delta_t: -50000
+prices: {escalation: 0.02}
+finance: {discount_rate: 0.08}
+policy:
+  credit_price_scenario: base
+  itc_granted: true            # no ITC measure; keeps Class 43.1 expensing eligibility
+  ccfd: {strike: 85, term_end: 2040, volume_share: 1.0}
+  grid_factor: average
+robustness:
+  grid: [floor_status, ccfd, credit_scenario]
+  monte_carlo:
+    draws: 10000
+    seed: 20260929
+    regimes:
+      floor_as_announced: {p: 0.55, floor_scale: 1.0}
+      floor_half_strength: {p: 0.30, floor_scale: 0.5}
+      policy_rollback: {p: 0.15, market_value: 15, floor_scale: 0.0}
+    shocks: {credit_sigma: 0.35, capex_triangular: [0.9, 1.0, 1.3]}

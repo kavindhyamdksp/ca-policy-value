@@ -1,0 +1,31 @@
+# qc/auction_obs.yaml — PolicyValue CA ledger (CC BY 4.0). Quote the key "ON".
+records:
+- id: qc.spede.auction_obs
+  jurisdiction: QC
+  instrument: spede
+  parameter: joint_auction_result
+  value:
+    settlement: 45.11
+    reserve: 38.81
+  unit: CAD/t
+  currency_basis: nominal
+  effective_from: 2026-08-19
+  effective_to: null
+  legal_status: observation
+  confidence: high
+  freshness: market_observation
+  sources:
+  - url: https://ww2.arb.ca.gov/sites/default/files/2026-08/nc-aug_2026_summary_results_report.pdf
+    title: 'California Cap-and-Invest Program and Québec Cap-and-Trade System August 2026 Joint Auction #48 Summary
+      Results Report'
+    publisher: CARB and MELCCFP
+    published: 2026-08-26
+    retrieved: 2026-09-29
+    locator: 'Table 4: Qualified Bid Summary Statistics, Current Auction CAD column, p. 5'
+    excerpt: Auction Reserve Price $27.94 $38.81 $27.94 $38.81 Settlement Price $32.48 $45.11 $32.75 $45.49
+    source_type: primary_gov
+  notes: 'Current-auction CAD figures at an Auction Exchange Rate of 1.3889 CAD/USD (USD: settlement 32.48, reserve
+    27.94). The joint reserve of C$38.81 is the California USD reserve converted at that rate; Québec''s own 2026
+    annual reserve is C$26.47. Text was extracted locally from the fetched PDF bytes.'
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending

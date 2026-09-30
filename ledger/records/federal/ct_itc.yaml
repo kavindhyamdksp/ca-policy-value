@@ -1,0 +1,229 @@
+# federal/ct_itc.yaml — PolicyValue CA ledger (CC BY 4.0). Quote the key "ON".
+records:
+- id: fed.ct_itc.rate_schedule
+  jurisdiction: FED
+  instrument: ct_itc
+  parameter: rate_schedule
+  value:
+    2023: 0.3
+    2024: 0.3
+    2025: 0.3
+    2026: 0.3
+    2027: 0.3
+    2028: 0.3
+    2029: 0.3
+    2030: 0.3
+    2031: 0.3
+    2032: 0.3
+    2033: 0.3
+    2034: 0.15
+    2035: 0.0
+  unit: fraction
+  currency_basis: n/a
+  effective_from: 2023-03-28
+  effective_to: null
+  legal_status: in_force
+  confidence: high
+  freshness: statute
+  sources:
+  - url: https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/corporations/business-tax-credits/clean-economy-itc/clean-technology-itc/about-ct-itc.html
+    title: What is the Clean Technology ITC - Clean Technology Investment Tax Credit (ITC)
+    publisher: Canada Revenue Agency
+    published: 2025-12-22
+    retrieved: 2026-09-29
+    locator: What is the Clean Technology ITC, rate paragraph
+    excerpt: up to 30% ... becomes available for use from March 28, 2023, to December 31, 2033.
+    source_type: primary_gov
+  - url: https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/corporations/business-tax-credits/clean-economy-itc/clean-technology-itc/about-ct-itc.html
+    title: What is the Clean Technology ITC - Clean Technology Investment Tax Credit (ITC)
+    publisher: Canada Revenue Agency
+    published: 2025-12-22
+    retrieved: 2026-09-29
+    locator: What is the Clean Technology ITC, rate paragraph
+    excerpt: The Clean Technology ITC rate may be up to 15% for property that is acquired and that becomes available
+      for use in 2034.
+    source_type: primary_gov
+  notes: Rates are maxima ("up to") keyed by the year property is acquired and becomes available for use; 2023 applies
+    from March 28, 2023. 2035 = 0.0 because the page states "The Clean Technology ITC will be unavailable after
+    2034." ITA s.127.45 was not fetched.
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending
+- id: fed.ct_itc.labour_rate
+  jurisdiction: FED
+  instrument: ct_itc
+  parameter: labour_reduced_rate
+  value: 0.2
+  unit: fraction
+  currency_basis: n/a
+  effective_from: 2023-03-28
+  effective_to: 2033-12-31
+  legal_status: in_force
+  confidence: high
+  freshness: statute
+  sources:
+  - url: https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/corporations/business-tax-credits/clean-economy-itc/clean-technology-itc/claiming-credit-ct-itc/maximize-credit-rate.html
+    title: Avoid the reduced credit rate - Clean Technology Investment Tax Credit (ITC)
+    publisher: Canada Revenue Agency
+    published: 2026-05-01
+    retrieved: 2026-09-29
+    locator: Avoid the reduced credit rate
+    excerpt: If you do not elect to meet the labour requirements, the credit rate will be reduced by 10 percentage
+      points.
+    source_type: primary_gov
+  - url: https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/corporations/business-tax-credits/clean-economy-itc/clean-technology-itc/claiming-credit-ct-itc/maximize-credit-rate.html
+    title: Avoid the reduced credit rate - Clean Technology Investment Tax Credit (ITC)
+    publisher: Canada Revenue Agency
+    published: 2026-05-01
+    retrieved: 2026-09-29
+    locator: Credit rate if you choose not to elect into the labour requirements
+    excerpt: 'From March 28, 2023 to December 31, 2033: 20%; From January 1, 2034 to December 31, 2034: 5%'
+    source_type: primary_gov
+  notes: 0.20 applies to property available for use 2023-03-28 to 2033-12-31 when the taxpayer does not elect into
+    the labour requirements; the 2034 equivalent is 0.05 (15% less 10 points).
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending
+- id: fed.ct_itc.entities
+  jurisdiction: FED
+  instrument: ct_itc
+  parameter: eligible_entities
+  value:
+    taxable_corp: true
+    reit: true
+    crown: false
+    municipal: false
+    tax_exempt: false
+  unit: text
+  currency_basis: n/a
+  effective_from: 2023-03-28
+  effective_to: null
+  legal_status: in_force
+  confidence: high
+  freshness: statute
+  sources:
+  - url: https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/corporations/business-tax-credits/clean-economy-itc/clean-technology-itc/who-claim-ct-itc.html
+    title: Who can claim - Clean Technology Investment Tax Credit (ITC)
+    publisher: Canada Revenue Agency
+    published: 2025-12-22
+    retrieved: 2026-09-29
+    locator: Who can claim, eligibility list
+    excerpt: A taxable Canadian corporation (including a taxable Canadian corporation that is a member of a partnership)
+    source_type: primary_gov
+  - url: https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/corporations/business-tax-credits/clean-economy-itc/clean-technology-itc/who-claim-ct-itc.html
+    title: Who can claim - Clean Technology Investment Tax Credit (ITC)
+    publisher: Canada Revenue Agency
+    published: 2025-12-22
+    retrieved: 2026-09-29
+    locator: Who can claim, eligibility list
+    excerpt: A mutual fund trust that is a real estate investment trust (including such a trust that is a member
+      of a partnership)
+    source_type: primary_gov
+  notes: The page lists only these two claimant types (a must-be list, including as partnership members). crown/municipal/tax_exempt
+    = false is inferred from that exhaustive list and the "taxable" requirement; the page does not name those exclusions
+    explicitly.
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending
+- id: fed.ct_itc.eligibility_classes
+  jurisdiction: FED
+  instrument: ct_itc
+  parameter: eligibility_classes
+  value:
+    heat_pump_air_source: likely
+    heat_pump_ground_source: likely
+    heat_pump_process: not_listed
+    electric_boiler: not_listed
+    solar_pv: likely
+    wind: likely
+    stationary_storage: likely
+    small_modular_reactor: likely
+  unit: text
+  currency_basis: n/a
+  effective_from: 2023-03-28
+  effective_to: 2034-12-31
+  legal_status: in_force
+  confidence: medium
+  freshness: guidance
+  sources:
+  - url: https://natural-resources.canada.ca/taxes/income-tax/corporations/federal-tax-credits/clean-economy-itc/clean-technology-itc/technical-guidance-ct-property
+    title: Technical guidance for CT property
+    publisher: Natural Resources Canada
+    published: 2025-12-01
+    retrieved: 2026-09-29
+    locator: List of technical guides
+    excerpt: Ground-Source Heat Pump Systems (under development)
+    source_type: primary_gov
+  - url: https://natural-resources.canada.ca/taxes/income-tax/corporations/federal-tax-credits/clean-economy-itc/clean-technology-itc/technical-guidance-ct-property
+    title: Technical guidance for CT property
+    publisher: Natural Resources Canada
+    published: 2025-12-01
+    retrieved: 2026-09-29
+    locator: List of technical guides
+    excerpt: Small Modular Nuclear Reactors (under development)
+    source_type: primary_gov
+  - url: https://natural-resources.canada.ca/taxes/income-tax/corporations/federal-tax-credits/clean-economy-itc/clean-technology-itc/air-source-heat-pump-systems
+    title: Air-Source Heat Pump Systems
+    publisher: Natural Resources Canada
+    published: 2025-12-01
+    retrieved: 2026-09-29
+    locator: General description
+    excerpt: property that is used primarily for the purpose of heating an actively circulated liquid or gas by
+      transferring heat from the outside air
+    source_type: primary_gov
+  notes: Published guides exist for "Photovoltaic Electrical Generation Equipment", "Wind Energy Conversion Systems",
+    "Electrical Energy Storage Equipment" and "Air-Source Heat Pump Systems" (likely); ground-source heat pumps
+    and SMRs are listed with guides "(under development)" (likely, pending guide). Process/waste-heat heat pumps
+    and electric boilers are not mentioned (not_listed); the air-source guide covers only heat from outside air,
+    excludes back-up equipment and in-building distribution, and says hybrid systems are assessed case by case by
+    the Class 43.1/43.2 Secretariat.
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending
+- id: fed.ct_itc.domestic_content
+  jurisdiction: FED
+  instrument: ct_itc
+  parameter: domestic_content_requirement
+  value:
+    status: consultation closed; outcome pending
+    consultation_open: '2026-02-13'
+    consultation_close: '2026-03-13'
+    credits: Clean Technology ITC; Clean Electricity ITC
+    thresholds: not specified
+    decision: none announced
+  unit: text
+  currency_basis: n/a
+  effective_from: 2026-02-13
+  effective_to: null
+  legal_status: proposed
+  confidence: high
+  freshness: announcement
+  sources:
+  - url: https://www.canada.ca/en/department-finance/news/2026/02/government-launches-consultations-on-potential-domestic-content-requirement-for-clean-technology-and-clean-electricity-investment-tax-credits.html
+    title: Government launches consultations on potential domestic content requirement for Clean Technology and
+      Clean Electricity investment tax credits
+    publisher: Department of Finance Canada
+    published: 2026-02-13
+    retrieved: 2026-09-29
+    locator: News release, paragraph 1
+    excerpt: launched consultations on the possibility of introducing a domestic content requirement under the Clean
+      Technology and Clean Electricity investment tax credits (ITCs).
+    source_type: primary_gov
+  - url: https://www.canada.ca/en/department-finance/news/2026/02/government-launches-consultations-on-potential-domestic-content-requirement-for-clean-technology-and-clean-electricity-investment-tax-credits.html
+    title: Government launches consultations on potential domestic content requirement for Clean Technology and
+      Clean Electricity investment tax credits
+    publisher: Department of Finance Canada
+    published: 2026-02-13
+    retrieved: 2026-09-29
+    locator: News release, submissions paragraph
+    excerpt: Canadians and stakeholders are encouraged to send their comments to cleangrowthitc-ciicroissancepropre@fin.gc.ca
+      by March 13, 2026.
+    source_type: primary_gov
+  - url: https://www.torys.com/en/our-latest-thinking/torys-quarterly/q2-2026/clean-economy-investment-tax-credits
+    title: Clean economy investment tax credits (Torys Quarterly, Q2 2026)
+    publisher: Torys LLP
+    published: null
+    retrieved: 2026-09-29
+    locator: Domestic content consultation discussion
+    excerpt: It remains to be seen whether the requirements will ultimately be introduced
+    source_type: secondary
+  notes: No thresholds or effective dates were proposed in the release; no outcome found in either fetched source
+    (Torys Q2 2026 says it remains to be seen). Torys page shows no exact publication date.
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending

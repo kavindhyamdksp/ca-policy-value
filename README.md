@@ -2,45 +2,95 @@
 
 **What a decarbonization project is actually worth under Canadian policy as it really is.**
 
-This repository holds the research, validation decision, product specification, architecture decisions and implementation plan for a Canadian climate-investment decision tool. It began as a broad *"Canada Climate CapEx Engine"* hypothesis. After research and quantitative testing it was **refocused**.
+PolicyValue CA is an open, source-cited **ledger** of the Canadian carbon-pricing and clean-economy tax
+parameters that decide industrial projects (federal + AB, ON, BC, QC), plus a deterministic **kernel**.
+From the ledger and your project case it computes realized after-tax value, a policy value stack, the
+breakeven carbon price against the facility's *realizable* band, policy-state robustness, optional seeded
+Monte Carlo, and a cited decision memo. When the ledger changes, `pv drift` re-runs your saved cases and
+flags decisions that flip.
 
-> **Decision (2026-09-29): REFOCUS.** Do not build the broad engine: RETScreen, SINAI, helloDarwin/BDO and ClearBlue already cover most of it. Build a small, gated MVP of **PolicyValue CA** instead. It is an open, source-cited ledger of the Canadian carbon-pricing and clean-economy tax parameters that decide industrial projects, plus a deterministic kernel. The kernel computes *realized* project value, the breakeven vs realizable carbon price, policy-regime robustness (including CCfDs) and a cited decision memo. → [DECISION.md](DECISION.md)
+It is a CLI and Python package. There is no server, no account and no network access at run time.
 
-## Key findings
+## Quick start (≈5 minutes)
 
-- **The math is solved.** RETScreen (free or ~CA$869/yr, 800k+ users) already does NPV/IRR plus a carbon input plus Monte Carlo. SINAI sells MACC with NPV/IRR and carbon-price scenarios.
-- **The Canada-specific policy layer is not.** Credit prices (AB ~$20, ON ~$72–80, BC ~$65, fed OBPS ~$37.50, QC C&T ~$45) are far below the $95 headline. Sub-threshold sites outside QC face $0. The May 2026 reset replaced the $170-by-2030 path with $115 (2030) → $140 (2040), and added an AB floor from 2030 and CCfDs.
-- **Policy terms flip decisions, but only in specific places.** They matter for covered industrial facilities and near-margin projects:
-  - the carbon-value treatment is the largest NPV swing factor;
-  - for AB abatement projects with breakevens of $54–117/t the answer depends entirely on the carbon assumption;
-  - a CCfD moves P(NPV>0) from 0% to 76%.
+Requires Python 3.11–3.13 and git.
 
-  They do not change building or sub-threshold projects outside QC. → [quantitative validation](docs/research/04_quantitative_validation.md)
-- **Broad incentive coverage is expensive and not decisive.** It would cost about C$200–350k/yr to maintain. The scoped ledger is ~55 records and ~85–130 h/yr. → [data feasibility](docs/analysis/data_feasibility.md)
-- **Demand is the open risk.** All evidence so far is secondary. Gate G0 requires ≥12 interviews before most build effort.
+```bash
+git clone https://github.com/kavindhyamdksp/ca-policy-value.git
+cd ca-policy-value
+python3 -m venv .venv && source .venv/bin/activate
+pip install -e .
+pv run cases/golden_hp_qc.yaml
+```
 
-## Repository map
+Output:
+
+```
+golden_hp_qc: DEPENDS-ON  NPV +0.15 $M  → out/golden_hp_qc/
+```
+
+Open `out/golden_hp_qc/memo.html` in a browser. The same folder holds `memo.md`, `results.json`
+(schema `pv.results/v1`, with a hash of case + ledger + seed) and `cashflows.csv`.
+
+Run all three golden cases, inspect the ledger and check its integrity:
+
+```bash
+pv run cases/*.yaml
+pv ledger show                      # every record: status, value, unit, days left before its freshness SLA
+pv ledger show ab.tier.floor        # one record with its sources
+pv validate --cases cases           # schema, units, dates, primary sources, freshness
+pv drift --from ledger-v2026.10.0   # re-run saved cases against the working-tree ledger
+```
+
+Next: copy a golden case and edit it for your project — see the [user guide](docs/user_guide.md).
+The formulas and caveats are in the [methodology](docs/methodology.md).
+
+## Golden cases
+
+| Case | What it shows |
+|---|---|
+| [`golden_hp_qc`](cases/golden_hp_qc.yaml) | 2 MWth process heat pump in Quebec. QC cap-and-trade reaches every gas user. The process-heat-pump class is *not listed* in NRCan's CT ITC guidance, so the ITC is denied in the base case; the grid shows the decision turns on it. |
+| [`golden_hp_bc_covered`](cases/golden_hp_bc_covered.yaml) | The same heat pump at a BC OBPS facility. Credits valued at the observed market ratio, never at the headline price. Coverage status flips the decision. |
+| [`golden_ab_abatement_ccfd`](cases/golden_ab_abatement_ccfd.yaml) | 50 kt/yr abatement at an Alberta TIER facility with an $85 CCfD. The announced TIER floor is not yet law, so with `min_legal_status: enacted` it is a scenario only, and the base case is NO-GO. When the floor regulation comes into force, `pv drift` shows the flip to GO. |
+
+## What's in the box
 
 | Path | Contents |
 |---|---|
-| [DECISION.md](DECISION.md) | Verdict, rationale, gates G0–G2, kill criteria |
-| [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) | Execution-ready plan: MVP, milestones, data sources, formulas, tests, acceptance criteria, dependencies, phases (living document) |
-| [docs/research/](docs/research/) | Research files 01–04 with full source lists |
-| [docs/analysis/competitor_gap_analysis.md](docs/analysis/competitor_gap_analysis.md) | What's solved, the gaps, differentiator tests, alternative concepts scored |
-| [docs/analysis/data_feasibility.md](docs/analysis/data_feasibility.md) | Source catalogue, licensing, maintenance estimate, data risks |
-| [docs/product/SPEC.md](docs/product/SPEC.md) | Product specification |
-| [docs/architecture/](docs/architecture/) | Architecture overview and ADRs 0001–0007 |
-| [validation/](validation/) | Reproducible research-phase model (`decision_sensitivity.py`), parameters with provenance, results |
+| [`ledger/`](ledger/) | 34 dated, cited records (CC BY 4.0), JSON Schema, [changelog](ledger/CHANGELOG.md), [record format](ledger/RECORD_FORMAT.md) |
+| [`src/pv/`](src/pv/) | Kernel: `ledger`, `carbon`, `tax`, `cashflow`, `emissions`, `robustness`, `results`, `report`, `drift`, `cli` |
+| [`cases/`](cases/) | Golden cases (also the drift set) |
+| [`tests/`](tests/) | Unit, property (hypothesis), oracle, golden snapshot, drift, ledger and report tests |
+| [`validation/`](validation/) | Frozen research-phase model — the oracle the kernel reproduces exactly |
+| [`docs/`](docs/) | [User guide](docs/user_guide.md), [methodology](docs/methodology.md), [spec](docs/product/SPEC.md), [architecture + ADRs](docs/architecture/), [research](docs/research/), [validation kit](docs/validation/) |
+| [DECISION.md](DECISION.md), [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) | Verdict, gates, and the living plan |
 
-## Reproduce the validation results
+## Why this exists (research summary)
+
+- **The math is solved** (RETScreen, SINAI). **The Canada-specific policy layer is not.** Credit prices
+  (AB ~$20, ON ~$72, BC ~$65, federal OBPS ~$37.50, QC C&T ~$45) sit far below the headline price;
+  sub-threshold sites outside QC realize $0.
+- **Policy terms flip decisions for covered industrial facilities and near-margin projects.** The carbon-value
+  treatment is the largest NPV swing factor, and a CCfD moves P(NPV>0) from 0% to 76% in the Alberta example.
+  → [quantitative validation](docs/research/04_quantitative_validation.md), [DECISION.md](DECISION.md)
+- **Demand is the open risk.** Gate G0 needs ≥12 practitioner interviews; see the [interview guide](docs/validation/interview_guide.md)
+  and [pilot kit](docs/validation/pilot_kit.md).
+
+## Development
 
 ```bash
-pip install numpy scipy pyyaml
-cd validation && python3 decision_sensitivity.py > results.md
+pip install -e ".[dev]"
+pytest -q                    # add --cov=pv for coverage
+ruff check && mypy src
 ```
 
-## Status
+CI runs lint, strict typing, the test matrix (ubuntu + macOS × Python 3.11–3.13) with a byte-identical
+`results.json` check across the matrix, ledger validation, a weekly link check, and `pv drift` on every PR
+that touches `ledger/` or `cases/`.
 
-Pre-MVP. No production code has been written yet, by design. The next step is Phase 0 (problem validation interviews) in parallel with milestone M1–M2 (tooling and ledger). See [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
+## Licences
 
-*Nothing in this repository is tax, legal or investment advice. Policy parameters change often; check the dates and legal status of every value.*
+Code: Apache-2.0 ([LICENSE](LICENSE)). Ledger data: CC BY 4.0 with OGL-Canada attributions ([ledger/LICENSE](ledger/LICENSE)).
+
+*Nothing in this repository is tax, legal or investment advice. Policy parameters change often; check the
+date and legal status of every value — the memo lists them all.*

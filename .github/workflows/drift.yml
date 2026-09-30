@@ -1,0 +1,28 @@
+name: ledger-drift
+
+# Every ledger change shows its decision impact (SPEC FR-5): re-run all saved cases under the
+# base branch's ledger and this PR's ledger, and publish record changes and flipped decisions.
+on:
+  pull_request:
+    paths: ["ledger/**", "cases/**"]
+
+permissions:
+  contents: read
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12", cache: pip}
+      - run: pip install -e .
+      - name: pv drift (base branch → this PR)
+        run: |
+          pv drift --from "origin/${{ github.base_ref }}" --to WORKTREE --json drift.json | tee drift.md
+          cat drift.md >> "$GITHUB_STEP_SUMMARY"
+      - name: ledger validate
+        run: pv validate --cases cases
+      - uses: actions/upload-artifact@v4
+        with: {name: drift-report, path: "drift.*"}

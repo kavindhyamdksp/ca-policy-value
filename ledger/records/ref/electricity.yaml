@@ -1,0 +1,65 @@
+# ref/electricity.yaml — PolicyValue CA ledger (CC BY 4.0). Quote the key "ON".
+records:
+- id: ref.electricity.large
+  jurisdiction: FED
+  instrument: reference_price
+  parameter: electricity_price_large_power
+  value:
+    QC: 5.83
+    "ON": 12.8
+    AB: 8.02
+    BC: 8.42
+  unit: cents/kWh
+  currency_basis: nominal
+  effective_from: 2025-04-01
+  effective_to: null
+  legal_status: observation
+  confidence: high
+  freshness: statistic
+  sources:
+  - url: https://pannes.hydroquebec.com/data/documents-donnees/pdf/comparaison-prix-2025-en.pdf
+    title: Comparison of Electricity Prices in Major North American Cities 2025 (Rates in effect April 1, 2025)
+    publisher: Hydro-Québec
+    published: null
+    retrieved: 2026-09-29
+    locator: Section 1, Average Prices on April 1, 2025, Summary Table (excluding taxes), Large-Power 5,000 kW /
+      3,060,000 kWh / 85%, p. 18
+    excerpt: AVERAGE PRICES ON APRIL 1, 2025 (in ¢/kWh) Summary Table (excluding taxes) … Montréal, QC 8.29 12.08
+      14.70 9.71 8.25 5.83 5.52
+    source_type: secondary
+  notes: 'Cities used: QC=Montréal, ON=Toronto, AB=Calgary, BC=Vancouver (Edmonton 10.17). Prices are CAD and exclude
+    taxes; rates as of April 1, 2025. Toronto is a Hydro-Québec estimate (footnote 4). The report shows no publication
+    date (legal deposit Q4 2025); the table was read from the fetched PDF via local extraction and a page render.'
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending
+- id: ref.electricity.medium
+  jurisdiction: FED
+  instrument: reference_price
+  parameter: electricity_price_medium_power
+  value:
+    QC: 9.71
+    "ON": 17.27
+    AB: 11.07
+    BC: 9.73
+  unit: cents/kWh
+  currency_basis: nominal
+  effective_from: 2025-04-01
+  effective_to: null
+  legal_status: observation
+  confidence: high
+  freshness: statistic
+  sources:
+  - url: https://pannes.hydroquebec.com/data/documents-donnees/pdf/comparaison-prix-2025-en.pdf
+    title: Comparison of Electricity Prices in Major North American Cities 2025 (Rates in effect April 1, 2025)
+    publisher: Hydro-Québec
+    published: null
+    retrieved: 2026-09-29
+    locator: Section 1, Average Prices on April 1, 2025, Summary Table (excluding taxes), Medium-Power 1,000 kW
+      / 400,000 kWh / 56%, p. 18
+    excerpt: Toronto, ON 15.57 15.50 22.01 17.27 16.20 12.80 12.66
+    source_type: secondary
+  notes: 'Cities used: QC=Montréal, ON=Toronto, AB=Calgary, BC=Vancouver (Edmonton 12.30). Prices are CAD, exclude
+    taxes, 56% load factor; rates as of April 1, 2025. Toronto is a Hydro-Québec estimate (footnote 4). The report
+    shows no publication date (legal deposit Q4 2025).'
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending

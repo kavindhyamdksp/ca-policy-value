@@ -1,0 +1,41 @@
+# instruments/ccfd_cgf.yaml — PolicyValue CA ledger (CC BY 4.0). Quote the key "ON".
+records:
+- id: fed.cgf.ccfd
+  jurisdiction: FED
+  instrument: cgf
+  parameter: carbon_contracts_for_difference
+  value:
+    program: CGF carbon contracts for difference
+    allocation: up to $7 billion of CGF's $15 billion capital
+    terms: negotiated with individual companies
+    example: 'Entropy: up to 185,000 t/yr for 15 years at $86.50/t'
+  unit: text
+  currency_basis: nominal
+  effective_from: 2023-12-20
+  effective_to: null
+  legal_status: in_force
+  confidence: medium
+  freshness: announcement
+  sources:
+  - url: https://www.canada.ca/en/department-finance/news/2023/12/deputy-prime-minister-welcomes-the-canada-growth-funds-first-carbon-contract-for-difference.html
+    title: Deputy Prime Minister welcomes the Canada Growth Fund's first carbon contract for difference
+    publisher: Department of Finance Canada
+    published: 2023-12-20
+    retrieved: 2026-09-29
+    locator: news release, allocation paragraph
+    excerpt: up to $7 billion of its current $15 billion in capital to issue all forms of contracts for difference
+      and offtake agreements.
+    source_type: primary_gov
+  - url: https://thelogic.co/news/ottawa-to-use-nearly-half-of-15b-growth-fund-to-guarantee-carbon-prices-for-heavy-polluters/
+    title: Ottawa to use nearly half of $15B Growth Fund to guarantee carbon prices for heavy polluters
+    publisher: The Logic
+    published: 2023-11-21
+    retrieved: 2026-09-29
+    locator: article body
+    excerpt: the Ottawa-backed Canada Growth Fund will begin negotiating contracts with energy companies to effectively
+      guarantee the price they will receive
+    source_type: secondary
+  notes: Program existence, allocation and first deal (Entropy, Dec 2023) confirmed; contracts are negotiated deal-by-deal.
+    No Budget 2025 commitment found in either fetched source (both 2023); no cgf-fcc.ca page found by search.
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending

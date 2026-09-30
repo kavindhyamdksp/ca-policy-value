@@ -1,0 +1,30 @@
+# federal/obps_credit_obs.yaml — PolicyValue CA ledger (CC BY 4.0). Quote the key "ON".
+records:
+- id: fed.obps.credit_obs
+  jurisdiction: FED
+  instrument: obps
+  parameter: surplus_credit_price
+  value:
+    price: 37.5
+  unit: CAD/t
+  currency_basis: nominal
+  effective_from: 2025-12-01
+  effective_to: null
+  legal_status: observation
+  confidence: low
+  freshness: market_observation
+  sources:
+  - url: https://carboncredits.com/canadas-carbon-pricing-reset-in-2026-will-industry-step-up-or-stall-climate-progress/
+    title: 'Canada''s Carbon Pricing Reset in 2026: Will Industry Step Up or Stall Climate Progress?'
+    publisher: CarbonCredits.com
+    published: 2025-12-01
+    retrieved: 2026-09-29
+    locator: section on federal OBPS markets (ClearBlue Markets commentary)
+    excerpt: cheap carbon offset credits from Alberta's TIER have lowered prices. Now, they can be as low as about
+      CAD 37.50 per tonne.
+    source_type: secondary
+  notes: 'Phrased as ''as low as about'' CAD 37.50 (a low-end quote, not an assessed index); the article attributes
+    market commentary to ClearBlue Markets but gives no specific observation date, so effective_from is the article
+    date (page also shows ''Updated: November 28, 2025'').'
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending

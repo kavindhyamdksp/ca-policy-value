@@ -1,0 +1,40 @@
+# instruments/ccfd_canada_alberta.yaml — PolicyValue CA ledger (CC BY 4.0). Quote the key "ON".
+records:
+- id: ab.ccfd.joint_pool
+  jurisdiction: AB
+  instrument: ccfd
+  parameter: joint_pool
+  value:
+    pool_cad: 1200000000
+    per_government_cad: 600000000
+    volume_mt: 75
+  unit: CAD
+  currency_basis: nominal
+  effective_from: 2026-05-25
+  effective_to: null
+  legal_status: announced
+  confidence: high
+  freshness: announcement
+  sources:
+  - url: https://www.osler.com/en/insights/updates/future-of-canadas-carbon-markets-anchored-by-canada-alberta-mou-implementation-agreement/
+    title: Future of Canada's carbon markets anchored by Canada-Alberta MOU implementation agreement
+    publisher: Osler, Hoskin & Harcourt LLP
+    published: 2026-05-25
+    retrieved: 2026-09-29
+    locator: Carbon contracts for difference
+    excerpt: covering up to 75 million tonnes of emissions reductions up to an agreed upon maximum liability of
+      $600 million each
+    source_type: secondary
+  - url: https://www.blakes.com/insights/implementation-of-the-canada-alberta-mou-key-takeaways-for-carbon-markets-in-alberta/
+    title: 'Implementation of the Canada-Alberta MOU: Key Takeaways for Carbon Markets in Alberta'
+    publisher: Blake, Cassels & Graydon LLP
+    published: 2026-05-28
+    retrieved: 2026-09-29
+    locator: Contracts for difference
+    excerpt: up to a maximum investment of C$600-million per party
+    source_type: secondary
+  notes: C$1.2B pool is the sum of the two C$600M per-party maxima (sources state per-party caps; EY also gives
+    CA$600m per party and 75 Mt). Unit CAD applies to the dollar keys; volume_mt is megatonnes CO2e. effective_from
+    is Osler publication date as announcement proxy.
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending

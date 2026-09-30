@@ -1,0 +1,546 @@
+{
+  "carbon": {
+    "band_levelized": {
+      "base": 84.26,
+      "high": 84.26,
+      "low": 72.49,
+      "upper_bound_headline": 84.26
+    },
+    "breakeven_flat": 76.12,
+    "breakeven_position": "within the band, at or below the base credit price",
+    "ccfd": null,
+    "covered_tonnes_per_yr": 2551.4,
+    "floor_in_base": false,
+    "floor_mode": "auto",
+    "kind": "qc",
+    "path": {
+      "2027": 48.3128,
+      "2028": 51.743,
+      "2029": 55.4168,
+      "2030": 59.3514,
+      "2031": 63.5653,
+      "2032": 68.0784,
+      "2033": 72.912,
+      "2034": 78.0888,
+      "2035": 83.6331,
+      "2036": 89.571,
+      "2037": 95.9306,
+      "2038": 102.7416,
+      "2039": 110.0363,
+      "2040": 117.8489,
+      "2041": 126.2161,
+      "2042": 135.1775,
+      "2043": 144.7751,
+      "2044": 155.0541,
+      "2045": 166.063,
+      "2046": 177.8534
+    },
+    "scenario": "base"
+  },
+  "case_id": "golden_hp_qc",
+  "decision": {
+    "answer": "DEPENDS-ON",
+    "base_case": "GO",
+    "deciding_terms": [
+      "GO if itc_granted=True",
+      "GO if credit_scenario=base",
+      "GO if credit_scenario=high",
+      "breakeven carbon $76/t vs base $84/t levelized",
+      "CT ITC eligibility is not_listed (granted in base: False)"
+    ],
+    "npv": 149866.69
+  },
+  "emissions": {
+    "abatement_cost_net_per_t": -6.01,
+    "abatement_cost_onsite_per_t": -5.98,
+    "grid_added_t_per_yr": 10.0,
+    "grid_basis": "average (overridden)",
+    "grid_ef_g_kwh": 2.5,
+    "lifetime_net_t": 50827.0,
+    "lifetime_onsite_t": 51027.0,
+    "net_avoided_t_per_yr": 2541.4,
+    "net_share_of_onsite": 0.9961,
+    "onsite_avoided_t_per_yr": 2551.4
+  },
+  "engine": "policyvalue-ca 0.1.0",
+  "inputs": {
+    "as_of": "2026-10-15",
+    "case_sha256": "a2c89c0fa86165de1d78cbc7eef5cc76e3f660af16ec1676f473c58bca370b9b",
+    "conventions": "standard",
+    "ledger_sha256": "7559cefc78444e20b3c9dd51f0fcf60411352ca33e76862477c27b2c4f591297",
+    "min_legal_status": "enacted",
+    "seed": 20260929
+  },
+  "metrics": {
+    "discount_rate": 0.08,
+    "irr": 0.085358,
+    "npv": 149866.69,
+    "operating_years": [
+      2027,
+      2046
+    ],
+    "payback_discounted_years": 18.68,
+    "payback_simple_years": 10.05
+  },
+  "overrides": [
+    {
+      "reason": "User input: average QC grid intensity from the research phase (fed.nir.grid_ef unverified in ledger v0.1)",
+      "record": "fed.nir.grid_ef",
+      "value": {
+        "QC": 2.5
+      }
+    }
+  ],
+  "provenance": [
+    {
+      "effective_from": "2026-01-01",
+      "id": "fed.cca.class_rates",
+      "legal_status": "in_force",
+      "overridden": false,
+      "override_reason": null,
+      "retrieved": "2026-09-29",
+      "sources": [
+        {
+          "publisher": "Canada Revenue Agency",
+          "retrieved": "2026-09-29",
+          "title": "Classes of depreciable property",
+          "url": "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/sole-proprietorships-partnerships/report-business-income-expenses/claiming-capital-cost-allowance/classes-depreciable-property.html"
+        },
+        {
+          "publisher": "Canada Revenue Agency",
+          "retrieved": "2026-09-29",
+          "title": "Classes of depreciable property",
+          "url": "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/sole-proprietorships-partnerships/report-business-income-expenses/claiming-capital-cost-allowance/classes-depreciable-property.html"
+        },
+        {
+          "publisher": "Canada Revenue Agency",
+          "retrieved": "2026-09-29",
+          "title": "Classes of depreciable property",
+          "url": "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/sole-proprietorships-partnerships/report-business-income-expenses/claiming-capital-cost-allowance/classes-depreciable-property.html"
+        }
+      ],
+      "stale": false,
+      "unit": "fraction",
+      "used_in": "base",
+      "value": {
+        "43.1": 0.3,
+        "43.2": 0.5,
+        "53": 0.5,
+        "8": 0.2
+      }
+    },
+    {
+      "effective_from": "2025-01-01",
+      "id": "fed.cca.expensing",
+      "legal_status": "in_force",
+      "overridden": false,
+      "override_reason": null,
+      "retrieved": "2026-09-29",
+      "sources": [
+        {
+          "publisher": "EY",
+          "retrieved": "2026-09-29",
+          "title": "Canada substantively enacts capital cost allowance and other business income tax measures in Bill C-15",
+          "url": "https://www.ey.com/en_gl/technical/tax-alerts/canada-substantively-enacts-capital-cost-allowance-and-other-business-income-tax-measures-in-bill-c-15"
+        },
+        {
+          "publisher": "EY",
+          "retrieved": "2026-09-29",
+          "title": "Canada substantively enacts capital cost allowance and other business income tax measures in Bill C-15",
+          "url": "https://www.ey.com/en_gl/technical/tax-alerts/canada-substantively-enacts-capital-cost-allowance-and-other-business-income-tax-measures-in-bill-c-15"
+        },
+        {
+          "publisher": "EY",
+          "retrieved": "2026-09-29",
+          "title": "Canada substantively enacts capital cost allowance and other business income tax measures in Bill C-15",
+          "url": "https://www.ey.com/en_gl/technical/tax-alerts/canada-substantively-enacts-capital-cost-allowance-and-other-business-income-tax-measures-in-bill-c-15"
+        },
+        {
+          "publisher": "Department of Finance Canada",
+          "retrieved": "2026-09-29",
+          "title": "Legislation passes to implement Budget 2025: Canada Strong",
+          "url": "https://www.canada.ca/en/department-finance/news/2026/03/legislation-passes-to-implement-budget-2025-canada-strong.html"
+        }
+      ],
+      "stale": false,
+      "unit": "fraction",
+      "used_in": "base",
+      "value": {
+        "2025": 1.0,
+        "2026": 1.0,
+        "2027": 1.0,
+        "2028": 1.0,
+        "2029": 1.0,
+        "2034": 0.0
+      }
+    },
+    {
+      "effective_from": "2023-03-28",
+      "id": "fed.ct_itc.eligibility_classes",
+      "legal_status": "in_force",
+      "overridden": false,
+      "override_reason": null,
+      "retrieved": "2026-09-29",
+      "sources": [
+        {
+          "publisher": "Natural Resources Canada",
+          "retrieved": "2026-09-29",
+          "title": "Technical guidance for CT property",
+          "url": "https://natural-resources.canada.ca/taxes/income-tax/corporations/federal-tax-credits/clean-economy-itc/clean-technology-itc/technical-guidance-ct-property"
+        },
+        {
+          "publisher": "Natural Resources Canada",
+          "retrieved": "2026-09-29",
+          "title": "Technical guidance for CT property",
+          "url": "https://natural-resources.canada.ca/taxes/income-tax/corporations/federal-tax-credits/clean-economy-itc/clean-technology-itc/technical-guidance-ct-property"
+        },
+        {
+          "publisher": "Natural Resources Canada",
+          "retrieved": "2026-09-29",
+          "title": "Air-Source Heat Pump Systems",
+          "url": "https://natural-resources.canada.ca/taxes/income-tax/corporations/federal-tax-credits/clean-economy-itc/clean-technology-itc/air-source-heat-pump-systems"
+        }
+      ],
+      "stale": false,
+      "unit": "text",
+      "used_in": "base",
+      "value": {
+        "electric_boiler": "not_listed",
+        "heat_pump_air_source": "likely",
+        "heat_pump_ground_source": "likely",
+        "heat_pump_process": "not_listed",
+        "small_modular_reactor": "likely",
+        "solar_pv": "likely",
+        "stationary_storage": "likely",
+        "wind": "likely"
+      }
+    },
+    {
+      "effective_from": "2023-03-28",
+      "id": "fed.ct_itc.entities",
+      "legal_status": "in_force",
+      "overridden": false,
+      "override_reason": null,
+      "retrieved": "2026-09-29",
+      "sources": [
+        {
+          "publisher": "Canada Revenue Agency",
+          "retrieved": "2026-09-29",
+          "title": "Who can claim - Clean Technology Investment Tax Credit (ITC)",
+          "url": "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/corporations/business-tax-credits/clean-economy-itc/clean-technology-itc/who-claim-ct-itc.html"
+        },
+        {
+          "publisher": "Canada Revenue Agency",
+          "retrieved": "2026-09-29",
+          "title": "Who can claim - Clean Technology Investment Tax Credit (ITC)",
+          "url": "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/corporations/business-tax-credits/clean-economy-itc/clean-technology-itc/who-claim-ct-itc.html"
+        }
+      ],
+      "stale": false,
+      "unit": "text",
+      "used_in": "base",
+      "value": {
+        "crown": false,
+        "municipal": false,
+        "reit": true,
+        "tax_exempt": false,
+        "taxable_corp": true
+      }
+    },
+    {
+      "effective_from": "2023-03-28",
+      "id": "fed.ct_itc.rate_schedule",
+      "legal_status": "in_force",
+      "overridden": false,
+      "override_reason": null,
+      "retrieved": "2026-09-29",
+      "sources": [
+        {
+          "publisher": "Canada Revenue Agency",
+          "retrieved": "2026-09-29",
+          "title": "What is the Clean Technology ITC - Clean Technology Investment Tax Credit (ITC)",
+          "url": "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/corporations/business-tax-credits/clean-economy-itc/clean-technology-itc/about-ct-itc.html"
+        },
+        {
+          "publisher": "Canada Revenue Agency",
+          "retrieved": "2026-09-29",
+          "title": "What is the Clean Technology ITC - Clean Technology Investment Tax Credit (ITC)",
+          "url": "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/corporations/business-tax-credits/clean-economy-itc/clean-technology-itc/about-ct-itc.html"
+        }
+      ],
+      "stale": false,
+      "unit": "fraction",
+      "used_in": "base",
+      "value": {
+        "2023": 0.3,
+        "2024": 0.3,
+        "2025": 0.3,
+        "2026": 0.3,
+        "2027": 0.3,
+        "2028": 0.3,
+        "2029": 0.3,
+        "2030": 0.3,
+        "2031": 0.3,
+        "2032": 0.3,
+        "2033": 0.3,
+        "2034": 0.15,
+        "2035": 0.0
+      }
+    },
+    {
+      "effective_from": "2026-01-01",
+      "id": "fed.nir.gas_ef",
+      "legal_status": "observation",
+      "overridden": false,
+      "override_reason": null,
+      "retrieved": "2026-09-29",
+      "sources": [
+        {
+          "publisher": "Environment and Climate Change Canada",
+          "retrieved": "2026-09-29",
+          "title": "Emission factors and reference values (Version 4.0)",
+          "url": "https://www.canada.ca/en/environment-climate-change/services/climate-change/pricing-pollution-how-it-will-work/output-based-pricing-system/federal-greenhouse-gas-offset-system/emission-factors-reference-values.html"
+        }
+      ],
+      "stale": false,
+      "unit": "t/GJ",
+      "used_in": "base",
+      "value": {
+        "AB": 0.0511,
+        "BC": 0.0512,
+        "ON": 0.05,
+        "QC": 0.0502
+      }
+    },
+    {
+      "effective_from": "1900-01-01",
+      "id": "fed.nir.grid_ef",
+      "legal_status": "in_force",
+      "overridden": true,
+      "override_reason": "User input: average QC grid intensity from the research phase (fed.nir.grid_ef unverified in ledger v0.1)",
+      "retrieved": "2026-10-15",
+      "sources": [
+        {
+          "publisher": "case file",
+          "retrieved": "2026-10-15",
+          "title": "User override: User input: average QC grid intensity from the research phase (fed.nir.grid_ef unverified in ledger v0.1)",
+          "url": "urn:pv:user-override"
+        }
+      ],
+      "stale": false,
+      "unit": "text",
+      "used_in": "base",
+      "value": {
+        "QC": 2.5
+      }
+    },
+    {
+      "effective_from": "2026-08-19",
+      "id": "qc.spede.auction_obs",
+      "legal_status": "observation",
+      "overridden": false,
+      "override_reason": null,
+      "retrieved": "2026-09-29",
+      "sources": [
+        {
+          "publisher": "CARB and MELCCFP",
+          "retrieved": "2026-09-29",
+          "title": "California Cap-and-Invest Program and Qu\u00e9bec Cap-and-Trade System August 2026 Joint Auction #48 Summary Results Report",
+          "url": "https://ww2.arb.ca.gov/sites/default/files/2026-08/nc-aug_2026_summary_results_report.pdf"
+        }
+      ],
+      "stale": false,
+      "unit": "CAD/t",
+      "used_in": "base",
+      "value": {
+        "reserve": 38.81,
+        "settlement": 45.11
+      }
+    },
+    {
+      "effective_from": "2026-01-01",
+      "id": "qc.spede.reserve_escalation",
+      "legal_status": "in_force",
+      "overridden": false,
+      "override_reason": null,
+      "retrieved": "2026-09-29",
+      "sources": [
+        {
+          "publisher": "CARB and MELCCFP",
+          "retrieved": "2026-09-29",
+          "title": "California Cap-and-Invest Program and Qu\u00e9bec Cap-and-Trade System 2026 Annual Auction Reserve Price Notice",
+          "url": "https://ww2.arb.ca.gov/sites/default/files/2025-12/nc-2026_annual_reserve_price_notice_joint_auction.pdf"
+        }
+      ],
+      "stale": false,
+      "unit": "fraction",
+      "used_in": "base",
+      "value": {
+        "plus_inflation": "yes",
+        "real_rate": 0.05
+      }
+    },
+    {
+      "effective_from": "2026-01-01",
+      "id": "ref.tax.corporate",
+      "legal_status": "in_force",
+      "overridden": false,
+      "override_reason": null,
+      "retrieved": "2026-09-29",
+      "sources": [
+        {
+          "publisher": "Canada Revenue Agency",
+          "retrieved": "2026-09-29",
+          "title": "Corporation tax rates",
+          "url": "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/corporations/corporation-tax-rates.html"
+        },
+        {
+          "publisher": "TaxTips.ca",
+          "retrieved": "2026-09-29",
+          "title": "2026 Corporate Income Tax Rates",
+          "url": "https://www.taxtips.ca/smallbusiness/corporatetax/corporate-tax-rates-2026.htm"
+        }
+      ],
+      "stale": false,
+      "unit": "fraction",
+      "used_in": "base",
+      "value": {
+        "AB": 0.23,
+        "BC": 0.27,
+        "ON": 0.265,
+        "QC": 0.265
+      }
+    }
+  ],
+  "robustness": {
+    "grid": {
+      "dimensions": {
+        "credit_scenario": [
+          "low",
+          "base",
+          "high"
+        ],
+        "itc_granted": [
+          true,
+          false
+        ]
+      },
+      "go_count": 5,
+      "go_share": 0.8333,
+      "minimal_go_conditions": [
+        {
+          "itc_granted": true
+        },
+        {
+          "credit_scenario": "base"
+        },
+        {
+          "credit_scenario": "high"
+        }
+      ],
+      "n_states": 6,
+      "states": [
+        {
+          "go": true,
+          "npv": 763280.84,
+          "state": {
+            "credit_scenario": "low",
+            "itc_granted": true
+          }
+        },
+        {
+          "go": true,
+          "npv": 979939.44,
+          "state": {
+            "credit_scenario": "base",
+            "itc_granted": true
+          }
+        },
+        {
+          "go": true,
+          "npv": 979939.44,
+          "state": {
+            "credit_scenario": "high",
+            "itc_granted": true
+          }
+        },
+        {
+          "go": false,
+          "npv": -66791.91,
+          "state": {
+            "credit_scenario": "low",
+            "itc_granted": false
+          }
+        },
+        {
+          "go": true,
+          "npv": 149866.69,
+          "state": {
+            "credit_scenario": "base",
+            "itc_granted": false
+          }
+        },
+        {
+          "go": true,
+          "npv": 149866.69,
+          "state": {
+            "credit_scenario": "high",
+            "itc_granted": false
+          }
+        }
+      ]
+    },
+    "monte_carlo": {
+      "draws": 10000,
+      "itc_probability": 0.6,
+      "mean": 378151.82,
+      "p10": -1369432.52,
+      "p50": 267445.13,
+      "p90": 2227099.5,
+      "p_npv_positive": 0.5798,
+      "seed": 20260929
+    }
+  },
+  "run_hash": "88ecf51a0d9df6bbe8dc5f927ade3481360b2f23067af25baa82ca320d16a8ff",
+  "schema": "pv.results/v1",
+  "tax": {
+    "cca_class": "8",
+    "eligibility": "not_listed",
+    "itc_amount": 0.0,
+    "itc_granted": false,
+    "itc_measure": "ct",
+    "itc_rate_if_granted": 0.3,
+    "rate": 0.265
+  },
+  "value_stack": [
+    {
+      "delta": -1401477.71,
+      "npv": -1401477.71,
+      "step": "Base (no policy)"
+    },
+    {
+      "delta": 1551344.4,
+      "npv": 149866.69,
+      "step": "+ carbon value"
+    },
+    {
+      "delta": 0.0,
+      "npv": 149866.69,
+      "step": "+ ITC"
+    },
+    {
+      "delta": 0.0,
+      "npv": 149866.69,
+      "step": "+ CCA timing (expensing / class)"
+    },
+    {
+      "delta": 0.0,
+      "npv": 149866.69,
+      "step": "+ CCfD"
+    }
+  ],
+  "warnings": [
+    "Override: fed.nir.grid_ef = {'QC': 2.5} (User input: average QC grid intensity from the research phase (fed.nir.grid_ef unverified in ledger v0.1))",
+    "QC cap-and-trade applies to all gas users; the C&T path is also the upper bound."
+  ]
+}

@@ -1,0 +1,112 @@
+# federal/cca_expensing.yaml — PolicyValue CA ledger (CC BY 4.0). Quote the key "ON".
+records:
+- id: fed.cca.expensing
+  jurisdiction: FED
+  instrument: cca
+  parameter: immediate_expensing_first_year_fraction
+  value:
+    2025: 1.0
+    2026: 1.0
+    2027: 1.0
+    2028: 1.0
+    2029: 1.0
+    2034: 0.0
+  unit: fraction
+  currency_basis: n/a
+  effective_from: 2025-01-01
+  effective_to: null
+  legal_status: in_force
+  confidence: medium
+  freshness: statute
+  sources:
+  - url: https://www.ey.com/en_gl/technical/tax-alerts/canada-substantively-enacts-capital-cost-allowance-and-other-business-income-tax-measures-in-bill-c-15
+    title: Canada substantively enacts capital cost allowance and other business income tax measures in Bill C-15
+    publisher: EY
+    published: 2026-03-03
+    retrieved: 2026-09-29
+    locator: Immediate expensing section
+    excerpt: immediate expensing is reinstated for manufacturing or processing machinery and equipment included
+      in Class 53, clean energy generation and energy conservation equipment included in …
+    source_type: secondary
+  - url: https://www.ey.com/en_gl/technical/tax-alerts/canada-substantively-enacts-capital-cost-allowance-and-other-business-income-tax-measures-in-bill-c-15
+    title: Canada substantively enacts capital cost allowance and other business income tax measures in Bill C-15
+    publisher: EY
+    published: 2026-03-03
+    retrieved: 2026-09-29
+    locator: Immediate expensing section
+    excerpt: acquired on or after 1 January 2025 and they become available for use before 2030
+    source_type: secondary
+  - url: https://www.ey.com/en_gl/technical/tax-alerts/canada-substantively-enacts-capital-cost-allowance-and-other-business-income-tax-measures-in-bill-c-15
+    title: Canada substantively enacts capital cost allowance and other business income tax measures in Bill C-15
+    publisher: EY
+    published: 2026-03-03
+    retrieved: 2026-09-29
+    locator: Immediate expensing section, phase-out
+    excerpt: phased out for property that becomes available for use after 2029 and before 2034. Property that becomes
+      available for use after 2033 will be …
+    source_type: secondary
+  - url: https://www.canada.ca/en/department-finance/news/2026/03/legislation-passes-to-implement-budget-2025-canada-strong.html
+    title: 'Legislation passes to implement Budget 2025: Canada Strong'
+    publisher: Department of Finance Canada
+    published: 2026-03-26
+    retrieved: 2026-09-29
+    locator: News release, list of measures
+    excerpt: Introducing a Productivity Super-Deduction – a set of enhanced tax incentives covering all new capital
+      investment
+    source_type: primary_gov
+  notes: Value is the enhanced first-year deduction as a fraction of cost, keyed by available-for-use year, for
+    property acquired on or after 2025-01-01. Neither source gives the 2030-2033 phase-out percentages, so those
+    years are omitted. 2034 = 0.0 means no enhanced deduction (normal CCA applies). EY names Class 43.1, Class 53
+    and ZEV classes 54-56, but not Class 43.2. The CRA AII page (modified 2025-07-21) still shows the earlier 43.1/43.2
+    phase-out (75% for 2024-2025, 55% for 2026-2027), which C-15 superseded for property acquired from 2025. C-15
+    received Royal Assent on 2026-03-26 (Finance release).
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending
+- id: fed.cca.class_rates
+  jurisdiction: FED
+  instrument: cca
+  parameter: class_rates
+  value:
+    '43.1': 0.3
+    '43.2': 0.5
+    '53': 0.5
+    '8': 0.2
+  unit: fraction
+  currency_basis: n/a
+  effective_from: 2026-01-01
+  effective_to: null
+  legal_status: in_force
+  confidence: high
+  freshness: guidance
+  sources:
+  - url: https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/sole-proprietorships-partnerships/report-business-income-expenses/claiming-capital-cost-allowance/classes-depreciable-property.html
+    title: Classes of depreciable property
+    publisher: Canada Revenue Agency
+    published: 2026-08-31
+    retrieved: 2026-09-29
+    locator: Class 43.1 (30%) / Class 43.2 (50%)
+    excerpt: Most of the equipment described in Class 43.1 (30% CCA rate) qualifies under Class 43.2 (50% CCA rate),
+      but Class 43.2 property must be …
+    source_type: primary_gov
+  - url: https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/sole-proprietorships-partnerships/report-business-income-expenses/claiming-capital-cost-allowance/classes-depreciable-property.html
+    title: Classes of depreciable property
+    publisher: Canada Revenue Agency
+    published: 2026-08-31
+    retrieved: 2026-09-29
+    locator: Class 53 (50%)
+    excerpt: Include in Class 53 with a CCA rate of 50% eligible machinery and equipment that is acquired after
+      2015 and before 2026
+    source_type: primary_gov
+  - url: https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/sole-proprietorships-partnerships/report-business-income-expenses/claiming-capital-cost-allowance/classes-depreciable-property.html
+    title: Classes of depreciable property
+    publisher: Canada Revenue Agency
+    published: 2026-08-31
+    retrieved: 2026-09-29
+    locator: Class 8 (20%)
+    excerpt: Class 8 with a CCA rate of 20% includes certain property that is not included in another class.
+    source_type: primary_gov
+  notes: Rates read from the CRA classes page, not Reg. 1100(1)(a). The page says Class 43.2 is limited to property
+    acquired before 2025 and Class 53 to property acquired after 2015 and before 2026, so new 2026 acquisitions
+    may fall in 43.1 or 29/8 instead.
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending

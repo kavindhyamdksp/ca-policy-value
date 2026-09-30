@@ -1,0 +1,38 @@
+# on/epu_obs.yaml — PolicyValue CA ledger (CC BY 4.0). Quote the key "ON".
+records:
+- id: on.eps.epu_obs
+  jurisdiction: 'ON'
+  instrument: eps
+  parameter: epu_market_price
+  value:
+    discount_low: 0.15
+    discount_high: 0.2
+    price: 72
+  unit: CAD/t
+  currency_basis: nominal
+  effective_from: 2025-12-01
+  effective_to: null
+  legal_status: observation
+  confidence: medium
+  freshness: market_observation
+  sources:
+  - url: https://www.ieta.org/uploads/wp-content/2025/09/IETA-Business-brief-Ontario-EPS-Sept_2025.pdf
+    title: 'Business Brief: Ontario EPS'
+    publisher: IETA
+    published: 2025-09-01
+    retrieved: 2026-09-29
+    locator: p. 4, Market commentary
+    excerpt: In 2025, EPUs are transacting at a 15–20% discount to the annual compliance price.
+    source_type: secondary
+  - url: https://carboncredits.com/canadas-carbon-pricing-reset-in-2026-will-industry-step-up-or-stall-climate-progress/
+    title: 'Canada''s Carbon Pricing Reset in 2026: Will Industry Step Up or Stall Climate Progress?'
+    publisher: CarbonCredits.com
+    published: 2025-12-01
+    retrieved: 2026-09-29
+    locator: Ontario EPS section
+    excerpt: units (EPUs) recently traded at around CAD 72 per tonne
+    source_type: secondary
+  notes: Discount keys are fractions and price is CAD/t. CarbonCredits compares the C$72 trade to a regulatory level
+    of CAD 80 (a ~10% discount), not to the 2025 C$95 charge; IETA brief is dated September 2025 (day not shown).
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending

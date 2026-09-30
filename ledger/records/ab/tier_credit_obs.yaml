@@ -1,0 +1,37 @@
+# ab/tier_credit_obs.yaml — PolicyValue CA ledger (CC BY 4.0). Quote the key "ON".
+records:
+- id: ab.tier.credit_obs
+  jurisdiction: AB
+  instrument: tier
+  parameter: credit_market_price
+  value:
+    base: 20
+    low: 18
+  unit: CAD/t
+  currency_basis: nominal
+  effective_from: 2026-05-28
+  effective_to: null
+  legal_status: observation
+  confidence: medium
+  freshness: market_observation
+  sources:
+  - url: https://www.blakes.com/insights/implementation-of-the-canada-alberta-mou-key-takeaways-for-carbon-markets-in-alberta/
+    title: 'Implementation of the Canada-Alberta MOU: Key Takeaways for Carbon Markets in Alberta'
+    publisher: Blake, Cassels & Graydon LLP
+    published: 2026-05-28
+    retrieved: 2026-09-29
+    locator: Discussion of current TIER credit market
+    excerpt: TIER credits have been trading as low as C$20
+    source_type: secondary
+  - url: https://carboncredits.com/canadas-carbon-pricing-reset-in-2026-will-industry-step-up-or-stall-climate-progress/
+    title: 'Canada''s Carbon Pricing Reset in 2026: Will Industry Step Up or Stall Climate Progress?'
+    publisher: CarbonCredits.com
+    published: 2025-12-01
+    retrieved: 2026-09-29
+    locator: Alberta TIER section
+    excerpt: Despite a compliance price of CAD 95 per tonne, market credits trade at around CAD 18 per tonne.
+    source_type: secondary
+  notes: Observation date is the Blakes publication date (2026-05-28) for base C$20; the C$18 low is from CarbonCredits
+    dated 2025-12-01. Neither source names a specific trade date or instrument split (offsets vs EPCs).
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending

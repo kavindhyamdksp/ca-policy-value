@@ -1,0 +1,29 @@
+# bc/credit_obs.yaml — PolicyValue CA ledger (CC BY 4.0). Quote the key "ON".
+records:
+- id: bc.obps.credit_obs
+  jurisdiction: BC
+  instrument: obps
+  parameter: credit_market_price
+  value:
+    price: 65
+  unit: CAD/t
+  currency_basis: nominal
+  effective_from: 2025-12-01
+  effective_to: null
+  legal_status: observation
+  confidence: low
+  freshness: market_observation
+  sources:
+  - url: https://carboncredits.com/canadas-carbon-pricing-reset-in-2026-will-industry-step-up-or-stall-climate-progress/
+    title: 'Canada''s Carbon Pricing Reset in 2026: Will Industry Step Up or Stall Climate Progress?'
+    publisher: CarbonCredits.com
+    published: 2025-12-01
+    retrieved: 2026-09-29
+    locator: paragraph on British Columbia B.C. OBPS
+    excerpt: Credits are trading at about CAD 65 per tonne, a discount compared with the regulatory level of CAD
+      80.
+    source_type: secondary
+  notes: Single secondary trade-press observation, approximate ('about'); no exchange or registry price cited. The
+    page shows publication 2025-12-01 with an update date of 2025-11-28, which is inconsistent.
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending

@@ -1,0 +1,92 @@
+{%- macro m(x) -%}{% if x is none %}n/a{% else %}{{ "%+.2f"|format(x / 1e6) }}{% endif %}{%- endmacro -%}
+{%- macro d(x) -%}{% if x is none %}n/a{% else %}${{ "{:,.0f}".format(x) }}{% endif %}{%- endmacro -%}
+# Decision memo — {{ r.case_id }}
+
+*PolicyValue CA {{ r.engine.split(" ")[1] }} · ledger `{{ r.inputs.ledger_version }}` (sha256 `{{ r.inputs.ledger_sha256[:12] }}`) · as of {{ r.inputs.as_of }} · minimum legal status `{{ r.inputs.min_legal_status }}`{% if r.inputs.seed is not none %} · MC seed {{ r.inputs.seed }}{% endif %} · run `{{ r.run_hash[:16] }}`*
+
+{% if r.inputs.conventions != "standard" %}> **Test conventions `{{ r.inputs.conventions }}` are active.** Results reproduce the research oracle, not production treatment.
+{% endif %}
+## 1. Answer: **{{ r.decision.answer }}**
+
+Base-case NPV **{{ m(r.metrics.npv) }} $M** at {{ "%.1f"|format(r.metrics.discount_rate * 100) }}% nominal
+(IRR {% if r.metrics.irr is none %}n/a{% else %}{{ "%.1f"|format(r.metrics.irr * 100) }}%{% endif %};
+payback {{ r.metrics.payback_simple_years if r.metrics.payback_simple_years is not none else ">life" }} yrs simple,
+{{ r.metrics.payback_discounted_years if r.metrics.payback_discounted_years is not none else ">life" }} yrs discounted;
+operating years {{ r.metrics.operating_years[0] }}–{{ r.metrics.operating_years[1] }}).
+
+Deciding policy terms:
+{% for t in r.decision.deciding_terms %}- {{ t }}
+{% else %}- none identified
+{% endfor %}
+## 2. Policy value stack
+
+Computed sequentially in the order shown; interactions are non-additive, so each step's value depends on the steps before it.
+
+| Step | NPV $M | Step value $M |
+|---|---:|---:|
+{% for s in r.value_stack %}| {{ s.step }} | {{ m(s.npv) }} | {{ m(s.delta) }} |
+{% endfor %}
+## 3. Breakeven vs realizable carbon band
+
+Carbon treatment: **{{ r.carbon.kind }}**, scenario `{{ r.carbon.scenario }}`, floor in base case: {{ "yes" if r.carbon.floor_in_base else "no" }}{% if r.carbon.ccfd %}, CCfD ${{ r.carbon.ccfd.strike }}/t to {{ r.carbon.ccfd.term_end }} on {{ "%.0f"|format(r.carbon.ccfd.volume_share * 100) }}% of volume{% endif %}. Covered tonnes avoided: {{ "{:,.0f}".format(r.carbon.covered_tonnes_per_yr) }} t/yr.
+
+| | $/t (levelized at the discount rate) |
+|---|---:|
+| Breakeven flat carbon price | **{{ d(r.carbon.breakeven_flat) }}** |
+| Low (lowest observed) | {{ d(r.carbon.band_levelized.low) }} |
+| Base (latest observation) | {{ d(r.carbon.band_levelized.base) }} |
+| High (fund / compliance price) | {{ d(r.carbon.band_levelized.high) }} |
+| Headline benchmark (**upper bound only**) | {{ d(r.carbon.band_levelized.upper_bound_headline) }} |
+
+Position: {{ r.carbon.breakeven_position }}.
+
+## 4. Robustness
+
+{% if r.robustness.grid %}Policy-state grid: **GO in {{ r.robustness.grid.go_count }} of {{ r.robustness.grid.n_states }} states** ({{ "%.0f"|format(r.robustness.grid.go_share * 100) }}%).
+
+| {% for k in r.robustness.grid.dimensions %}{{ k }} | {% endfor %}NPV $M | Decision |
+|{% for k in r.robustness.grid.dimensions %}---|{% endfor %}---:|---|
+{% for s in r.robustness.grid.states %}| {% for k in r.robustness.grid.dimensions %}{{ s.state[k] }} | {% endfor %}{{ m(s.npv) }} | {{ "GO" if s.go else "NO-GO" }} |
+{% endfor %}
+Minimal conditions under which every state is GO: {% if r.robustness.grid.minimal_go_conditions %}{% for c in r.robustness.grid.minimal_go_conditions %}{% if c %}`{% for k, v in c.items() %}{{ k }}={{ v }}{% if not loop.last %}, {% endif %}{% endfor %}`{% else %}`(always)`{% endif %}{% if not loop.last %}; {% endif %}{% endfor %}{% else %}none{% endif %}.
+{% else %}No policy-state grid requested.
+{% endif %}
+{% if r.robustness.monte_carlo %}{% set mc = r.robustness.monte_carlo %}Monte Carlo ({{ "{:,}".format(mc.draws) }} draws, seed {{ mc.seed }}; regime probabilities are user judgements):
+
+| Mean $M | P10 | P50 | P90 | P(NPV>0) |
+|---:|---:|---:|---:|---:|
+| {{ m(mc.mean) }} | {{ m(mc.p10) }} | {{ m(mc.p50) }} | {{ m(mc.p90) }} | {{ "%.0f"|format(mc.p_npv_positive * 100) }}% |
+{% if mc.itc_probability is not none %}
+ITC eligibility drawn with p = {{ mc.itc_probability }}.
+{% endif %}{% endif %}
+## 5. Emissions
+
+| | t/yr |
+|---|---:|
+| On-site avoided | {{ "{:,.0f}".format(r.emissions.onsite_avoided_t_per_yr) }} |
+| Grid added ({{ r.emissions.grid_basis }}, {{ r.emissions.grid_ef_g_kwh }} g/kWh) | {{ "{:,.0f}".format(r.emissions.grid_added_t_per_yr) }} |
+| Net avoided | {{ "{:,.0f}".format(r.emissions.net_avoided_t_per_yr) }} |
+
+Lifetime net: {{ "{:,.0f}".format(r.emissions.lifetime_net_t) }} t. Abatement cost (−NPV / discounted tonnes): on-site basis {{ d(r.emissions.abatement_cost_onsite_per_t) }}/t, net basis {{ d(r.emissions.abatement_cost_net_per_t) }}/t.
+
+## 6. Assumptions, overrides and warnings
+
+- Tax: rate {{ "%.2f"|format(r.tax.rate * 100) }}%; {{ r.tax.itc_measure|upper }} ITC {{ "granted" if r.tax.itc_granted else "not granted" }} in base (eligibility: {{ r.tax.eligibility }}; rate if granted {{ "%.0f"|format(r.tax.itc_rate_if_granted * 100) }}%; amount {{ d(r.tax.itc_amount) }}); CCA class {{ r.tax.cca_class }}.
+{% for o in r.overrides %}- **Override** `{{ o.record }}` = `{{ o.value }}` — {{ o.reason }}
+{% endfor %}
+{% if r.warnings %}**Warnings**
+
+{% for w in r.warnings %}- ⚠ {{ w }}
+{% endfor %}{% else %}No warnings.
+{% endif %}
+## 7. Provenance appendix
+
+Every ledger record used in this run ({{ r.provenance|length }}), with legal status and sources. *Scenario* rows were used only for scenarios, bands or the grid, not the base case.
+
+| Record | Value | Status | Used in | Retrieved | Sources |
+|---|---|---|---|---|---|
+{% for p in r.provenance %}| `{{ p.id }}`{% if p.overridden %} (override){% endif %}{% if p.stale %} ⚠ stale{% endif %} | {{ p.value|tojson|replace("|", "/") }} {{ p.unit }} | {{ p.legal_status }} | {{ p.used_in }} | {{ p.retrieved }} | {% for s in p.sources %}[{{ s.publisher }}]({{ s.url }}){% if not loop.last %}; {% endif %}{% endfor %} |
+{% endfor %}
+## 8. Notice
+
+This memo is a scenario analysis produced by a deterministic model from the cited public sources and the user's case inputs. **It is not tax, legal, accounting or investment advice.** ITC and CCA eligibility is expressed as a confidence level and must be confirmed with a qualified tax advisor (and, for Class 43.1/43.2, NRCan's technical guidance). Credit prices are dated observations, not forecasts. Ledger data: CC BY 4.0 with OGL-Canada attributions (see `ledger/LICENSE`).
