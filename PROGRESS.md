@@ -38,11 +38,11 @@ Resume: read this + CLAUDE.md only, continue at the first unchecked item. Branch
 - [x] 3 golden cases + snapshots
 - [x] drift test: ab.tier.floor announced→in_force flips golden_ab_abatement_ccfd
 - [x] drift CI job on ledger/ PRs
-- [ ] README quick-start, docs/user_guide.md, docs/methodology.md
+- [x] README quick-start, docs/user_guide.md, docs/methodology.md
 
 ## M7 prep
-- [ ] docs/validation/interview_guide.md
-- [ ] docs/validation/pilot_kit.md
+- [x] docs/validation/interview_guide.md
+- [x] docs/validation/pilot_kit.md
 
 ## Release
 - [ ] DoD checklist (8)
