@@ -1,7 +1,21 @@
 # Design-partner pilot kit (M7)
 
-For partners who agreed to run PolicyValue CA on a real project. Goal (gate G1): ≥3 partners run a real case,
-and we learn whether the memo changes or sharpens a decision. Budget: 2–3 hours of partner time.
+PolicyValue CA is free and open source, offered at no cost; pilots are not sales conversations. A pilot is
+a practitioner running it on a real project with us, so we learn whether the memo changes or sharpens a
+decision and what to fix. Goal (gate G1): ≥3 partners run a real case. Budget: 2–3 hours of partner time.
+
+## Finding pilot partners
+
+Anyone who evaluates industrial decarbonization projects in AB, ON, BC or QC: facility energy or
+compliance analysts, consultants, CCUS/CCfD developers, and researchers. Useful channels: your own network
+and LinkedIn, industry association events (IETA, CME, CIAC), and university or NGO energy groups.
+
+Keep contact details in a private list outside this repository. A short invitation:
+
+> I've built a free, open-source tool that values Canadian industrial decarbonization projects under the
+> carbon-pricing and clean-tax rules as they actually apply — credit prices, floors, CCfDs, ITCs — with a
+> cited source for every number. Would you try it on one real or recent project (2–3 hours)? Your data
+> stays on your machine, and your feedback shapes the next version.
 
 ## What the partner needs
 
@@ -47,13 +61,13 @@ and we learn whether the memo changes or sharpens a decision. Budget: 2–3 hour
 ## Feedback form
 
 Copy into `docs/validation/pilots/NN-<segment>.md` (anonymized). The front matter is the structured record
-scored by `python tools/gate_scorecard.py g1 docs/validation/pilots`; only these fields are accepted.
+summarized by `python tools/pilot_scorecard.py docs/validation/pilots`; only these fields are accepted.
 
 ```markdown
 ---
 id: "NN"
 date: 2026-11-15
-segment: covered_facility      # covered_facility | consultant | developer
+segment: covered_facility      # covered_facility | consultant | developer | researcher | other
 province: AB                   # AB | "ON" | BC | QC | FED | other
 ran_real_case: yes             # yes | no
 decision_changed_or_derisked: no   # yes | no (question 4)
@@ -73,13 +87,13 @@ Pilot NN · segment: ______ · province: __ · date: ____-__-__
 8. Time to first memo (minutes): ____   Blockers: ______
 9. Would you use it on the next live decision?  yes / maybe / no — what would change your answer?
 10. Would you rely on `pv drift` alerts when policy changes?  yes / no
-11. Would your organization pay for support / custom modules / hosted convenience? rough range: ______
+11. May we mention your organization type (not name) as a pilot in the project README?  yes / no
 12. Anything else:
 ```
 
 ## G1 read-out
 
-After ≥3 pilots, run `python tools/gate_scorecard.py g1 docs/validation/pilots` and summarize against
-[DECISION.md](../../DECISION.md) gate G1: pilots completed, decisions
-changed or sharpened, time to first memo, ledger corrections received, and willingness to keep using it.
+After ≥3 pilots, run `python tools/pilot_scorecard.py docs/validation/pilots` and summarize against
+[DECISION.md](../../DECISION.md) gate G1: pilots completed, decisions changed or sharpened, time to first
+memo, ledger corrections received, and whether partners would use it again.
 Update DECISION.md, SPEC.md and IMPLEMENTATION_PLAN.md with the outcome.

@@ -44,7 +44,7 @@ flowchart LR
 | `pv.schemas` | Published contracts: `pv.results/v1` JSON Schema, case schema (from the model), record schema | jsonschema |
 | `pv.export` | Ledger export (JSON, CSV, static HTML) and the freshness review queue | Jinja2 |
 | `pv.cli` | `validate`, `run`, `drift`, `schema`, `case template`, `ledger show/due/export`; `--overrides` for uncommitted licensed values | Typer |
-| `tools/` | Gate scorecards (G0/G1) and the demo-kit builder; outside the product package | Python |
+| `tools/` | Pilot scorecard (G1); outside the product package | Python |
 | CI | Tests, ledger validation, freshness SLA, link check, drift on ledger PRs | GitHub Actions |
 | Static ledger site | Browsable ledger with citations: `pv ledger export` → GitHub Pages (manual `ledger-site` workflow) | Jinja2 → Pages |
 
@@ -73,7 +73,7 @@ src/pv/{__init__,ledger,registry,carbon,tax,cashflow,robustness,emissions,result
 src/pv/registry.yaml                 # record wiring + model assumptions (no policy values)
 src/pv/schemas/results.v1.schema.json
 src/pv/templates/{memo.md.j2, ledger.html.j2, cases/{heat_pump,abatement}.yaml}
-tools/{gate_scorecard,build_demo_kit}.py
+tools/pilot_scorecard.py
 cases/{golden_hp_qc.yaml, golden_hp_bc_covered.yaml, golden_ab_abatement_ccfd.yaml}
 tests/{unit,property,golden,ledger,tools}/
 validation/   # research-phase models (frozen)

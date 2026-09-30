@@ -1,11 +1,19 @@
 # Validation decision
 
-**Date:** 2026-09-29  **Decision:** **REFOCUS**
+**Date:** 2026-09-29  **Decision:** **REFOCUS**  ·  **Amended 2026-09-30** (owner decision, below)
+
+> **Owner decision, 2026-09-30: free, non-commercial, open-source.** PolicyValue CA is provided free of
+> charge as a public-interest tool (code Apache-2.0, ledger CC BY 4.0), and is not intended for commercial
+> purposes. Consequences: the pre-pilot problem-validation phase (gate G0: interviews and competitor demos)
+> is removed, and the project goes straight to design-partner pilots (G1). Commercial criteria (paying users,
+> willingness to pay, buyer universe) no longer apply; G2 and the stop criteria below are restated in terms
+> of open adoption and sustainable maintenance. The analysis in this document is kept as the record of why
+> the refocused scope was chosen.
 
 | Scope | Verdict |
 |---|---|
 | Original concept: broad "Canada Climate CapEx Engine" connecting policy, incentives, energy/emissions and NPV/IRR/payback/uncertainty for corporate decarbonization decisions | **DO NOT BUILD** as specified |
-| Refocused concept: **PolicyValue CA**, an open, provenance-tracked ledger of the Canadian policy parameters that decide industrial decarbonization projects, plus a deterministic kernel that turns them into *realized* project value, breakeven carbon price and policy-regime risk | **Build a minimal MVP behind explicit validation gates** (see [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)) |
+| Refocused concept: **PolicyValue CA**, an open, provenance-tracked ledger of the Canadian policy parameters that decide industrial decarbonization projects, plus a deterministic kernel that turns them into *realized* project value, breakeven carbon price and policy-regime risk | **Build a minimal MVP, then pilot it** (see [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)) |
 
 ## Why not the original concept
 
@@ -30,14 +38,14 @@
    - The ITC flipped heat-pump decisions in QC and BC.
 
    ([04](docs/research/04_quantitative_validation.md))
-2. **The headline-price shortcut is a consequential and likely common error.** How common is untested: the evidence is guidance that prescribes headline or shadow schedules, and G0 tests it. It overstates value 1.25× in Ontario, ~1.5× in BC and ~5× in Alberta before 2030. Credit markets are oversupplied; the CCI finds effective marginal prices ranging from <$50 to >$130/t where market prices look alike, and calls for "transparent analytics".
+2. **The headline-price shortcut is a consequential and likely common error.** How common is untested: the evidence is guidance that prescribes headline or shadow schedules, and pilots will show it. It overstates value 1.25× in Ontario, ~1.5× in BC and ~5× in Alberta before 2030. Credit markets are oversupplied; the CCI finds effective marginal prices ranging from <$50 to >$130/t where market prices look alike, and calls for "transparent analytics".
 3. **No product combines** realized facility-level carbon value, clean-economy tax measures as cash flows, explicit policy-regime/CCfD risk and source-level provenance for Canada. Confidence is moderate (60–75%); enterprise tools are opaque, which is why demos are a gate.
-4. **It is cheap to build and maintain when scoped.** About 55 ledger records and roughly 85–130 h/yr of maintenance ([data feasibility](docs/analysis/data_feasibility.md)). It needs no servers: a git repo, Python and a static site. The open ledger has standalone value (for consultants, researchers and GMF/LCCA studies still pointing at the superseded $170-by-2030 schedule) even if the kernel fails to find buyers.
+4. **It is cheap to build and maintain when scoped.** About 55 ledger records and roughly 85–130 h/yr of maintenance ([data feasibility](docs/analysis/data_feasibility.md)). It needs no servers: a git repo, Python and a static site. The open ledger has standalone value (for consultants, researchers and GMF/LCCA studies still pointing at the superseded $170-by-2030 schedule) even if few people use the kernel.
 
 ## What this decision is *not* confident about
 
-- **Primary demand.** All demand evidence is secondary. No user interviews were possible in this assignment. This is the largest open risk.
-- **Buyer universe.** It is small: ~1,000 priced facilities, ~300–500 parent firms, plus consultants. It may support an open-source tool plus services, not a venture-scale SaaS.
+- **Usefulness in practice.** All evidence of need is secondary; no practitioner has used the tool yet. Pilots (G1) test it directly.
+- **Audience.** It is small and specialized: ~1,000 priced facilities, ~300–500 parent firms, plus consultants and researchers. That suits a free, open-source tool with a public ledger.
 - **Incumbent opacity.** SINAI and ClearBlue enterprise tiers may already do parts of G1–G3 privately.
 - **Timing.** Rules change within months: the federal benchmark publication (late 2026), the AB floor regulation (by 31 Dec 2026) and the ITC domestic-content decision are all pending.
 
@@ -45,12 +53,13 @@
 
 | Gate | When | Pass criteria | If failed |
 |---|---|---|---|
-| **G0: Problem validation** | Before or alongside Phase 1, ≤ 6 weeks | At least 12 interviews (≥6 covered-facility analysts or finance leads, ≥4 consultants/ESCOs, ≥2 CCfD/CCUS developers). At least 6 confirm they currently value carbon at headline or build it by hand each time **and** would use a cited ledger + kernel on a live decision. Demos of SINAI and ClearBlue confirm they do not value projects under OBPS mechanics with policy-regime risk. | Stop the kernel. Keep only the open ledger if ≥3 interviewees would use it; otherwise archive. |
 | **G1: MVP usefulness** | End of Phase 1 | At least 3 design partners run the kernel on a real project or CCfD bid and say the memo changed or de-risked the decision. Ledger freshness SLA met for 60 days. Maintenance ≤ 15 h/month. | Stop at Phase 1; publish the ledger only. |
-| **G2: Expansion** | End of Phase 2 | At least 2 paying or committed users (support contract, custom module, or data licence), or an institutional host (NGO, university, association) willing to co-maintain the ledger. | Keep as open-source maintenance mode; no hosted product. |
+| **G2: Expansion** | End of Phase 2 | Open adoption: at least 3 external users, citations or forks of the ledger or kernel, or an institutional host (NGO, university, association) willing to co-maintain the ledger. | Keep as open-source maintenance mode; no hosted service. |
 
-## Kill criteria (any one)
+*G0 (problem validation by interviews and competitor demos) was removed on 2026-09-30 by the owner decision above.*
 
-- An incumbent ships Canadian project-level valuation under OBPS mechanics with policy-regime risk before G1.
-- The scoped ledger needs more than 0.25 FTE to keep within its freshness SLA.
-- Interviews show covered facilities already get realized carbon value from their market advisors and would not change workflow.
+## Stop or pause criteria (any one)
+
+- The scoped ledger needs more than 0.25 FTE to keep within its freshness SLA: pause releases and mark the ledger unmaintained rather than let stale values circulate.
+- An equivalent free, open tool appears: contribute to it instead of duplicating it.
+- Pilots show the memo misleads or is not usable on real decisions, and fixes do not resolve it (G1 fail).

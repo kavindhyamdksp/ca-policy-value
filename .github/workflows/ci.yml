@@ -78,16 +78,14 @@ jobs:
         with: {name: dist, path: dist/}
 
   tools:
-    # Gate scorecards and the demo-kit builder (outside the pv package).
+    # Pilot scorecard (outside the pv package).
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.12", cache: pip}
       - run: pip install -e ".[dev]"
-      - run: python tools/gate_scorecard.py g0 docs/validation/interviews --allow-empty
-      - run: python tools/gate_scorecard.py g1 docs/validation/pilots --allow-empty
-      - run: python tools/build_demo_kit.py --out out/demo_kit
+      - run: python tools/pilot_scorecard.py docs/validation/pilots --allow-empty
 
   reproducibility:
     needs: test

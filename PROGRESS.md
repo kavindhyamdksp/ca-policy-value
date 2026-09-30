@@ -41,7 +41,6 @@ Resume: read this + CLAUDE.md only, continue at the first unchecked item. Open g
 - [x] README quick-start, docs/user_guide.md, docs/methodology.md
 
 ## M7 prep
-- [x] docs/validation/interview_guide.md
 - [x] docs/validation/pilot_kit.md
 
 ## Release
@@ -57,12 +56,15 @@ Resume: read this + CLAUDE.md only, continue at the first unchecked item. Open g
 - [x] fixes: MC vs deterministic carbon rules (D14); CCUS rate key + CE/CCUS window (D15)
 - [x] results.v1 / case / record schemas + `pv schema`; stable case digest
 - [x] `--overrides FILE` (run, drift); `pv case template`; `pv ledger due/export`; ledger-site workflow
-- [x] tools: gate_scorecard (G0/G1), build_demo_kit; recruitment, competitor-demo checklist, note templates
+- [x] tools: pilot scorecard (G1); pilot kit with partner outreach
+- [x] owner decision 2026-09-30: free, non-commercial, open source; Phase 0/G0 removed (interviews, recruitment,
+  competitor demos, demo kit deleted); G2 = open adoption
 - [x] CI: wheel smoke test outside checkout, tools job, mypy on tools
 - [x] ledger-v2026.10.1 content: fed.nir.grid_ef (NIR Annex 7), fed.ce_itc.rate (ITA 127.491), fed.cca.expensing_classes
 - [x] docs: developer guide; user guide, methodology, architecture, README; plan v1.3 with gate register
 - [ ] (user) merge, tag v0.2.0 + ledger-v2026.10.1, optional Pages — see plan §2.7
-- [ ] (gated) P0.4 interviews, P0.5 competitor demos → P0.6 synthesis → M7 pilots
+- [ ] (user) M7 pilots: find ≥3 partners (docs/validation/pilot_kit.md) → G1 read-out
+- [ ] (user) tax review of ITC/CCA records
 
 ## Unverified (omitted from ledger; kernel requires user input)
 - fed.nir.grid_ef — RESOLVED 2026-09-30 (ECCC Data Mart file API: api/path_contents + api/file)

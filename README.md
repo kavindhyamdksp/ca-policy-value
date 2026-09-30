@@ -10,6 +10,7 @@ Monte Carlo, and a cited decision memo. When the ledger changes, `pv drift` re-r
 flags decisions that flip.
 
 It is a CLI and Python package. There is no server, no account and no network access at run time.
+**It is free and open source** — a non-commercial, public-interest tool (code Apache-2.0, data CC BY 4.0).
 
 ## Quick start (≈5 minutes)
 
@@ -67,7 +68,7 @@ extension points in the [developer guide](docs/developer_guide.md).
 |---|---|
 | [`ledger/`](ledger/) | 37 dated, cited entries (CC BY 4.0), JSON Schema, [changelog](ledger/CHANGELOG.md), [record format](ledger/RECORD_FORMAT.md) |
 | [`src/pv/`](src/pv/) | Kernel: `ledger`, `registry`, `carbon`, `tax`, `cashflow`, `emissions`, `robustness`, `results`, `schemas`, `report`, `export`, `drift`, `cli` |
-| [`tools/`](tools/) | Gate scorecards (G0/G1) and the demo-kit builder |
+| [`tools/`](tools/) | Pilot scorecard (summarizes anonymized pilot feedback) |
 | [`cases/`](cases/) | Golden cases (also the drift set) |
 | [`tests/`](tests/) | Unit, property (hypothesis), oracle, golden snapshot, drift, ledger, contract and tool tests |
 | [`validation/`](validation/) | Frozen research-phase model — the oracle the kernel reproduces exactly |
@@ -82,10 +83,8 @@ extension points in the [developer guide](docs/developer_guide.md).
 - **Policy terms flip decisions for covered industrial facilities and near-margin projects.** The carbon-value
   treatment is the largest NPV swing factor, and a CCfD moves P(NPV>0) from 0% to 76% in the Alberta example.
   → [quantitative validation](docs/research/04_quantitative_validation.md), [DECISION.md](DECISION.md)
-- **Demand is the open risk.** Gate G0 needs ≥12 practitioner interviews; see the [recruitment plan](docs/validation/recruitment.md),
-  [interview guide](docs/validation/interview_guide.md), [competitor-demo checklist](docs/validation/competitor_demos.md)
-  and [pilot kit](docs/validation/pilot_kit.md). `python tools/build_demo_kit.py` builds the interview demo;
-  `python tools/gate_scorecard.py g0 docs/validation/interviews` scores the notes against the gate.
+- **Next: pilots.** Practitioners run it on real projects and tell us what to fix — see the
+  [pilot kit](docs/validation/pilot_kit.md). Interested? Open an issue.
 
 ## Development
 

@@ -1,1 +1,1 @@
-"""Maintainer tools outside the pv package (gate scorecards, demo kit)."""
+"""Maintainer tools outside the pv package (pilot scorecard)."""

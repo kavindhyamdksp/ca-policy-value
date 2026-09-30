@@ -29,7 +29,7 @@ the decision impact of every PR that touches `ledger/` or `cases/`.
 | `pv.robustness` | Breakeven, grid, MC, sensitivity, strike solver over one vectorized evaluator (`npv_draws`) | Pure, seeded |
 | `pv.results`, `pv.report`, `pv.export` | Serialization (results v1, CSV, memo, ledger export) | Deterministic; no clock |
 | `pv.cli` | The only place that reads today's date or the filesystem layout | — |
-| `tools/` | Maintainer tools outside the product: gate scorecards, demo kit | Not imported by `pv` |
+| `tools/` | Maintainer tools outside the product: pilot scorecard | Not imported by `pv` |
 
 The only policy-shaped code left is the model structure itself (ADR-0005: flat vs ratio market methods,
 floor and CCfD rules, the QC cap-and-trade path), which a registry entry selects.
@@ -87,6 +87,6 @@ ledger view, so provenance, warnings and the run hash keep working unchanged.
 | `tests/golden/test_golden_cases.py` | Snapshots, byte-identical reruns, the floor drift flip |
 | `tests/ledger` | Schema, validators, the shipped ledger valid at its release date |
 | `tests/test_contracts.py` | Results/case schemas, external overrides, export, templates, CLI |
-| `tests/tools` | Gate scorecards and demo kit on synthetic notes |
+| `tests/tools` | Pilot scorecard on synthetic notes |
 
-Synthetic fixtures only: tests never need network access, real interview notes or licensed prices.
+Synthetic fixtures only: tests never need network access, real pilot notes or licensed prices.

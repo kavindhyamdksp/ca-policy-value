@@ -9,6 +9,7 @@ Later sessions: read this + PROGRESS.md only. Do not re-read docs/research/01–
   CCA 43.1/43.2/53 expensing, grid/gas emission factors, policy-regime robustness, decision drift.
 - NOT: web app/server/DB, grant or utility-rebate data, buildings/BEPS, MACC workflow,
   credit-price forecasting, energy simulation, LLM calls in code, NS/SK/CFR (Phase 2).
+- Free, non-commercial, open source (owner decision 2026-09-30): no Phase 0/G0, no paid tiers; pilots are next.
 - Outputs are scenario analyses, not tax/investment advice. Ledger CC BY 4.0, code Apache-2.0,
   no proprietary price data committed (users inject licensed prices via overrides).
 
