@@ -64,7 +64,7 @@
     "net_share_of_onsite": 1.0,
     "onsite_avoided_t_per_yr": 50000.0
   },
-  "engine": "policyvalue-ca 0.1.0",
+  "engine": "policyvalue-ca 0.2.0",
   "inputs": {
     "as_of": "2026-10-15",
     "case_sha256": "00f89fdab8501b2e8cfc4dd966c8296ea9f8362181d129190a1b1ea779dfa2c2",

@@ -1,6 +1,6 @@
 # Architecture overview
 
-*Version 0.1 — 2026-09-29. Decisions are recorded as ADRs in [`adr/`](adr/).*
+*Version 0.2 — 2026-09-30. Decisions are recorded as ADRs in [`adr/`](adr/).*
 
 ## Shape
 
@@ -34,15 +34,19 @@ flowchart LR
 |---|---|---|
 | `ledger/` | Versioned policy parameters with provenance and legal status | YAML, JSON Schema, git tags (`ledger-vYYYY.MM.N`) |
 | `pv.ledger` | Load, validate, filter by `as_of` and minimum legal status, resolve overrides | pydantic v2 |
+| `pv.registry` (`registry.yaml`) | Wiring: which ledger record supplies each model role; plan-level model assumptions. Keeps record ids and policy structure out of the formula modules | YAML + pydantic |
 | `pv.carbon` | Realized carbon value path per facility/scenario (coverage, market, floor, CCfD, QC C&T) | numpy |
 | `pv.tax` | ITC rate by in-service year and labour flag; eligible base net of assistance; CCA schedules | pure Python |
 | `pv.cashflow` | Annual after-tax cash flows; NPV, IRR, payback; value stack | numpy + scipy (`brentq`) |
-| `pv.robustness` | Breakeven carbon; discrete policy-state grid; seeded MC (vectorized) | numpy |
+| `pv.robustness` | Breakeven carbon; discrete policy-state grid; seeded MC; one-way sensitivity; CCfD strike solver — all over one vectorized NPV evaluator | numpy |
 | `pv.emissions` | On-site and grid emissions, average vs marginal | pure Python |
 | `pv.report` | Memo rendering (Markdown → HTML) and provenance appendix | Jinja2 |
-| `pv.cli` | `validate`, `run`, `drift`, `ledger show` | Typer |
+| `pv.schemas` | Published contracts: `pv.results/v1` JSON Schema, case schema (from the model), record schema | jsonschema |
+| `pv.export` | Ledger export (JSON, CSV, static HTML) and the freshness review queue | Jinja2 |
+| `pv.cli` | `validate`, `run`, `drift`, `schema`, `case template`, `ledger show/due/export`; `--overrides` for uncommitted licensed values | Typer |
+| `tools/` | Gate scorecards (G0/G1) and the demo-kit builder; outside the product package | Python |
 | CI | Tests, ledger validation, freshness SLA, link check, drift on ledger PRs | GitHub Actions |
-| Static site (Phase 2) | Browsable ledger with history and citations | MkDocs Material → GitHub Pages |
+| Static ledger site | Browsable ledger with citations: `pv ledger export` → GitHub Pages (manual `ledger-site` workflow) | Jinja2 → Pages |
 
 ## Key design rules
 
@@ -65,10 +69,13 @@ ledger/
     qc/{spede.yaml, auction_obs.yaml}
     instruments/{ccfd_canada_alberta.yaml}
   CHANGELOG.md
-src/pv/{__init__,ledger,carbon,tax,cashflow,robustness,emissions,report,cli}.py
-src/pv/templates/memo.md.j2
+src/pv/{__init__,ledger,registry,carbon,tax,cashflow,robustness,emissions,results,report,export,drift,cli}.py
+src/pv/registry.yaml                 # record wiring + model assumptions (no policy values)
+src/pv/schemas/results.v1.schema.json
+src/pv/templates/{memo.md.j2, ledger.html.j2, cases/{heat_pump,abatement}.yaml}
+tools/{gate_scorecard,build_demo_kit}.py
 cases/{golden_hp_qc.yaml, golden_hp_bc_covered.yaml, golden_ab_abatement_ccfd.yaml}
-tests/{unit,property,golden,ledger}/
+tests/{unit,property,golden,ledger,tools}/
 validation/   # research-phase models (frozen)
 docs/
 ```

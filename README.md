@@ -42,8 +42,16 @@ pv validate --cases cases           # schema, units, dates, primary sources, fre
 pv drift --from ledger-v2026.10.0   # re-run saved cases against the working-tree ledger
 ```
 
-Next: copy a golden case and edit it for your project — see the [user guide](docs/user_guide.md).
-The formulas and caveats are in the [methodology](docs/methodology.md).
+Start your own project from a template (every placeholder is marked `REPLACE`), keeping licensed prices in
+an uncommitted file:
+
+```bash
+pv case template --kind heat_pump --out my-project.yaml
+pv run my-project.yaml --overrides prices.local.yaml
+```
+
+More in the [user guide](docs/user_guide.md); formulas and caveats in the [methodology](docs/methodology.md);
+extension points in the [developer guide](docs/developer_guide.md).
 
 ## Golden cases
 
@@ -57,12 +65,13 @@ The formulas and caveats are in the [methodology](docs/methodology.md).
 
 | Path | Contents |
 |---|---|
-| [`ledger/`](ledger/) | 34 dated, cited records (CC BY 4.0), JSON Schema, [changelog](ledger/CHANGELOG.md), [record format](ledger/RECORD_FORMAT.md) |
-| [`src/pv/`](src/pv/) | Kernel: `ledger`, `carbon`, `tax`, `cashflow`, `emissions`, `robustness`, `results`, `report`, `drift`, `cli` |
+| [`ledger/`](ledger/) | 37 dated, cited entries (CC BY 4.0), JSON Schema, [changelog](ledger/CHANGELOG.md), [record format](ledger/RECORD_FORMAT.md) |
+| [`src/pv/`](src/pv/) | Kernel: `ledger`, `registry`, `carbon`, `tax`, `cashflow`, `emissions`, `robustness`, `results`, `schemas`, `report`, `export`, `drift`, `cli` |
+| [`tools/`](tools/) | Gate scorecards (G0/G1) and the demo-kit builder |
 | [`cases/`](cases/) | Golden cases (also the drift set) |
-| [`tests/`](tests/) | Unit, property (hypothesis), oracle, golden snapshot, drift, ledger and report tests |
+| [`tests/`](tests/) | Unit, property (hypothesis), oracle, golden snapshot, drift, ledger, contract and tool tests |
 | [`validation/`](validation/) | Frozen research-phase model — the oracle the kernel reproduces exactly |
-| [`docs/`](docs/) | [User guide](docs/user_guide.md), [methodology](docs/methodology.md), [spec](docs/product/SPEC.md), [architecture + ADRs](docs/architecture/), [research](docs/research/), [validation kit](docs/validation/) |
+| [`docs/`](docs/) | [User guide](docs/user_guide.md), [methodology](docs/methodology.md), [developer guide](docs/developer_guide.md), [spec](docs/product/SPEC.md), [architecture + ADRs](docs/architecture/), [research](docs/research/), [validation kit](docs/validation/) |
 | [DECISION.md](DECISION.md), [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) | Verdict, gates, and the living plan |
 
 ## Why this exists (research summary)
@@ -73,20 +82,23 @@ The formulas and caveats are in the [methodology](docs/methodology.md).
 - **Policy terms flip decisions for covered industrial facilities and near-margin projects.** The carbon-value
   treatment is the largest NPV swing factor, and a CCfD moves P(NPV>0) from 0% to 76% in the Alberta example.
   → [quantitative validation](docs/research/04_quantitative_validation.md), [DECISION.md](DECISION.md)
-- **Demand is the open risk.** Gate G0 needs ≥12 practitioner interviews; see the [interview guide](docs/validation/interview_guide.md)
-  and [pilot kit](docs/validation/pilot_kit.md).
+- **Demand is the open risk.** Gate G0 needs ≥12 practitioner interviews; see the [recruitment plan](docs/validation/recruitment.md),
+  [interview guide](docs/validation/interview_guide.md), [competitor-demo checklist](docs/validation/competitor_demos.md)
+  and [pilot kit](docs/validation/pilot_kit.md). `python tools/build_demo_kit.py` builds the interview demo;
+  `python tools/gate_scorecard.py g0 docs/validation/interviews` scores the notes against the gate.
 
 ## Development
 
 ```bash
 pip install -e ".[dev]"
 pytest -q                    # add --cov=pv for coverage
-ruff check && mypy src
+ruff check && mypy
 ```
 
 CI runs lint, strict typing, the test matrix (ubuntu + macOS × Python 3.11–3.13) with a byte-identical
-`results.json` check across the matrix, ledger validation, a weekly link check, and `pv drift` on every PR
-that touches `ledger/` or `cases/`.
+`results.json` check across the matrix, a wheel built and run from outside the checkout, ledger validation,
+a weekly link check, and `pv drift` on every PR that touches `ledger/` or `cases/`. The static ledger site
+(`pv ledger export`) deploys to GitHub Pages from the manual `ledger-site` workflow.
 
 ## Licences
 

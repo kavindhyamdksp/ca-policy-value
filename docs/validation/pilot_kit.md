@@ -38,7 +38,7 @@ and we learn whether the memo changes or sharpens a decision. Budget: 2–3 hour
 
 | Message | Fix |
 |---|---|
-| `record fed.nir.grid_ef unavailable` | Add an override with your grid intensity, or `grid_factor: marginal` + `marginal_grid_ef_g_kwh` |
+| `set project.itc_rate_key to one of: …` | The ITC rate record holds several rates (CCUS): name the component, e.g. `capture_to_2035` |
 | `supply prices.natural_gas_gj` | Enter your delivered gas price ex-carbon, $/GJ |
 | `... below min_legal_status` | The record exists but is not yet law at your threshold; lower `min_legal_status` or override it |
 | `phase-out unverified` | Your in-service year falls in 2030–2033; override `fed.cca.expensing` for that year |
