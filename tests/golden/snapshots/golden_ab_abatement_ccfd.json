@@ -67,7 +67,7 @@
   "engine": "policyvalue-ca 0.1.0",
   "inputs": {
     "as_of": "2026-10-15",
-    "case_sha256": "01111be0e88848d9d37be6ef52f5688d4b1de116f80eccf3323fcf0ac651cbfd",
+    "case_sha256": "00f89fdab8501b2e8cfc4dd966c8296ea9f8362181d129190a1b1ea779dfa2c2",
     "conventions": "standard",
     "ledger_sha256": "9b073b615b9cbc5b10611d66339880e11a358b6a487117561d76a6f2982dabec",
     "min_legal_status": "enacted",
@@ -378,6 +378,15 @@
     }
   ],
   "robustness": {
+    "ccfd_strike": {
+      "hurdle_rate": null,
+      "note": null,
+      "npv_zero_strike": 91.598511,
+      "target_p": 0.8,
+      "target_p_strike": 94.337463,
+      "term_end": 2040,
+      "volume_share": 1.0
+    },
     "grid": {
       "dimensions": {
         "ccfd": [
@@ -581,9 +590,50 @@
       "p90": 3949165.81,
       "p_npv_positive": 0.5119,
       "seed": 20260929
+    },
+    "sensitivity": {
+      "base_npv": -2092496.78,
+      "rows": [
+        {
+          "decision_changes": true,
+          "high_input": 1.2,
+          "low_input": 0.8,
+          "npv_high": -6499904.19,
+          "npv_low": 2314910.62,
+          "swing": 8814814.81,
+          "variable": "capex"
+        },
+        {
+          "decision_changes": true,
+          "high_input": 0.1,
+          "low_input": 0.06,
+          "npv_high": -4294300.06,
+          "npv_low": 524044.44,
+          "swing": 4818344.51,
+          "variable": "discount_rate"
+        },
+        {
+          "decision_changes": false,
+          "high_input": 1.2,
+          "low_input": 0.8,
+          "npv_high": -3840891.25,
+          "npv_low": -344102.32,
+          "swing": 3496788.94,
+          "variable": "opex"
+        },
+        {
+          "decision_changes": false,
+          "high_input": 1.3,
+          "low_input": 0.7,
+          "npv_high": -1580322.67,
+          "npv_low": -2604670.9,
+          "swing": 1024348.24,
+          "variable": "credit_price"
+        }
+      ]
     }
   },
-  "run_hash": "6484fef1ffcefbf1bdbeab81a4f98aef76e52c34fd267b8736a58a58fed9aad6",
+  "run_hash": "8dafb8c1d12e88eb5766791c2fce28523c84c961602d8d583e890a29f4868dc5",
   "schema": "pv.results/v1",
   "tax": {
     "cca_class": "43.1",

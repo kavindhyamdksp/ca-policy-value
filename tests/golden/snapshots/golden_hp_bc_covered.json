@@ -63,7 +63,7 @@
   "engine": "policyvalue-ca 0.1.0",
   "inputs": {
     "as_of": "2026-10-15",
-    "case_sha256": "50b17fa75cb253f26f0cb9de62a1738aab52cbae9de43ffa4d1f3543bb87ba7e",
+    "case_sha256": "4fdc61017404a22664f21ac21a85cd70646bd6ec9885b112ef2b9604d6ae5512",
     "conventions": "standard",
     "ledger_sha256": "9b073b615b9cbc5b10611d66339880e11a358b6a487117561d76a6f2982dabec",
     "min_legal_status": "enacted",
@@ -516,6 +516,7 @@
     }
   ],
   "robustness": {
+    "ccfd_strike": null,
     "grid": {
       "dimensions": {
         "coverage": [
@@ -660,9 +661,68 @@
       "p90": 2376276.89,
       "p_npv_positive": 0.5476,
       "seed": 20260929
+    },
+    "sensitivity": {
+      "base_npv": 1216787.03,
+      "rows": [
+        {
+          "decision_changes": true,
+          "high_input": 1.3,
+          "low_input": 0.7,
+          "npv_high": 2480451.17,
+          "npv_low": -46877.1,
+          "swing": 2527328.27,
+          "variable": "gas_price"
+        },
+        {
+          "decision_changes": false,
+          "high_input": 1.3,
+          "low_input": 0.7,
+          "npv_high": 379383.28,
+          "npv_low": 2054190.78,
+          "swing": 1674807.5,
+          "variable": "electricity_price"
+        },
+        {
+          "decision_changes": false,
+          "high_input": 1.3,
+          "low_input": 0.7,
+          "npv_high": 1836674.18,
+          "npv_low": 596899.88,
+          "swing": 1239774.3,
+          "variable": "credit_price"
+        },
+        {
+          "decision_changes": false,
+          "high_input": 0.1,
+          "low_input": 0.06,
+          "npv_high": 738010.81,
+          "npv_low": 1819530.43,
+          "swing": 1081519.61,
+          "variable": "discount_rate"
+        },
+        {
+          "decision_changes": false,
+          "high_input": 1.2,
+          "low_input": 0.8,
+          "npv_high": 812439.81,
+          "npv_low": 1621134.25,
+          "swing": 808694.44,
+          "variable": "capex"
+        },
+        {
+          "decision_changes": false,
+          "high_input": 1.2,
+          "low_input": 0.8,
+          "npv_high": 1167059.97,
+          "npv_low": 1266514.09,
+          "swing": 99454.13,
+          "variable": "opex"
+        }
+      ]
     }
   },
-  "run_hash": "2f5d427da338ec5e8cdd30caa69e2372aa528df23f974e0268c1608808f23d02",
+  "run_hash": "ca719fbef4f61a43d67762a2d153b18ceadf7f19b5a7983a217ab4de22b6922a",
   "schema": "pv.results/v1",
   "tax": {
     "cca_class": "43.1",

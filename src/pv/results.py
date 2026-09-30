@@ -60,7 +60,10 @@ def evaluate(case: Case, ledger: Ledger) -> tuple[dict[str, Any], Model, LedgerV
     b = robustness.band(m)
     p_star = m.breakeven(m.ti.granted)
     g = robustness.grid(m) if case.robustness.grid else None
-    mc = robustness.monte_carlo(m, case.robustness.monte_carlo) if case.robustness.monte_carlo else None
+    rob = case.robustness
+    mc = robustness.monte_carlo(m, rob.monte_carlo) if rob.monte_carlo else None
+    sens = robustness.sensitivity(m, rob.sensitivity) if rob.sensitivity else None
+    strike = robustness.ccfd_strike(m, rob.ccfd_strike) if rob.ccfd_strike else None
     stack = m.value_stack(pol.credit_price_scenario, pol.floor, pol.ccfd)
     disc_sum = float(m.disc[1:].sum())
 
@@ -124,6 +127,8 @@ def evaluate(case: Case, ledger: Ledger) -> tuple[dict[str, Any], Model, LedgerV
         "robustness": {
             "grid": _grid_json(g) if g else None,
             "monte_carlo": mc.as_dict() if mc else None,
+            "sensitivity": _sensitivity_json(sens) if sens else None,
+            "ccfd_strike": strike,
         },
         "emissions": m.em.as_dict(disc_sum, value),
         "warnings": sorted(set(warnings)),
@@ -166,6 +171,23 @@ def _grid_json(g: dict[str, Any]) -> dict[str, Any]:
         "n_states": g["n_states"],
         "minimal_go_conditions": g["minimal_go_conditions"],
         "states": [{"state": s["state"], "npv": _r(s["npv"]), "go": s["go"]} for s in g["states"]],
+    }
+
+
+def _sensitivity_json(s: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "base_npv": _r(s["base_npv"]),
+        "rows": [
+            {
+                **r,
+                "low_input": _r(r["low_input"], 6),
+                "high_input": _r(r["high_input"], 6),
+                "npv_low": _r(r["npv_low"]),
+                "npv_high": _r(r["npv_high"]),
+                "swing": _r(r["swing"]),
+            }
+            for r in s["rows"]
+        ],
     }
 
 

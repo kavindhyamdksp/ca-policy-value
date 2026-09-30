@@ -29,6 +29,7 @@ policy:
   grid_factor: average
 robustness:
   grid: [itc_granted, credit_scenario]
+  sensitivity: {capex: 0.2, gas_price: 0.3, electricity_price: 0.3, opex: 0.2, credit_price: 0.3, discount_rate: 0.02}
   monte_carlo:
     draws: 10000
     seed: 20260929
