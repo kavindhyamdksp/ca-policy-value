@@ -78,7 +78,7 @@ def itc_rate(case: Case, view: LedgerView) -> tuple[float, list[str]]:
     if ids.entities is not None:
         entities = view.get(ids.entities).table()
         if not _truthy(entities.get(case.facility.entity, False)):
-            notes.append(f"CT ITC: entity type {case.facility.entity} is not eligible")
+            notes.append(f"{measure.upper()} ITC: entity type {case.facility.entity} is not eligible")
             return 0.0, notes
     if measure == "ct":
         sched = view.get(ids.rate).series()
@@ -93,8 +93,30 @@ def itc_rate(case: Case, view: LedgerView) -> tuple[float, list[str]]:
             notes.append(f"labour requirements not met: CT ITC rate reduced to {rho:.0%}")
         return rho, notes
     rec = view.get(ids.rate)  # CE / CCUS: user override required if not in the ledger
+    unchecked = [
+        x
+        for x, rid in (("qualifying-entity status", ids.entities), ("labour rule", ids.labour_rate))
+        if not rid
+    ]
+    if unchecked:
+        notes.append(
+            f"{measure.upper()} ITC: {' and '.join(unchecked)} not checked by the kernel; "
+            "confirm with a tax advisor"
+        )
+    if not rec.overridden and (
+        y < rec.effective_from.year or (rec.effective_to is not None and y > rec.effective_to.year)
+    ):
+        window = f"{rec.effective_from}..{rec.effective_to or 'open'}"
+        notes.append(f"{measure.upper()} ITC: in-service year {y} is outside {ids.rate} ({window}); rate 0")
+        return 0.0, notes
     if isinstance(rec.value, dict):
-        key = "rate" if "rate" in rec.table() else next(iter(rec.table()))
+        table = rec.table()
+        key = case.project.itc_rate_key or ("rate" if "rate" in table else None)
+        if key is None or key not in table:
+            raise LedgerError(
+                f"{ids.rate} holds several rates; set project.itc_rate_key to one of: "
+                + ", ".join(sorted(table))
+            )
         return rec.num(key), notes
     return rec.num(), notes
 

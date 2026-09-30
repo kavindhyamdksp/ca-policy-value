@@ -49,23 +49,23 @@
     "npv": 1216787.03
   },
   "emissions": {
-    "abatement_cost_net_per_t": -49.36,
+    "abatement_cost_net_per_t": -48.99,
     "abatement_cost_onsite_per_t": -47.63,
-    "grid_added_t_per_yr": 91.2,
-    "grid_basis": "average (overridden)",
-    "grid_ef_g_kwh": 22.8,
-    "lifetime_net_t": 50220.0,
+    "grid_added_t_per_yr": 72.3,
+    "grid_basis": "average (ledger)",
+    "grid_ef_g_kwh": 18.064,
+    "lifetime_net_t": 50599.0,
     "lifetime_onsite_t": 52044.0,
-    "net_avoided_t_per_yr": 2511.0,
-    "net_share_of_onsite": 0.965,
+    "net_avoided_t_per_yr": 2529.9,
+    "net_share_of_onsite": 0.9722,
     "onsite_avoided_t_per_yr": 2602.2
   },
   "engine": "policyvalue-ca 0.1.0",
   "inputs": {
     "as_of": "2026-10-15",
-    "case_sha256": "4fdc61017404a22664f21ac21a85cd70646bd6ec9885b112ef2b9604d6ae5512",
+    "case_sha256": "a42745217a88a946c0c819bbcc22df8e0552e2a7fdd03c21abf78fb4ac508991",
     "conventions": "standard",
-    "ledger_sha256": "9b073b615b9cbc5b10611d66339880e11a358b6a487117561d76a6f2982dabec",
+    "ledger_sha256": "b8201a9f82eeec1a6968f5f1f82fa4ac4e73f3702ce37fd0caec154626b829e3",
     "min_legal_status": "enacted",
     "overrides_file": null,
     "seed": 20260929
@@ -81,15 +81,7 @@
     "payback_discounted_years": 9.33,
     "payback_simple_years": 6.13
   },
-  "overrides": [
-    {
-      "reason": "User input: average BC grid intensity from the research phase (fed.nir.grid_ef unverified in ledger v0.1)",
-      "record": "fed.nir.grid_ef",
-      "value": {
-        "BC": 22.8
-      }
-    }
-  ],
+  "overrides": [],
   "provenance": [
     {
       "effective_from": "2025-12-01",
@@ -438,25 +430,46 @@
       }
     },
     {
-      "effective_from": "1900-01-01",
+      "effective_from": "2024-01-01",
       "id": "fed.nir.grid_ef",
-      "legal_status": "in_force",
-      "overridden": true,
-      "override_reason": "User input: average BC grid intensity from the research phase (fed.nir.grid_ef unverified in ledger v0.1)",
-      "retrieved": "2026-10-15",
+      "legal_status": "observation",
+      "overridden": false,
+      "override_reason": null,
+      "retrieved": "2026-09-30",
       "sources": [
         {
-          "publisher": "case file",
-          "retrieved": "2026-10-15",
-          "title": "User override: User input: average BC grid intensity from the research phase (fed.nir.grid_ef unverified in ledger v0.1)",
-          "url": "urn:pv:user-override"
+          "publisher": "Environment and Climate Change Canada",
+          "retrieved": "2026-09-30",
+          "title": "National Inventory Report 1990-2024, Annex 7: Electricity in Canada: Summary and Intensity Tables (EN_Annex7_Electricity_Intensity.xlsx)",
+          "url": "https://data-donnees.az.ec.gc.ca/api/file?path=%2Fsubstances%2Fmonitor%2Fcanada-s-official-greenhouse-gas-inventory%2FC-Tables-Electricity-Canada-Provinces-Territories%2FEN_Annex7_Electricity_Intensity.xlsx"
+        },
+        {
+          "publisher": "Environment and Climate Change Canada",
+          "retrieved": "2026-09-30",
+          "title": "National Inventory Report 1990-2024, Annex 7: Electricity in Canada: Summary and Intensity Tables (EN_Annex7_Electricity_Intensity.xlsx)",
+          "url": "https://data-donnees.az.ec.gc.ca/api/file?path=%2Fsubstances%2Fmonitor%2Fcanada-s-official-greenhouse-gas-inventory%2FC-Tables-Electricity-Canada-Provinces-Territories%2FEN_Annex7_Electricity_Intensity.xlsx"
+        },
+        {
+          "publisher": "Environment and Climate Change Canada",
+          "retrieved": "2026-09-30",
+          "title": "National Inventory Report 1990-2024, Annex 7: Electricity in Canada: Summary and Intensity Tables (EN_Annex7_Electricity_Intensity.xlsx)",
+          "url": "https://data-donnees.az.ec.gc.ca/api/file?path=%2Fsubstances%2Fmonitor%2Fcanada-s-official-greenhouse-gas-inventory%2FC-Tables-Electricity-Canada-Provinces-Territories%2FEN_Annex7_Electricity_Intensity.xlsx"
+        },
+        {
+          "publisher": "Environment and Climate Change Canada",
+          "retrieved": "2026-09-30",
+          "title": "National Inventory Report 1990-2024, Annex 7: Electricity in Canada: Summary and Intensity Tables (EN_Annex7_Electricity_Intensity.xlsx)",
+          "url": "https://data-donnees.az.ec.gc.ca/api/file?path=%2Fsubstances%2Fmonitor%2Fcanada-s-official-greenhouse-gas-inventory%2FC-Tables-Electricity-Canada-Provinces-Territories%2FEN_Annex7_Electricity_Intensity.xlsx"
         }
       ],
       "stale": false,
-      "unit": "text",
+      "unit": "g/kWh",
       "used_in": "base",
       "value": {
-        "BC": 22.8
+        "AB": 346.102,
+        "BC": 18.064,
+        "ON": 73.313,
+        "QC": 2.565
       }
     },
     {
@@ -723,7 +736,7 @@
       ]
     }
   },
-  "run_hash": "ca719fbef4f61a43d67762a2d153b18ceadf7f19b5a7983a217ab4de22b6922a",
+  "run_hash": "f2a5e34a8a3b0057c64ed6d63b58388f4c291f35a7703ddc4d570474cf7cd7cb",
   "schema": "pv.results/v1",
   "tax": {
     "cca_class": "43.1",
@@ -761,7 +774,5 @@
       "step": "+ CCfD"
     }
   ],
-  "warnings": [
-    "Override: fed.nir.grid_ef = {'BC': 22.8} (User input: average BC grid intensity from the research phase (fed.nir.grid_ef unverified in ledger v0.1))"
-  ]
+  "warnings": []
 }

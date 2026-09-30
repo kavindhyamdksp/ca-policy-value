@@ -69,7 +69,7 @@
     "as_of": "2026-10-15",
     "case_sha256": "00f89fdab8501b2e8cfc4dd966c8296ea9f8362181d129190a1b1ea779dfa2c2",
     "conventions": "standard",
-    "ledger_sha256": "9b073b615b9cbc5b10611d66339880e11a358b6a487117561d76a6f2982dabec",
+    "ledger_sha256": "b8201a9f82eeec1a6968f5f1f82fa4ac4e73f3702ce37fd0caec154626b829e3",
     "min_legal_status": "enacted",
     "overrides_file": null,
     "seed": 20260929
@@ -634,7 +634,7 @@
       ]
     }
   },
-  "run_hash": "8dafb8c1d12e88eb5766791c2fce28523c84c961602d8d583e890a29f4868dc5",
+  "run_hash": "e6165ae71783f599fa1ef2abd3c8c90553b8d69fbc405565d8efa68c70d90b9d",
   "schema": "pv.results/v1",
   "tax": {
     "cca_class": "43.1",

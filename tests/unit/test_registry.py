@@ -15,7 +15,7 @@ from tests.conftest import rec, write_ledger
 from tests.unit.helpers import AS_OF, LEDGER, case, model, ov
 
 # Wired into the kernel but deliberately absent from the ledger (plan §2.5 D1): users supply them.
-USER_INPUT_RECORDS = {"fed.nir.grid_ef", "fed.ce_itc.rate", "ref.gas.delivered"}
+USER_INPUT_RECORDS = {"ref.gas.delivered"}
 
 
 def test_registry_matches_case_literals() -> None:

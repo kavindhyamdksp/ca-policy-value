@@ -61,6 +61,7 @@ class Project(_M):
     capex: tuple[CapexItem, ...] = Field(min_length=1)
     technology_class: str
     itc_measure: Literal["ct", "ccus", "ce", "none"] = "ct"
+    itc_rate_key: str | None = None  # key in a table-valued rate record, e.g. capture_to_2035 (CCUS)
     itc_eligible_share: float | None = Field(default=None, ge=0, le=1)
     cca_class: str = "43.1"
     cca_class_if_ineligible: str = "8"

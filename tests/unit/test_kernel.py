@@ -218,9 +218,10 @@ def test_missing_records_require_user_input() -> None:
                 }
             )
         )
-    with pytest.raises(LedgerError, match="fed.nir.grid_ef"):
+    with pytest.raises(LedgerError, match="fed.nir.grid_ef"):  # bitemporal: recorded 2026-09-30
         model(
             case(
+                as_of="2026-09-29",
                 policy={"grid_factor": "average"},
                 project={
                     "in_service": "2026-12-31",
@@ -242,7 +243,7 @@ def test_missing_records_require_user_input() -> None:
                 }
             )
         )
-    with pytest.raises(LedgerError, match="fed.ce_itc.rate"):
+    with pytest.raises(LedgerError, match="fed.ccus_itc.rates unavailable: below min_legal_status"):
         model(
             case(
                 project={
@@ -250,10 +251,41 @@ def test_missing_records_require_user_input() -> None:
                     "life_years": 3,
                     "capex": [{"year": 0, "amount": 1e6}],
                     "technology_class": "x",
-                    "itc_measure": "ce",
+                    "itc_measure": "ccus",
                 }
             )
         )
+
+
+def _itc_case(measure: str, in_service: str = "2026-12-31", **project: object) -> dict:
+    return case(
+        min_legal_status="proposed",
+        project={
+            "in_service": in_service,
+            "life_years": 3,
+            "capex": [{"year": 0, "amount": 1e6}],
+            "technology_class": "x",
+            "itc_measure": measure,
+            **project,
+        },
+    )
+
+
+def test_ce_itc_rate_window_and_warning() -> None:
+    m, _ = model(_itc_case("ce"))
+    assert m.ti.rho == 0.15  # ITA s.127.491 specified percentage
+    assert any("qualifying-entity status and labour rule not checked" in w for w in m.warnings)
+    late, _ = model(_itc_case("ce", "2035-06-30"))
+    assert late.ti.rho == 0.0 and any("outside fed.ce_itc.rate" in w for w in late.warnings)
+
+
+def test_table_valued_itc_rate_needs_an_explicit_key() -> None:
+    with pytest.raises(LedgerError, match="set project.itc_rate_key to one of: capture_2036_2040"):
+        model(_itc_case("ccus"))
+    m, _ = model(_itc_case("ccus", itc_rate_key="capture_to_2035"))
+    assert m.ti.rho == 0.5  # not the first key (dac_to_2035 = 0.6)
+    with pytest.raises(LedgerError, match="itc_rate_key"):
+        model(_itc_case("ccus", itc_rate_key="nope"))
 
 
 def test_emissions_and_abatement_cost() -> None:

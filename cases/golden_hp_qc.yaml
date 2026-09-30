@@ -38,7 +38,3 @@ robustness:
       market_breakdown_2029: {p: 0.15, market_value: 30, from_year: 2029}
     shocks: {gas_sigma: 0.30, elec_sigma: 0.15, credit_sigma: 0.35, capex_triangular: [0.9, 1.0, 1.3]}
     itc_probability: 0.6     # user judgement: advance ruling sought on process heat pump eligibility
-overrides:
-  - record: fed.nir.grid_ef
-    value: {QC: 2.5}
-    reason: "User input: average QC grid intensity from the research phase (fed.nir.grid_ef unverified in ledger v0.1)"

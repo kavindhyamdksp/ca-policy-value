@@ -33,9 +33,7 @@ policy:
 robustness:
   grid: [itc_granted, coverage, credit_scenario]
   sensitivity: {capex: 0.2, gas_price: 0.3, electricity_price: 0.3, opex: 0.2, credit_price: 0.3, discount_rate: 0.02}
-overrides:
-  # fed.nir.grid_ef is not in the ledger yet (plan §2.5 D1): supply your grid intensity with its source.
-  - record: fed.nir.grid_ef
-    value: {"ON": 30.0}                  # REPLACE: g CO2e/kWh
-    reason: "REPLACE: cite your grid-intensity source"
-  # Licensed credit prices belong in a separate, uncommitted file: pv run case.yaml --overrides prices.local.yaml
+# Overrides: any ledger value can be replaced with a reason, e.g. your own grid intensity (the ledger holds
+# ECCC's provincial average, fed.nir.grid_ef). Licensed credit prices belong in a separate, uncommitted file:
+#   pv run case.yaml --overrides prices.local.yaml
+overrides: []

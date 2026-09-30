@@ -31,3 +31,60 @@ records:
     + 0.035 g/m3, residential/commercial, Table 2.3) add negligible mass; NIR 2026 Annex 6 itself not fetched.'
   recorded_at: 2026-09-29
   reviewer: source fetch 2026-09-29 (automated); human tax review pending
+- id: fed.nir.grid_ef
+  jurisdiction: FED
+  instrument: nir
+  parameter: grid_consumption_intensity
+  value:
+    QC: 2.565
+    "ON": 73.313
+    AB: 346.102
+    BC: 18.064
+  unit: g/kWh
+  currency_basis: n/a
+  effective_from: 2024-01-01
+  effective_to: null
+  legal_status: observation
+  confidence: medium
+  freshness: statistic
+  sources:
+  - url: https://data-donnees.az.ec.gc.ca/api/file?path=%2Fsubstances%2Fmonitor%2Fcanada-s-official-greenhouse-gas-inventory%2FC-Tables-Electricity-Canada-Provinces-Territories%2FEN_Annex7_Electricity_Intensity.xlsx
+    title: 'National Inventory Report 1990-2024, Annex 7: Electricity in Canada: Summary and Intensity Tables (EN_Annex7_Electricity_Intensity.xlsx)'
+    publisher: Environment and Climate Change Canada
+    published: 2026-04-14
+    retrieved: 2026-09-30
+    locator: Table A7–6 (Quebec), row "Consumption Intensity (g CO2 eq / kWh)", column 2024a
+    excerpt: Consumption Intensity (g CO2 eq / kWh)
+    source_type: primary_gov
+  - url: https://data-donnees.az.ec.gc.ca/api/file?path=%2Fsubstances%2Fmonitor%2Fcanada-s-official-greenhouse-gas-inventory%2FC-Tables-Electricity-Canada-Provinces-Territories%2FEN_Annex7_Electricity_Intensity.xlsx
+    title: 'National Inventory Report 1990-2024, Annex 7: Electricity in Canada: Summary and Intensity Tables (EN_Annex7_Electricity_Intensity.xlsx)'
+    publisher: Environment and Climate Change Canada
+    published: 2026-04-14
+    retrieved: 2026-09-30
+    locator: Table A7–7 (Ontario), row "Consumption Intensity (g CO2 eq / kWh)", column 2024a
+    excerpt: Consumption Intensity (g CO2 eq / kWh)
+    source_type: primary_gov
+  - url: https://data-donnees.az.ec.gc.ca/api/file?path=%2Fsubstances%2Fmonitor%2Fcanada-s-official-greenhouse-gas-inventory%2FC-Tables-Electricity-Canada-Provinces-Territories%2FEN_Annex7_Electricity_Intensity.xlsx
+    title: 'National Inventory Report 1990-2024, Annex 7: Electricity in Canada: Summary and Intensity Tables (EN_Annex7_Electricity_Intensity.xlsx)'
+    publisher: Environment and Climate Change Canada
+    published: 2026-04-14
+    retrieved: 2026-09-30
+    locator: Table A7–10 (Alberta), row "Consumption Intensity (g CO2 eq / kWh)", column 2024a
+    excerpt: Consumption Intensity (g CO2 eq / kWh)
+    source_type: primary_gov
+  - url: https://data-donnees.az.ec.gc.ca/api/file?path=%2Fsubstances%2Fmonitor%2Fcanada-s-official-greenhouse-gas-inventory%2FC-Tables-Electricity-Canada-Provinces-Territories%2FEN_Annex7_Electricity_Intensity.xlsx
+    title: 'National Inventory Report 1990-2024, Annex 7: Electricity in Canada: Summary and Intensity Tables (EN_Annex7_Electricity_Intensity.xlsx)'
+    publisher: Environment and Climate Change Canada
+    published: 2026-04-14
+    retrieved: 2026-09-30
+    locator: Table A7–11 (British Columbia), row "Consumption Intensity (g CO2 eq / kWh)", column 2024a
+    excerpt: Consumption Intensity (g CO2 eq / kWh)
+    source_type: primary_gov
+  notes: Average grid intensity of electricity consumed (g CO2e/kWh), data year 2024, which ECCC marks
+    preliminary (note a). Consumption intensity is used rather than generation intensity (QC 2.097, ON 64.909,
+    AB 334.757, BC 16.712) because it includes unallocated energy and SF6, i.e. the load a facility adds.
+    Final 2023 consumption values - QC 1.873, ON 58.862, AB 433.868, BC 17.956. Read from the xlsx (sha256
+    206ebf72ed44a6da...) via the ECCC Data Mart file API; the Data Mart page itself is a JavaScript app. Average,
+    not marginal - for marginal emissions use policy.grid_factor marginal.
+  recorded_at: 2026-09-30
+  reviewer: source fetch 2026-09-30 (automated); numbers read programmatically from the ECCC xlsx
