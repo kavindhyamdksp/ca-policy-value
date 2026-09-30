@@ -49,7 +49,7 @@ Resume: read this + CLAUDE.md only, continue at the first unchecked item. Branch
   4 byte-identical (local reruns + CI 6-job fingerprint) · 5 floor drift flip (test) · 6 coverage 95%, mypy strict, ruff clean ·
   7 grid 0.8 ms, 10k MC 5.5 ms, CLI run 0.4 s · 8 fresh clone → HTML memo in 18 s
 - [x] IMPLEMENTATION_PLAN.md: ticks, deviations (§2.5 D1–D13), §12 row v1.2
-- [ ] tag v0.1.0, gh release, PR mvp→main, merge on green
+- [x] tag v0.1.0, gh release, PR #1 mvp→main (all 19 checks green incl. drift), merged
 
 ## Unverified (omitted from ledger; kernel requires user input)
 - fed.nir.grid_ef — NIR intensity table not retrievable (Data Mart redirect); kernel: override fed.nir.grid_ef or grid_factor: marginal
