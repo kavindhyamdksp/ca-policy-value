@@ -1,6 +1,6 @@
 # IMPLEMENTATION_PLAN.md — PolicyValue CA
 
-*Plan version **v1.2** — 2026-09-29. This is the single, living plan for the project. It is updated whenever research or validation changes the product definition. See the [revision history](#12-plan-revision-history) at the end.*
+*Plan version **v1.3** — 2026-09-30. This is the single, living plan for the project. It is updated whenever research or validation changes the product definition. See the [revision history](#12-plan-revision-history) at the end.*
 
 **Governing documents:**
 - [DECISION.md](DECISION.md): the REFOCUS verdict, gates G0–G2 and kill criteria
@@ -18,7 +18,8 @@
 | **Smallest defensible MVP** | Ledger v0.1 (~45 records) + kernel + CLI (`validate`, `run`, `drift`, `ledger show`) + Markdown/HTML memo + 3 golden cases + CI. No UI, no server, no AI. |
 | **Effort** | Phase 0 validation: ~40 h over ≤6 weeks. Phase 1 MVP: ~110–150 h: 8 weeks at 15–20 h/week to the `v0.1.0` release, then pilots (M7) to week 12. Runs in parallel with Phase 0. |
 | **Operating cost** | $0 (GitHub, Actions, Pages). Maintenance target ≤ 15 h/month. |
-| **Gates** | G0 problem validation → G1 MVP usefulness → G2 expansion (see DECISION.md). |
+| **Gates** | G0 problem validation → G1 MVP usefulness → G2 expansion (see DECISION.md). Gates block evidence-dependent product and policy decisions only; reversible engineering proceeds in parallel (§2.6). Every open gate, its evidence and its next action: **[§2.7 gate register](#27-gate-register-what-is-blocked-why-and-what-clears-it)**. |
+| **Status (2026-09-30)** | v0.1.0 released (M1–M6). v0.2.0 engineering complete (§2.6): registry, contracts, sensitivity, CCfD strike solver, ledger export/review queue, gate tooling, ledger-v2026.10.1. Next critical path: G0 interviews and competitor demos (user-run). |
 
 ---
 
@@ -28,14 +29,14 @@ The research is secondary-only. Phase 0 buys the missing primary evidence cheapl
 
 ### 1.1 Work items
 
-| # | Task | Output | Est. |
-|---|---|---|---|
-| P0.1 | Recruitment list:<br>• 20 covered-facility analysts/finance leads (AB TIER, ON EPS, BC OBPS, QC SPEDE), found via ECCC facility data, IETA/CME/CIAC contacts, LinkedIn<br>• 10 consultants/ESCOs (Dunsky, Blackstone, Enerlife, Introba, WSP, Stantec, Ameresco)<br>• 5 CCUS/CCfD developers | `docs/validation/recruitment.md` (no personal data committed) | 4 h |
-| P0.2 | Interview guide covering current carbon-value method, ITC handling, how often assumptions are rebuilt, tools and advisors, last decision where policy mattered, willingness to use or pay | `docs/validation/interview_guide.md` | 3 h |
-| P0.3 | Demo kit: 2-page PDF/HTML built from `docs/research/04_quantitative_validation.md` (Examples 1, 3 and the MC table), plus a mock memo | `docs/validation/demo_kit/` | 6 h |
-| P0.4 | ≥12 interviews, 30 min each | Anonymized notes in `docs/validation/interviews/` | 15 h |
-| P0.5 | Competitor demos: SINAI Reduce, ClearBlue Vantage (plus VadiMAP for completeness). Checklist: OBPS mechanics, credit vs headline, floors/CCfD, ITC timing and eligibility, policy-regime risk, provenance | `docs/validation/competitor_demos.md` | 6 h |
-| P0.6 | Synthesis against the G0 criteria; update DECISION.md, SPEC.md and this plan | Gate memo | 4 h |
+| # | Task | Output | Est. | Status (2026-09-30) |
+|---|---|---|---|---|
+| P0.1 | Recruitment list:<br>• 20 covered-facility analysts/finance leads (AB TIER, ON EPS, BC OBPS, QC SPEDE), found via ECCC facility data, IETA/CME/CIAC contacts, LinkedIn<br>• 10 consultants/ESCOs (Dunsky, Blackstone, Enerlife, Introba, WSP, Stantec, Ameresco)<br>• 5 CCUS/CCfD developers | `docs/validation/recruitment.md` (no personal data committed) | 4 h | ✅ plan, channels, screening, outreach, aggregate tracker. Contacting people: **user** |
+| P0.2 | Interview guide covering current carbon-value method, ITC handling, how often assumptions are rebuilt, tools and advisors, last decision where policy mattered, willingness to use or pay | `docs/validation/interview_guide.md` | 3 h | ✅ (+ structured note template) |
+| P0.3 | Demo kit: 2-page PDF/HTML built from `docs/research/04_quantitative_validation.md` (Examples 1, 3 and the MC table), plus a mock memo | `docs/validation/demo_kit/` | 6 h | ✅ as a builder: `python tools/build_demo_kit.py` regenerates it from the golden cases (not committed, so it never drifts) |
+| P0.4 | ≥12 interviews, 30 min each | Anonymized notes in `docs/validation/interviews/` | 15 h | ⛔ **gate: user** — template ready (`interviews/README.md`) |
+| P0.5 | Competitor demos: SINAI Reduce, ClearBlue Vantage (plus VadiMAP for completeness). Checklist: OBPS mechanics, credit vs headline, floors/CCfD, ITC timing and eligibility, policy-regime risk, provenance | `docs/validation/competitor_demos.md` | 6 h | ⛔ **gate: user** (vendor demos) — checklist and structured results block ready |
+| P0.6 | Synthesis against the G0 criteria; update DECISION.md, SPEC.md and this plan | Gate memo | 4 h | ⏳ counting automated (`tools/gate_scorecard.py g0`); judgement and doc updates after P0.4/P0.5 |
 
 ### 1.2 G0 acceptance criteria
 - ≥12 interviews completed with the segment mix in DECISION.md.
@@ -58,7 +59,8 @@ The research is secondary-only. Phase 0 buys the missing primary evidence cheapl
 | **M4** Robustness | Breakeven solver; discrete policy-state grid; vectorized seeded MC | M3 | 12–15 h | ✅ done |
 | **M5** Reporting + CLI | Jinja2 memo (Markdown → HTML via `markdown-it-py`); JSON results schema v1; CSV cash flows; Typer CLI: `pv validate`, `pv run`, `pv drift`, `pv ledger show` | M3–M4 | 15–20 h | ✅ done |
 | **M6** Golden cases, drift CI, docs | 3 golden cases; drift job on ledger PRs; README quick-start; user guide; methodology doc (formulas and caveats) | M5 | 12–15 h | ✅ done |
-| **M7** Design-partner pilots | ≥3 partners run real cases; collect feedback; fix issues | M6, G0 pass | 10–15 h | ⏳ kit ready (`docs/validation/`); needs G0 pass and partners |
+| **M7** Design-partner pilots | ≥3 partners run real cases; collect feedback; fix issues | M6, G0 pass | 10–15 h | ⛔ gated (G0, partners). Prepared: pilot kit, `pv case template`, `--overrides` for licensed prices, structured feedback form, `gate_scorecard.py g1` |
+| **M8** Post-MVP engineering (v0.2.0) | Ungated work pulled forward so pilots and Phase 2 need no redesign (§2.6) | M6 | ~15 h | ✅ done 2026-09-30 |
 
 ### 2.2 Target layout
 See [ARCHITECTURE.md § Repository layout](docs/architecture/ARCHITECTURE.md#repository-layout-target).
@@ -141,6 +143,53 @@ All eight §2.4 criteria were checked at release; results are in the v0.1.0 rele
 | D12 | Tax-literate review before v0.1 (§6) | **Not done.** ITC/CCA records carry `reviewer: … human tax review pending` | No reviewer available in the build; open risk for pilots |
 | D13 | mypy strict | Strict, with `python_version = 3.12` for type-checking | numpy ≥2.3 stubs use PEP 695 syntax; runtime 3.11 is tested in CI |
 
+Updates in v0.2.0 (2026-09-30):
+
+| # | Change | Why |
+|---|---|---|
+| D1 | **Partly resolved.** `fed.nir.grid_ef` (ECCC NIR 1990–2024 Annex 7 xlsx via the Data Mart file API; 2024 consumption intensity) and `fed.ce_itc.rate` (ITA s. 127.491, 15%) added in ledger-v2026.10.1. Still user input: `ref.gas.delivered` (by design), `bc.carbon_tax` (unused) | Primary sources became retrievable (the Data Mart page is a JS app; its API is not) |
+| D4 | Expensing-eligible classes moved from kernel code to the ledger (`fed.cca.expensing_classes`: 43.1, 53, 54–56). Phase-out percentages still unverified (gate in §2.7) | Policy facts carry provenance; no policy constants in code |
+| D14 | MC now mirrors the deterministic carbon rules: the headline upper bound is not capped or CCfD-adjusted, and QC paths take no CCfD | Bug: MC and deterministic results disagreed in those two cases; regression property test added |
+| D15 | Table-valued ITC rates need `project.itc_rate_key`; scalar CE/CCUS rates apply only inside their validity window; unchecked entity/labour rules produce a warning | Bug: CCUS silently used the first key (DAC 60%) for every project |
+| D16 | Record ids and plan-level assumptions moved to `src/pv/registry.yaml` | Keep policy structure out of formula modules; new systems/provinces become records + a registry entry |
+| D17 | Case digest omits unset optional fields (one-time change of all case/run hashes in v0.2.0) | Additive model fields no longer change existing cases' hashes |
+
+### 2.6 v0.2.0 engineering record (M8, 2026-09-30)
+
+Ungated engineering done in parallel with Phase 0, so that the gates, when they clear, lead straight to
+execution. None of it changes a policy value or a gate criterion.
+
+| Area | Delivered | Serves |
+|---|---|---|
+| Policy config out of code | `pv.registry` + `registry.yaml` (record wiring, eligibility probabilities); expensing classes in the ledger | Phase 2 provinces/systems as records + config; D12 review |
+| Contracts | `pv.results/v1` JSON Schema (additive-only), case schema generated from the model, `pv schema` | Integrations, Excel/CSV round-trip, static API |
+| Analyses | One-way sensitivity (tornado); CCfD strike solver (NPV ≥ 0, hurdle rate, target P(NPV>0) with common random numbers); shared vectorized evaluator | SPEC §9 Q2 (CCfD wedge) can be tested in G0 demos; Phase 2 CCfD bid module largely built |
+| Data boundary | `--overrides FILE` for licensed/private values (git-ignored `*.local.yaml`), recorded in results and the run hash | Pilots with licensed prices; future price-feed adapters write override files |
+| Ledger operations | `pv ledger due` (review queue), `pv ledger export` (JSON/CSV/static HTML), manual `ledger-site` Pages workflow | Freshness SLA (G1), static ledger site (Phase 2), static JSON API (Phase 3) |
+| Pilot enablement | `pv case template` (synthetic placeholders), updated pilot kit | M7 |
+| Validation tooling | `tools/gate_scorecard.py` (G0/G1 counting, personal-data-proof note schema), `tools/build_demo_kit.py`, recruitment plan, competitor-demo checklist | P0.1, P0.3, P0.5, P0.6, G1 read-out |
+| Quality | Bugs D14/D15 fixed with regression tests; wheel built and run outside the checkout in CI; mypy strict on `tools/`; 122 tests, 97% coverage | DoD §2.4-6 |
+| Ledger | ledger-v2026.10.1: +3 records (37 entries / 36 ids); drift vs v2026.10.0: no NPV or decision change | D1 |
+
+### 2.7 Gate register (what is blocked, why, and what clears it)
+
+Only items below are open. Everything else in this plan is done or is scoped out by ADR-0001.
+
+| Gate / blocker | Why work cannot safely continue past it | Evidence or input that clears it | Already prepared | Next executable action once cleared |
+|---|---|---|---|---|
+| **G0 problem validation** (P0.4 interviews, P0.5 competitor demos) | Whether the kernel is worth continuing is a demand question; only practitioner evidence can answer it (DECISION.md) | ≥12 anonymized notes in `docs/validation/interviews/` in the segment mix; SINAI and ClearBlue demo results in `competitor_demos.md` | Recruitment plan, interview guide, demo kit builder, note templates, competitor checklist, `gate_scorecard.py g0` (PASS/FALLBACK/FAIL/KILL/OPEN) | Run the scorecard; P0.6 synthesis; record the verdict and SPEC §9 answers in DECISION.md, SPEC.md and this plan |
+| **G1 / M7 design-partner pilots** | Needs G0 pass and real partners with live projects | ≥3 pilot notes in `docs/validation/pilots/` with `decision_changed_or_derisked: yes`; freshness SLA held 60 days; maintenance ≤15 h/month | Pilot kit, case templates, `--overrides`, feedback form with structured front matter, `gate_scorecard.py g1`, `pv ledger due` | Fix issues found in pilots; G1 read-out; choose Phase 2 items from partner demand |
+| **D12 human tax review** (ITC/CCA records) | ITC/CCA treatment is legal interpretation; a wrong eligibility or class statement can harm users (§10) | Signed-off review by a tax-literate reviewer of `fed.ct_itc.*`, `fed.ce_itc.rate`, `fed.ccus_itc.rates`, `fed.cca.*` and methodology §3 | Records flagged `human tax review pending`; warnings where the kernel does not check entity/labour rules; `pv ledger export` gives the reviewer a single browsable file | Apply findings to records (and `reviewer`), release a ledger tag, re-run `pv drift` |
+| **CCA expensing phase-out 2030–2033** (D4) | Percentages are policy values; no primary source retrieved. Secondary sources (BDO, Advisor.ca) state 75% (2030–31) and 55% (2032–33), and one names Class 43.2, conflicting with EY | Primary text: ITA/Income Tax Regulations as amended by Bill C-15, or a Finance Canada/CRA page stating the percentages and classes | Kernel stops with a clear message for in-service 2030–2033; override path documented | Add 2030–2033 to `fed.cca.expensing`; update `fed.cca.expensing_classes` if 43.2 is confirmed; drift |
+| **CE ITC qualifying entity and labour rule** | Mapping the case's entity types to s. 127.491 "qualifying entity" and applying s. 127.46 are interpretations | Tax review (above) of the mapping and the labour reduction | Rate in ledger; kernel warns that both are unchecked; registry supports `entities`/`labour_rate` per measure | Add `fed.ce_itc.entities` (and a labour record) and wire them in `registry.yaml`; the labour rule shape for CE (a reduction, not a replacement rate) needs a small kernel change |
+| **`fed.ccus_itc.rates` legal status** (D2) | Only secondary sources state the rates; the record stays `proposed` | Primary legal text (ITA s. 127.44) or CRA page stating the rates | `itc_rate_key` makes the component explicit; grid/MC can treat the ITC as uncertain | Update the record's status and sources; drift |
+| **Policy events** (§7): AB TIER floor regulation (due 2026-12-31), federal benchmark publication, ON EPS alignment, ITC domestic content, NIR 2027 | External facts that have not happened yet | The published regulation/benchmark/decision | Legal-status model; drift test proves the floor flip on `golden_ab_abatement_ccfd`; `pv ledger due` | Update records, tag a ledger release, publish the drift report |
+| **Credit-use limits and long/short position** (SPEC FR-2 `position`) | Per-system credit-use and banking rules are policy data not yet in the ledger, and whether they matter is a pilot question | Primary sources for TIER/EPS/OBPS credit-use limits; partner demand in G0/G1 | Fund-price cap; caveat in methodology | Add records + a position field and rule in `pv.carbon` |
+| **Partial tax capacity** (loss carryforward) | Loss rules are tax interpretation (D12) and demand is unproven | Tax review + partner demand | `tax_capacity: full/none` | Add a carryforward schedule to `pv.cashflow` |
+| **Phase 2 data scope**: CFR, ÉcoPerformance, Clean Industry Fund, NS/NB/NL/SK | Scope is gated by partner demand (ADR-0001) and each needs verified records | G1 partner demand; primary sources | Registry: a new system/province is records + one registry entry (developer guide) | Add records and registry entries per province |
+| **AI-assisted source monitoring** (ADR-0006) | Needs an LLM credential and a maintenance-load trigger (>10 h/month) | Maintenance log over the trigger; user-provided API key | Deterministic parts: `pv ledger due`, weekly link check | Build the drafting job on top of `pv ledger due` output |
+| **Publishing**: Pages ledger site, `v0.2.0`/`ledger-v2026.10.1` tags | Outward-facing actions on the user's account | User enables Pages; user merges and tags | `ledger-site` workflow (manual); changelog | Dispatch the workflow; tag and release |
+
 ---
 
 ## 3. Data sources — seed ledger (v0.1)
@@ -160,10 +209,10 @@ Each record's source is taken from the research files and re-verified when enter
 | `fed.ct_itc.eligibility_classes` | ASHP/GSHP: likely; process/waste-heat HP: case-by-case; electrode/resistance boilers: not listed; solar/wind/storage: likely | in_force (guidance) | NRCan CT property technical guidance | V (classes) / C (per-class mapping) |
 | `fed.ct_itc.domestic_content` | Consultation 2026-02-13 to 03-13; outcome pending | proposed | Finance Canada | V |
 | `fed.ccus_itc.rates` | 60% DAC / 50% capture / 37.5% T&S&U to 2035; half 2036–2040 | in_force (C-15) | ITA; Gowling; Torys | V |
-| `fed.ce_itc.rate` | 15%; eligible entities incl. Crowns, municipal, Indigenous-owned corps | in_force (C-15, 2026-03-26) | Finance; Torys | V |
+| `fed.ce_itc.rate` | 15%; eligible entities incl. Crowns, municipal, Indigenous-owned corps — **rate entered 2026-09-30 from ITA s. 127.491; entities pending tax review** | in_force (C-15, 2026-03-26) | Finance; Torys; Justice Laws | V (rate entered) |
 | `fed.cca.expensing` | 100% first-year for Classes 43.1/53 (and ZEV classes) available for use before 2030; phase-out 2030–2033 | in_force (C-15) | EY tax alert | V (phase-out schedule: C) |
 | `fed.cca.class_rates` | 43.1 = 30%, 43.2 = 50%, 53 = 50% DB (normal rates) | in_force | ITR Schedule II | C |
-| `fed.nir.grid_ef` | Average grid factors: QC 2.5, ON 73.8, AB 335, BC 22.8 g/kWh (+NS 528 reference) | observation (annual) | NIR 2026 CSV (ECCC Data Mart); HQ; BC gov; Alberta.ca; TAF/IESO | V (switch to NIR CSV at entry) |
+| `fed.nir.grid_ef` | Average grid factors: QC 2.5, ON 73.8, AB 335, BC 22.8 g/kWh (+NS 528 reference) — **entered 2026-09-30 from NIR Annex 7 (2024 consumption intensity): QC 2.565, ON 73.313, AB 346.102, BC 18.064** | observation (annual) | NIR 2026 CSV (ECCC Data Mart); HQ; BC gov; Alberta.ca; TAF/IESO | V (entered) |
 | `fed.nir.gas_ef` | ~50 kg CO2e/GJ (HHV) | observation | NIR Annex 6 | C |
 | `fed.cgf.ccfd` | Program exists; bilateral terms | in_force (program) | CGF; Budget 2025 | V |
 | `ab.tier.fund_price` | $95 for 2026; national path after | in_force (2026) / announced (2027+) | EY 2026-06-03; Blakes | V |
@@ -275,18 +324,24 @@ CI gates: lint, type, unit/property/golden, ledger validation and drift on PRs t
 
 ---
 
-## 8. Phase 2 — Expansion (only after G1 pass)
+## 8. Phase 2 — Expansion
 
-| Item | Trigger / justification | Est. |
-|---|---|---|
-| CCfD bid module: strike solver for a target P(NPV>0) or IRR; volume/term optimization | Developers in G0/G1 ask for it (high a-priori value; see 04, Example 3) | 15 h |
-| Credit-use limits and long/short position modelling (TIER credit-use caps, EPS rules) | Covered-facility partners need it | 15 h |
-| CFR credits (fleets, charging, RNG) | Partner demand; CFR credit price rose from ~$142 (Q2 2025, ECCC via BC Bioenergy) to ~$358/t (June 2026, MLT Aikins), which makes it decisive for fleets | 15 h |
-| QC ÉcoPerformance large-project stream; BC Clean Industry Fund | QC/BC partners | 10 h |
-| NS, NB, NL, SK, federal-OBPS provinces | Partner demand | 5–8 h per province |
-| Static ledger site (MkDocs), with per-record history and citations | ≥3 external ledger users | 8 h |
-| AI-assisted source monitoring → draft ledger PRs (ADR-0006) | Maintenance > 10 h/month | 15 h |
-| Excel add-in or CSV round-trip template | Consultant partners | 10 h |
+Engineering that needed no new evidence was pulled forward into v0.2.0 (§2.6): the CCfD strike solver
+(target NPV, IRR hurdle and P(NPV>0)), the static ledger export and Pages workflow, the CSV/JSON contracts
+that a spreadsheet round-trip builds on, and the registry that makes a new province a data change. What
+remains below needs G1 evidence (partner demand) or new verified ledger data; see §2.7.
+
+| Item | Trigger / justification | Est. | Status |
+|---|---|---|---|
+| CCfD bid module: strike solver for a target P(NPV>0) or IRR | Developers in G0/G1 ask for it | — | ✅ built in v0.2.0 (`robustness.ccfd_strike`) |
+| CCfD volume/term optimization | Needs the objective a counterparty scores bids on (SPEC §9 Q2, G0) | 8 h | ⛔ G0 answer |
+| Credit-use limits and long/short position modelling (TIER credit-use caps, EPS rules) | Covered-facility partners need it | 15 h | ⛔ evidence + demand |
+| CFR credits (fleets, charging, RNG) | Partner demand; CFR credit price rose from ~$142 (Q2 2025, ECCC via BC Bioenergy) to ~$358/t (June 2026, MLT Aikins), which makes it decisive for fleets | 15 h | ⛔ demand + records |
+| QC ÉcoPerformance large-project stream; BC Clean Industry Fund | QC/BC partners | 10 h | ⛔ demand + records |
+| NS, NB, NL, SK, federal-OBPS provinces | Partner demand | 3–5 h per province (records + registry entry) | ⛔ demand + records |
+| Static ledger site, with citations | ≥3 external ledger users | — | ✅ built (`pv ledger export`, `ledger-site` workflow); publishing is a user action. Per-record history view: 4 h, after demand |
+| AI-assisted source monitoring → draft ledger PRs (ADR-0006) | Maintenance > 10 h/month | 12 h | ⛔ trigger + credential; review queue built |
+| Excel add-in or CSV round-trip template | Consultant partners | 6 h | ⏳ contracts ready (case schema, results schema, cashflows.csv, records.csv); template after demand |
 
 ## 9. Phase 3 — Only if G2 passes
 
@@ -323,6 +378,9 @@ CI gates: lint, type, unit/property/golden, ledger validation and drift on PRs t
 
 If G0 fails in week 6, stop at M3. Release only the ledger (M2) and archive the kernel branch.
 
+Parallel tracks from 2026-09-30: engineering (M8 done) no longer waits on G0; the critical path is P0.4–P0.6
+(user-run). Ledger maintenance (`pv ledger due`, §7 events) continues on its own cadence.
+
 ---
 
 ## 12. Plan revision history
@@ -332,4 +390,5 @@ If G0 fails in week 6, stop at M3. Release only the ledger (M2) and archive the 
 | v0 | 2026-09-29 | Starting hypothesis: broad "Canada Climate CapEx Engine" (policy + incentives + energy/emissions + NPV/IRR/payback/uncertainty for corporate decisions) | Assignment brief |
 | v1.0 | 2026-09-29 | **Refocused** to PolicyValue CA:<br>• dropped grant/rebate database, buildings, MACC workflow and generic NPV positioning<br>• added realized carbon value model, legal-status-aware bitemporal ledger, CCfD valuation, policy-state robustness and decision drift<br>• ledger scope cut from ~150+ to ~45–55 records<br>• AI limited to ledger monitoring<br>• gates G0–G2 added | Research 01–04: incumbents solve the math, discovery and workflow; incentive breadth is noise at industrial scale; carbon-value treatment is the top swing factor; CCfD shifts P(NPV>0) 0%→76%; broad demand weakened in 2025–26 |
 | v1.1 | 2026-09-29 | Independent verification pass:<br>• MC applies price shocks to market price, then floors (CCfD result now 0%→76%)<br>• derived carbon-value bands ($20–122/t) replace hard-coded ones<br>• ITC 2034 case also loses the expensing window<br>• AB floor uses EY's annual table<br>• G0/G1 wording aligned with DECISION.md<br>• oracle acceptance test uses a `validation_v1` conventions mode<br>• ledger size stated as ~45 (v0.1) / ~55 (target) | Reviewer findings; see `docs/research/04` robustness note |
+| v1.3 | 2026-09-30 | **v0.2.0 engineering (M8)** pulled forward past gates where no evidence was needed:<br>• registry; results/case schemas; sensitivity; CCfD strike solver; `--overrides`; ledger export/review queue; case templates; gate scorecards; demo kit builder; packaging CI<br>• bugs fixed: MC vs deterministic carbon rules (D14), CCUS rate selection (D15)<br>• ledger-v2026.10.1: grid intensity and CE ITC rate from primary sources; expensing classes into the ledger<br>• gate register §2.7; Phase 2 split into built vs gated | Execution rule: gates block evidence-dependent decisions only |
 | v1.2 | 2026-09-29 | **MVP v0.1.0 built** (M1–M6; M7 kit prepared):<br>• ledger `ledger-v2026.10.0`, 34 source-verified entries, 4 records left to user input<br>• kernel reproduces the oracle exactly (ΔNPV < $0.01, Δbreakeven < 10⁻¹² $/t)<br>• 3 golden cases, drift CI, docs; deviations D1–D13 in §2.5 | Build session; source fetches 2026-09-29 |

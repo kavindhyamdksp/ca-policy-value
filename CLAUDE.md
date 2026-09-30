@@ -66,8 +66,9 @@ notes, reviewer, recorded_at, supersedes`.
   20% DB when clean-tech ineligible, params floor table).
 - The oracle `validation/` is frozen — never edit. Tests may import it read-only.
 - Local venv: `.venv` (Python 3.14). Commands: `pytest -q -x --no-header -p no:cacheprovider`,
-  `ruff check --quiet`, `mypy --no-error-summary src | head -40`. /usr/bin/grep, not `grep`.
-- Git: branch `mvp`, commit per green checkpoint with PROGRESS.md, push per milestone, one PR at end.
+  `ruff check --quiet`, `mypy --no-error-summary | head -40` (src + tools). /usr/bin/grep, not `grep`.
+- Git: feature branch per milestone, commit per green checkpoint with PROGRESS.md, one PR per milestone.
+- Record ids live in `src/pv/registry.yaml`, never in kernel code. Open gates: IMPLEMENTATION_PLAN.md §2.7.
 
 ## Oracle targets (validation/results.md; NPV $M, tolerance ±$5k NPV, ±$1/t breakeven)
 Example 1 — process HP: capex 3.5M, s_elig 0.85, gas 50,824 GJ/yr (43,200/0.85), elec 4,000 MWh,
