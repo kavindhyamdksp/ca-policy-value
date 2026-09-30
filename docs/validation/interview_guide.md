@@ -50,7 +50,8 @@ anything confidential; you can decline any question."
 
 ## 4. Reaction to the demo (7 min)
 
-Show the demo kit: the Example 1/3 tables and a mock memo (`pv run cases/golden_ab_abatement_ccfd.yaml`).
+Show the demo kit: `python tools/build_demo_kit.py --out out/demo_kit`, then open `out/demo_kit/index.html`
+(summary of the three golden cases, each linked to its full memo).
 
 13. What's the first thing you'd check before trusting this memo?
 14. Which part is most/least useful: breakeven vs realizable band, the policy-state grid, the MC, the
@@ -73,7 +74,16 @@ Show the demo kit: the Example 1/3 tables and a mock memo (`pv run cases/golden_
 - Licence constraints on sharing credit prices; would they supply prices via local overrides?
 - Any policy source we are missing.
 
-## Synthesis sheet (one row per interview)
+## Recording and synthesis
 
-| # | Segment | Prov | (a) headline/hand-rebuilt | (b) would use on live decision | Ledger-only use | Pilot? | Top pain | Top objection |
-|---|---|---|---|---|---|---|---|---|
+Write each interview to `docs/validation/interviews/NN-<segment>.md` from the template in
+[interviews/README.md](interviews/README.md). The YAML front matter is the structured record; it accepts
+only whitelisted fields, so names, employers and facility identifiers cannot enter it. Score the gate with:
+
+```bash
+python tools/gate_scorecard.py g0 docs/validation/interviews --demos docs/validation/competitor_demos.md
+```
+
+It counts the segment mix, criteria (a) and (b), ledger-only users and competitor-demo results against
+DECISION.md and prints PASS / FALLBACK / FAIL / KILL CRITERION / OPEN. The gate decision itself (P0.6) is
+made by people, then recorded in DECISION.md, SPEC.md and IMPLEMENTATION_PLAN.md.

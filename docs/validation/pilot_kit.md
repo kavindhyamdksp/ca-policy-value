@@ -18,10 +18,10 @@ and we learn whether the memo changes or sharpens a decision. Budget: 2–3 hour
 | Step | Time | What happens |
 |---|---:|---|
 | 1. Install | 10 min | `pip install -e .`, then `pv run cases/golden_hp_qc.yaml` and open the memo |
-| 2. Pick a template | 10 min | Copy the closest golden case: heat pump (QC/BC) or AB abatement with CCfD |
+| 2. Pick a template | 10 min | `pv case template --kind heat_pump --out my-case.yaml` (or `--kind abatement` for a large emitter with a CCfD); every placeholder is marked REPLACE |
 | 3. Enter the case | 30–45 min | Fill in `facility`, `project`, `prices`, `finance`, `policy` per the [user guide](../user_guide.md). Add overrides with reasons for anything the partner knows better than the ledger. |
 | 4. Run and read | 20 min | `pv run my-case.yaml`; walk through answer, value stack, breakeven vs band, grid, MC, provenance |
-| 5. Stress it | 20 min | Add grid dimensions (`itc_granted`, `floor_status`, `ccfd`, `coverage`, `credit_scenario`); set MC regimes that reflect the partner's own policy views |
+| 5. Stress it | 20 min | Add grid dimensions (`itc_granted`, `floor_status`, `ccfd`, `coverage`, `credit_scenario`), a one-way `sensitivity` block, and MC regimes that reflect the partner's own policy views; developers can add `ccfd_strike` to solve for the strike they need |
 | 6. Compare | 15 min | Put the memo next to the partner's existing analysis. Where do they differ, and why? |
 | 7. Feedback | 15 min | Complete the form below |
 
@@ -29,7 +29,9 @@ and we learn whether the memo changes or sharpens a decision. Budget: 2–3 hour
 
 - Case files and outputs stay with the partner. We ask only for the feedback form and, if the partner agrees,
   an anonymized results.json (case_id renamed, capex rounded).
-- Licensed prices go in `overrides` locally. The ledger stores only public observations (ADR-0007).
+- Licensed prices go in a separate local file, `pv run my-case.yaml --overrides prices.local.yaml`
+  (`*.local.yaml` is git-ignored). The ledger stores only public observations (ADR-0007). Outputs list
+  override values, so treat `out/` as confidential too.
 - The memo is a scenario analysis, not tax or investment advice; eligibility needs the partner's tax advisor.
 
 ## Troubleshooting
@@ -44,9 +46,21 @@ and we learn whether the memo changes or sharpens a decision. Budget: 2–3 hour
 
 ## Feedback form
 
-Copy into `docs/validation/pilots/NN-<segment>.md` (anonymized).
+Copy into `docs/validation/pilots/NN-<segment>.md` (anonymized). The front matter is the structured record
+scored by `python tools/gate_scorecard.py g1 docs/validation/pilots`; only these fields are accepted.
 
 ```markdown
+---
+id: "NN"
+date: 2026-11-15
+segment: covered_facility      # covered_facility | consultant | developer
+province: AB                   # AB | "ON" | BC | QC | FED | other
+ran_real_case: yes             # yes | no
+decision_changed_or_derisked: no   # yes | no (question 4)
+time_to_first_memo_min: 45
+would_use_next: maybe          # yes | maybe | no (question 9)
+ledger_corrections: 0          # count of ledger errors reported (question 7)
+---
 Pilot NN · segment: ______ · province: __ · date: ____-__-__
 
 1. Project type and size (bucket): ______
@@ -65,6 +79,7 @@ Pilot NN · segment: ______ · province: __ · date: ____-__-__
 
 ## G1 read-out
 
-After ≥3 pilots, summarize against [DECISION.md](../../DECISION.md) gate G1: pilots completed, decisions
+After ≥3 pilots, run `python tools/gate_scorecard.py g1 docs/validation/pilots` and summarize against
+[DECISION.md](../../DECISION.md) gate G1: pilots completed, decisions
 changed or sharpened, time to first memo, ledger corrections received, and willingness to keep using it.
 Update DECISION.md, SPEC.md and IMPLEMENTATION_PLAN.md with the outcome.

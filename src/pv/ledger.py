@@ -8,7 +8,7 @@ import itertools
 import json
 import os
 import subprocess
-from collections.abc import Iterable, Mapping
+from collections.abc import Iterable
 from dataclasses import dataclass, field
 from importlib import resources
 from pathlib import Path
@@ -439,8 +439,3 @@ def validate(ledger: Ledger, today: dt.date) -> list[str]:
             if a.effective_to is None or a.effective_to >= b.effective_from:
                 errs.append(f"{rid}: overlapping effective periods for status {status}")
     return errs
-
-
-def freshness_report(records: Iterable[Record], as_of: dt.date) -> Mapping[str, int]:
-    """Days remaining before each record breaches its SLA (negative = stale)."""
-    return {r.id: FRESHNESS_SLA_DAYS[r.freshness] - (as_of - r.retrieved).days for r in records}

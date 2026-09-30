@@ -19,7 +19,7 @@ jobs:
       - name: ruff
         run: ruff check && ruff format --check
       - name: mypy (strict)
-        run: mypy src
+        run: mypy
 
   ledger-validate:
     runs-on: ubuntu-latest
@@ -54,6 +54,40 @@ jobs:
         with:
           name: fingerprint-${{ matrix.os }}-${{ matrix.python }}
           path: out/fingerprint.txt
+
+  package:
+    # The built wheel must work outside the repo: bundled ledger, registry, schemas and templates.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12", cache: pip}
+      - run: pip install build && python -m build
+      - name: install the wheel in a clean venv and run it from outside the checkout
+        run: |
+          python -m venv /tmp/wv
+          /tmp/wv/bin/pip install dist/*.whl
+          cd "$RUNNER_TEMP"
+          /tmp/wv/bin/pv validate --lenient
+          /tmp/wv/bin/pv case template --kind abatement --out c.yaml
+          /tmp/wv/bin/pv run c.yaml --out o
+          test -s o/results.json && test -s o/memo.html
+          /tmp/wv/bin/pv ledger export --out site
+          /tmp/wv/bin/pv schema results > /dev/null
+      - uses: actions/upload-artifact@v4
+        with: {name: dist, path: dist/}
+
+  tools:
+    # Gate scorecards and the demo-kit builder (outside the pv package).
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12", cache: pip}
+      - run: pip install -e ".[dev]"
+      - run: python tools/gate_scorecard.py g0 docs/validation/interviews --allow-empty
+      - run: python tools/gate_scorecard.py g1 docs/validation/pilots --allow-empty
+      - run: python tools/build_demo_kit.py --out out/demo_kit
 
   reproducibility:
     needs: test

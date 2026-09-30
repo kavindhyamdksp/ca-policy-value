@@ -62,7 +62,7 @@ ignore = ["RUF001", "RUF002", "RUF003"]
 [tool.mypy]
 strict = true
 python_version = "3.12"  # numpy>=2.3 stubs use PEP 695 syntax
-files = ["src"]
+files = ["src", "tools"]
 plugins = ["pydantic.mypy"]
 
 [[tool.mypy.overrides]]
