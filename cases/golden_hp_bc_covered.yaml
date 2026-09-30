@@ -1,0 +1,42 @@
+# Golden case 2 — the same heat pump at a BC OBPS-covered facility (validation Example 1, BC market).
+case_id: golden_hp_bc_covered
+as_of: 2026-10-15
+min_legal_status: enacted
+facility:
+  province: BC
+  system: bc_obps
+  covered: true
+  entity: taxable_corp
+project:
+  in_service: 2026-12-31
+  life_years: 20
+  capex: [{year: 0, amount: 3500000}]
+  technology_class: heat_pump_process
+  itc_eligible_share: 0.85
+  cca_class: "43.1"
+  energy_deltas: {natural_gas_gj: -50824, electricity_mwh: 4000}
+  opex_delta: 30000
+prices:
+  natural_gas_gj: 10.0       # user tariff (delivered, ex-carbon); research-phase estimate
+  # electricity: ledger reference (HQ comparison 2025, Vancouver large power)
+  escalation: 0.02
+finance: {discount_rate: 0.08, itc_receipt_lag_years: 1}
+policy:
+  credit_price_scenario: base
+  itc_granted: true          # user asserts a favourable eligibility opinion; the grid tests the denial
+  grid_factor: average
+robustness:
+  grid: [itc_granted, coverage, credit_scenario]
+  monte_carlo:
+    draws: 10000
+    seed: 20260929
+    regimes:
+      credits_hold_ratio: {p: 0.60}
+      oversupply: {p: 0.30, market_scale: 0.59}
+      obps_repealed_2029: {p: 0.10, market_value: 0, from_year: 2029}
+    shocks: {gas_sigma: 0.30, elec_sigma: 0.15, credit_sigma: 0.35, capex_triangular: [0.9, 1.0, 1.3]}
+    itc_probability: 0.6
+overrides:
+  - record: fed.nir.grid_ef
+    value: {BC: 22.8}
+    reason: "User input: average BC grid intensity from the research phase (fed.nir.grid_ef unverified in ledger v0.1)"

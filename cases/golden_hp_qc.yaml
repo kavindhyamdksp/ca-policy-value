@@ -1,0 +1,43 @@
+# Golden case 1 — industrial process heat pump, Quebec (validation Example 1, production treatment).
+# QC cap-and-trade reaches every gas user, so carbon value applies whether or not the site is covered.
+case_id: golden_hp_qc
+as_of: 2026-10-15
+min_legal_status: enacted
+facility:
+  province: QC
+  system: spede
+  covered: true
+  entity: taxable_corp
+  labour_requirements_met: true
+  tax_capacity: full
+project:
+  in_service: 2026-12-31
+  life_years: 20
+  capex: [{year: 0, amount: 3500000}]
+  technology_class: heat_pump_process   # NRCan guidance: not listed -> ITC denied in the base case
+  itc_eligible_share: 0.85
+  cca_class: "43.1"
+  energy_deltas: {natural_gas_gj: -50824, electricity_mwh: 4000}
+  opex_delta: 30000
+prices:
+  natural_gas_gj: 8.8        # user tariff (delivered, ex-carbon); research-phase estimate
+  electricity_mwh: 60.5      # user tariff: HQ large-power 5.83 c/kWh (ledger) x 1.038 (2026 increase)
+  escalation: 0.02
+finance: {discount_rate: 0.08, itc_receipt_lag_years: 1}
+policy:
+  credit_price_scenario: base
+  grid_factor: average
+robustness:
+  grid: [itc_granted, credit_scenario]
+  monte_carlo:
+    draws: 10000
+    seed: 20260929
+    regimes:
+      cap_and_trade_continues: {p: 0.85}
+      market_breakdown_2029: {p: 0.15, market_value: 30, from_year: 2029}
+    shocks: {gas_sigma: 0.30, elec_sigma: 0.15, credit_sigma: 0.35, capex_triangular: [0.9, 1.0, 1.3]}
+    itc_probability: 0.6     # user judgement: advance ruling sought on process heat pump eligibility
+overrides:
+  - record: fed.nir.grid_ef
+    value: {QC: 2.5}
+    reason: "User input: average QC grid intensity from the research phase (fed.nir.grid_ef unverified in ledger v0.1)"

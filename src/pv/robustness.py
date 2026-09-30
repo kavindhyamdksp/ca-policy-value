@@ -152,7 +152,7 @@ def monte_carlo(m: Model, mc: MonteCarlo) -> McResult:
     idx = np.searchsorted(np.cumsum(probs), rng.random(n), side="right").clip(0, len(names) - 1)
     scenario = c.policy.credit_price_scenario
     base_market = ci.headline if scenario == "upper_bound_headline" else ci.market[scenario]
-    base_floor = ci.floor * carbon.floor_scale(ci, c.policy.floor)
+    base_scale = carbon.floor_scale(ci, c.policy.floor)
     market = np.empty((n, m.n))
     floor = np.empty((n, m.n))
     for i, k in enumerate(names):
@@ -161,7 +161,8 @@ def monte_carlo(m: Model, mc: MonteCarlo) -> McResult:
         mk = np.where(
             after, r.market_value if r.market_value is not None else base_market * r.market_scale, base_market
         )
-        fl = np.where(after, base_floor * r.floor_scale, base_floor)
+        scale = r.floor_scale if r.floor_scale is not None else base_scale
+        fl = np.where(after, ci.floor * scale, ci.floor * base_scale)
         sel = idx == i
         market[sel] = mk
         floor[sel] = fl

@@ -30,14 +30,14 @@ Resume: read this + CLAUDE.md only, continue at the first unchecked item. Branch
 - [x] property tests §5.2
 
 ## M5 Report + CLI
-- [ ] Jinja2 memo (FR-4) with provenance appendix, warnings, not-advice notice
-- [ ] results.json (schema v1 + hash) and cashflows.csv
-- [ ] Typer: validate, run, drift, ledger show
+- [x] Jinja2 memo (FR-4) with provenance appendix, warnings, not-advice notice
+- [x] results.json (schema v1 + hash) and cashflows.csv
+- [x] Typer: validate, run, drift, ledger show
 
 ## M6 Golden, drift, docs
-- [ ] 3 golden cases + snapshots
-- [ ] drift test: ab.tier.floor announced→in_force flips golden_ab_abatement_ccfd
-- [ ] drift CI job on ledger/ PRs
+- [x] 3 golden cases + snapshots
+- [x] drift test: ab.tier.floor announced→in_force flips golden_ab_abatement_ccfd
+- [x] drift CI job on ledger/ PRs
 - [ ] README quick-start, docs/user_guide.md, docs/methodology.md
 
 ## M7 prep

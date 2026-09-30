@@ -14,7 +14,7 @@ MC_AB = {
     "draws": 20_000,
     "seed": 20260929,
     "regimes": {
-        "floor_as_announced": {"p": 0.55},
+        "floor_as_announced": {"p": 0.55, "floor_scale": 1.0},
         "floor_half": {"p": 0.30, "floor_scale": 0.5},
         "rollback": {"p": 0.15, "market_value": 15, "floor_scale": 0.0},
     },

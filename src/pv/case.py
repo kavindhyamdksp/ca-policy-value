@@ -105,7 +105,7 @@ class Regime(_M):
     p: float = Field(ge=0, le=1)
     market_scale: float = 1.0
     market_value: float | None = None
-    floor_scale: float = 1.0
+    floor_scale: float | None = None  # scale on the announced floor; None = base-case floor treatment
     from_year: int | None = None  # regime changes apply for y >= from_year (default: all years)
 
 
