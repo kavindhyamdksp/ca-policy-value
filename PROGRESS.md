@@ -24,10 +24,10 @@ Resume: read this + CLAUDE.md only, continue at the first unchecked item. Branch
 - [x] oracle tests: NPV ±$5k, breakeven ±$1/t — actual max |ΔNPV| $0.00, |ΔBE| 1e-12 $/t (16 NPVs, 8 BEs)
 
 ## M4 Robustness
-- [ ] breakeven vs realizable band
-- [ ] policy-state grid (GO share, minimal GO conditions)
-- [ ] seeded vectorized MC
-- [ ] property tests §5.2
+- [x] breakeven vs realizable band
+- [x] policy-state grid (GO share, minimal GO conditions)
+- [x] seeded vectorized MC (reproduces oracle Ex3 CCfD P(NPV>0)≈76%)
+- [x] property tests §5.2
 
 ## M5 Report + CLI
 - [ ] Jinja2 memo (FR-4) with provenance appendix, warnings, not-advice notice

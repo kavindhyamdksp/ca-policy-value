@@ -23,11 +23,16 @@ ITC_RECORDS = {"ct": "fed.ct_itc.rate_schedule", "ce": "fed.ce_itc.rate", "ccus"
 @dataclass(frozen=True)
 class TaxInputs:
     rate: float  # combined corporate rate τ
-    itc_rate: float  # ρ (0 if not granted/eligible)
+    rho: float  # ρ if the claim is granted (0 if the entity/measure is ineligible)
     itc_share: float
     eligibility: str  # likely | case_by_case | not_listed | n/a
     granted: bool
     notes: tuple[str, ...] = ()
+
+    @property
+    def itc_rate(self) -> float:
+        """Effective base-case rate (0 when the claim is not granted)."""
+        return self.rho if self.granted else 0.0
 
 
 def _truthy(v: object) -> bool:
@@ -91,7 +96,7 @@ def resolve(case: Case, view: LedgerView, granted_override: bool | None = None) 
     share = case.project.itc_eligible_share if case.project.itc_eligible_share is not None else 1.0
     return TaxInputs(
         rate=tax_rate(case, view) if case.facility.taxable else 0.0,
-        itc_rate=rho if granted else 0.0,
+        rho=rho,
         itc_share=share,
         eligibility=elig,
         granted=granted,
@@ -100,8 +105,9 @@ def resolve(case: Case, view: LedgerView, granted_override: bool | None = None) 
 
 
 def itc_amount(case: Case, ti: TaxInputs, capex: float) -> float:
+    """ITC if granted: ρ · s_elig · (capex − assistance)."""
     base = max(capex - case.project.other_assistance, 0.0)
-    return ti.itc_rate * ti.itc_share * base
+    return ti.rho * ti.itc_share * base
 
 
 def cca_schedule(
