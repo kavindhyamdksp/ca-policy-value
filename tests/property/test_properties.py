@@ -82,7 +82,8 @@ def test_breakeven_round_trip(pv_, capex: float, tonnes: float, granted: bool) -
     m, _ = model(_raw(*pv_, True, capex, tonnes))
     p = m.breakeven(granted)
     assert p is not None
-    assert m.npv_of(np.full(m.n, p), granted) == pytest.approx(0, abs=1e-3 * max(1.0, capex / 1e6))
+    scale = capex + abs(p) * tonnes * m.n  # magnitude of the terms that cancel
+    assert m.npv_of(np.full(m.n, p), granted) == pytest.approx(0, abs=1e-9 * scale + 1e-6)
 
 
 @SETTINGS
