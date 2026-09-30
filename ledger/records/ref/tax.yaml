@@ -1,0 +1,42 @@
+# ref/tax.yaml — PolicyValue CA ledger (CC BY 4.0). Quote the key "ON".
+records:
+- id: ref.tax.corporate
+  jurisdiction: FED
+  instrument: corporate_income_tax
+  parameter: combined_general_rate
+  value:
+    AB: 0.23
+    "ON": 0.265
+    BC: 0.27
+    QC: 0.265
+  unit: fraction
+  currency_basis: n/a
+  effective_from: 2026-01-01
+  effective_to: null
+  legal_status: in_force
+  confidence: medium
+  freshness: statute
+  sources:
+  - url: https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/corporations/corporation-tax-rates.html
+    title: Corporation tax rates
+    publisher: Canada Revenue Agency
+    published: 2025-05-30
+    retrieved: 2026-09-29
+    locator: 'Federal rates; table: Provincial and territorial lower and higher tax rates, and business limits,
+      not including Quebec and Alberta'
+    excerpt: the net tax rate is 15%
+    source_type: primary_gov
+  - url: https://www.taxtips.ca/smallbusiness/corporatetax/corporate-tax-rates-2026.htm
+    title: 2026 Corporate Income Tax Rates
+    publisher: TaxTips.ca
+    published: 2026-09-22
+    retrieved: 2026-09-29
+    locator: 2026 general (active business income above the business limit) rate table
+    excerpt: Alberta | 8% ... BC | 12% ... Ontario | 11.5% ... Quebec | 11.5%
+    source_type: secondary
+  notes: 'Federal 15% + provincial general rate: AB 0.15+0.08=0.23; ON 0.15+0.115=0.265; BC 0.15+0.12=0.27; QC 0.15+0.115=0.265.
+    ON (11.5%) and BC (12%) also appear in the CRA higher-rate table; AB and QC are excluded from the CRA table
+    (no collection agreements), so those rates rest on the secondary source only. The Ontario 2026 change affects
+    only the small business rate.'
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending

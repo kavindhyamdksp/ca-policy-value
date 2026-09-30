@@ -11,11 +11,11 @@ Resume: read this + CLAUDE.md only, continue at the first unchecked item. Branch
 - [x] LICENSE (Apache-2.0), ledger/LICENSE (CC BY 4.0 + OGL-Canada)
 
 ## M2 Ledger
-- [ ] JSON schema + pydantic models
-- [ ] loader (as_of / min_legal_status / overrides with reason)
-- [ ] validators per §5.4 incl. freshness SLAs
-- [ ] seed records per §3 (subagent verification)
-- [ ] ledger/CHANGELOG.md; tag ledger-v2026.10.0
+- [x] JSON schema + pydantic models
+- [x] loader (as_of / min_legal_status / overrides with reason)
+- [x] validators per §5.4 incl. freshness SLAs
+- [x] seed records per §3 (subagent verification)
+- [x] ledger/CHANGELOG.md; tag ledger-v2026.10.0
 
 ## M3 Kernel
 - [ ] pv.carbon, pv.tax, pv.cashflow, pv.emissions
@@ -50,7 +50,13 @@ Resume: read this + CLAUDE.md only, continue at the first unchecked item. Branch
 - [ ] tag v0.1.0, gh release, PR mvp→main, merge on green
 
 ## Unverified (omitted from ledger; kernel requires user input)
-(none yet)
+- fed.nir.grid_ef — NIR intensity table not retrievable (Data Mart redirect); kernel: override fed.nir.grid_ef or grid_factor: marginal
+- fed.ce_itc.rate — neither Finance C-15 release nor Torys states the 15% rate/entities; kernel: override for itc_measure: ce
+- bc.carbon_tax — gov.bc.ca page 404 and news release cert error; unused by kernel (non-covered BC = $0)
+- ref.gas.delivered — no industrial $/GJ in OEB QRAM or FortisBC page; kernel: prices.natural_gas_gj required
+- Partial: fed.cca.expensing 2030–33 phase-out % not stated (override required for those in-service years);
+  fed.carbon.benchmark_path 2028–29/2031–39 not stated (linear interpolation);
+  fed.ccus_itc.rates entered as proposed (secondary sources only)
 
 ## Deviations
 (none yet)

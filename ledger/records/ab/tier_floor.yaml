@@ -1,0 +1,47 @@
+# ab/tier_floor.yaml — PolicyValue CA ledger (CC BY 4.0). Quote the key "ON".
+records:
+- id: ab.tier.floor
+  jurisdiction: AB
+  instrument: tier
+  parameter: minimum_transfer_price
+  value:
+    2030: 60
+    2031: 63
+    2032: 67
+    2033: 71
+    2034: 75
+    2035: 80
+    2036: 85
+    2037: 90
+    2038: 95
+    2039: 100
+    2040: 110
+  unit: CAD/t
+  currency_basis: nominal
+  effective_from: 2030-01-01
+  effective_to: null
+  legal_status: announced
+  confidence: high
+  freshness: announcement
+  sources:
+  - url: https://globaltaxnews.ey.com/news/2026-1180-canada-alberta-revises-industrial-carbon-prices
+    title: 'Canada: Alberta revises industrial carbon prices'
+    publisher: EY Global Tax News
+    published: 2026-06-03
+    retrieved: 2026-09-29
+    locator: 'Table: Minimum transfer price for credits; paragraph on price floor regulation'
+    excerpt: Alberta aims to enact the requisite 'price floor' regulation by 31 December 2026.
+    source_type: secondary
+  - url: https://www.gljpc.com/canadas-carbon-pricing-reset-a-new-trajectory-and-2040-outlook/
+    title: 'Canada''s Carbon Pricing Reset: A New Trajectory and 2040 Outlook'
+    publisher: GLJ Ltd.
+    published: 2026-05-28
+    retrieved: 2026-09-29
+    locator: Alberta credit price floor
+    excerpt: Increasing $5 per year reaching $100 in 2039 then by $10 reaching $110 in 2040
+    source_type: secondary
+  notes: Annual values read from EY table (2030 CA$60 through 2040 CA$110); GLJ confirms 2030 $60, 2035 $80, 2040
+    $110. Floor regulation targeted by 2026-12-31; Osler reports pre-regulation credits are grandfathered from the
+    floor.
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending

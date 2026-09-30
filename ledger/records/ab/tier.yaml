@@ -1,0 +1,163 @@
+# ab/tier.yaml — PolicyValue CA ledger (CC BY 4.0). Quote the key "ON".
+records:
+- id: ab.tier.fund_price
+  jurisdiction: AB
+  instrument: tier
+  parameter: fund_price
+  value:
+    2026: 95
+  unit: CAD/t
+  currency_basis: nominal
+  effective_from: 2026-01-01
+  effective_to: 2026-12-31
+  legal_status: in_force
+  confidence: medium
+  freshness: statute
+  sources:
+  - url: https://globaltaxnews.ey.com/news/2026-1180-canada-alberta-revises-industrial-carbon-prices
+    title: 'Canada: Alberta revises industrial carbon prices'
+    publisher: EY Global Tax News
+    published: 2026-06-03
+    retrieved: 2026-09-29
+    locator: 'Table: Industrial carbon pricing (Year | Charge per CO2e ton), row 2026'
+    excerpt: 2026 | CA$95
+    source_type: secondary
+  - url: https://carboncredits.com/canadas-carbon-pricing-reset-in-2026-will-industry-step-up-or-stall-climate-progress/
+    title: 'Canada''s Carbon Pricing Reset in 2026: Will Industry Step Up or Stall Climate Progress?'
+    publisher: CarbonCredits.com
+    published: 2025-12-01
+    retrieved: 2026-09-29
+    locator: Alberta TIER section
+    excerpt: Despite a compliance price of CAD 95 per tonne, market credits trade at around CAD 18 per tonne.
+    source_type: secondary
+  - url: https://kings-printer.alberta.ca/documents/Regs/2019_133.pdf
+    title: Technology Innovation and Emissions Reduction Regulation, Alta Reg 133/2019 (consolidated to AR 270/2025,
+      current as of December 3, 2025)
+    publisher: Alberta King's Printer
+    published: 2025-12-03
+    retrieved: 2026-09-29
+    locator: s. 21(2) Fund credits
+    excerpt: The Minister may, by order, establish the amount of money that a person responsible must contribute
+      to the Fund to obtain one fund credit
+    source_type: primary_legal
+  notes: Value $95 read from EY table and CarbonCredits; the regulation (primary_legal) only establishes that the
+    fund price is set by ministerial order under s. 21(2) and does not state the amount. No alberta.ca page stating
+    $95 was found; the ministerial order itself was not fetched.
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending
+- id: ab.tier.fund_price
+  jurisdiction: AB
+  instrument: tier
+  parameter: fund_price
+  value:
+    2027: 100
+    2028: 100
+    2029: 100
+    2030: 115
+    2031: 118
+    2032: 121
+    2033: 124
+    2034: 127
+    2035: 130
+    2040: 140
+  unit: CAD/t
+  currency_basis: nominal
+  effective_from: 2027-01-01
+  effective_to: null
+  legal_status: announced
+  confidence: high
+  freshness: announcement
+  sources:
+  - url: https://globaltaxnews.ey.com/news/2026-1180-canada-alberta-revises-industrial-carbon-prices
+    title: 'Canada: Alberta revises industrial carbon prices'
+    publisher: EY Global Tax News
+    published: 2026-06-03
+    retrieved: 2026-09-29
+    locator: 'Table: Industrial carbon pricing, rows 2027-2040'
+    excerpt: 2036–2040 | Annual increases of 1.5% to reach CA$140 cap in 2040
+    source_type: secondary
+  - url: https://www.blakes.com/insights/implementation-of-the-canada-alberta-mou-key-takeaways-for-carbon-markets-in-alberta/
+    title: 'Implementation of the Canada-Alberta MOU: Key Takeaways for Carbon Markets in Alberta'
+    publisher: Blake, Cassels & Graydon LLP
+    published: 2026-05-28
+    retrieved: 2026-09-29
+    locator: TIER headline price schedule
+    excerpt: annual increases of C$3 to reach C$130 by 2035
+    source_type: secondary
+  notes: '2027-2035 read row by row from EY table (Blakes and Osler agree: C$100 2027-2029, C$115 2030, +C$3/yr
+    to C$130 in 2035). 2036-2039 are not stated as figures; sources give 1.5%/yr escalation to C$140 in 2040, so
+    only 2040 is recorded.'
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending
+- id: ab.tier.dic_cap
+  jurisdiction: AB
+  instrument: tier
+  parameter: direct_investment_credit_cap
+  value:
+    cap_share: 0.5
+  unit: fraction
+  currency_basis: n/a
+  effective_from: 2026-05-28
+  effective_to: null
+  legal_status: announced
+  confidence: high
+  freshness: announcement
+  sources:
+  - url: https://www.blakes.com/insights/implementation-of-the-canada-alberta-mou-key-takeaways-for-carbon-markets-in-alberta/
+    title: 'Implementation of the Canada-Alberta MOU: Key Takeaways for Carbon Markets in Alberta'
+    publisher: Blake, Cassels & Graydon LLP
+    published: 2026-05-28
+    retrieved: 2026-09-29
+    locator: Direct investment credits
+    excerpt: 50% of eligible capital and 50% of operating costs directly attributable to the approved project, net
+      of any public financial support
+    source_type: secondary
+  - url: https://globaltaxnews.ey.com/news/2026-1180-canada-alberta-revises-industrial-carbon-prices
+    title: 'Canada: Alberta revises industrial carbon prices'
+    publisher: EY Global Tax News
+    published: 2026-06-03
+    retrieved: 2026-09-29
+    locator: Direct investment credits
+    excerpt: Credits will be limited to 50% of the eligible capital and up to 50% of operating costs
+    source_type: secondary
+  notes: Cap applies separately to eligible capital and to operating costs, net of public financial support. effective_from
+    is the Blakes publication date used as an announcement-date proxy; no start date for the cap was fetched.
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending
+- id: ab.tier.threshold
+  jurisdiction: AB
+  instrument: tier
+  parameter: mandatory_threshold
+  value:
+    mandatory_kt: 100
+  unit: kt
+  currency_basis: n/a
+  effective_from: 2020-01-01
+  effective_to: null
+  legal_status: in_force
+  confidence: high
+  freshness: statute
+  sources:
+  - url: https://kings-printer.alberta.ca/documents/Regs/2019_133.pdf
+    title: Technology Innovation and Emissions Reduction Regulation, Alta Reg 133/2019 (consolidated to AR 270/2025,
+      current as of December 3, 2025)
+    publisher: Alberta King's Printer
+    published: 2025-12-03
+    retrieved: 2026-09-29
+    locator: s. 1 definition of "large emitter"; s. 40(1) coming into force
+    excerpt: has direct emissions of 100 000 CO2e tonnes or more in 2016 or a subsequent year
+    source_type: primary_legal
+  - url: https://www.alberta.ca/technology-innovation-and-emissions-reduction-regulation
+    title: Technology Innovation and Emissions Reduction Regulation
+    publisher: Government of Alberta
+    published: null
+    retrieved: 2026-09-29
+    locator: Regulated facilities / opt-in
+    excerpt: TIER regulated facilities include those that emitted 100,000 tonnes or more of carbon dioxide equivalent
+      (tonnes CO2e) per year in 2016, or any subsequent year
+    source_type: primary_gov
+  notes: 'Regulation in force 2020-01-01 (s. 40(1)). Also covers hydrogen importers above 10,000 t/yr. Opt-in per
+    alberta.ca: facility competing with a regulated facility, emitting 2,000 t CO2e or more, in an emissions-intensive
+    trade-exposed sector.'
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending

@@ -1,0 +1,89 @@
+# on/eps.yaml — PolicyValue CA ledger (CC BY 4.0). Quote the key "ON".
+records:
+- id: on.eps.price_schedule
+  jurisdiction: 'ON'
+  instrument: eps
+  parameter: excess_emissions_charge
+  value:
+    2022: 50
+    2023: 65
+    2024: 80
+    2025: 95
+    2026: 110
+    2027: 125
+    2028: 140
+    2029: 155
+    2030: 170
+  unit: CAD/t
+  currency_basis: nominal
+  effective_from: 2022-01-01
+  effective_to: 2030-12-31
+  legal_status: in_force
+  confidence: medium
+  freshness: guidance
+  sources:
+  - url: https://www.enbridgegas.com/business-industrial/commercial-industrial/large-volume-services-rates/federal-carbon-pricing
+    title: Federal carbon pricing
+    publisher: Enbridge Gas
+    published: null
+    retrieved: 2026-09-29
+    locator: EPS excess emissions charge table (Year | $/tCO2e)
+    excerpt: This excess emissions charge increases annually each January.
+    source_type: secondary
+  - url: https://www.ieta.org/uploads/wp-content/2025/09/IETA-Business-brief-Ontario-EPS-Sept_2025.pdf
+    title: 'Business Brief: Ontario EPS'
+    publisher: IETA
+    published: 2025-09-01
+    retrieved: 2026-09-29
+    locator: p. 2, Programme details
+    excerpt: set at $50 per tCO2e in 2022 and is increasing by $15 until it reaches a price of $170 in 2030
+    source_type: secondary
+  - url: https://www.ontario.ca/page/emissions-performance-standards-program
+    title: Emissions Performance Standards program
+    publisher: Government of Ontario
+    published: 2025-11-05
+    retrieved: 2026-09-29
+    locator: Excess emissions unit cost table
+    excerpt: 2026 | $95
+    source_type: primary_gov
+  notes: Series by compliance year from Enbridge table, matching IETA. The ontario.ca table lists the same prices
+    one year later (2023 $50 to 2031 $170), likely keyed to the year EEUs are paid; O. Reg. 241/19 on e-Laws did
+    not render. No fetched source reports any announced alignment of the EPS with the new national price path.
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending
+- id: on.eps.thresholds
+  jurisdiction: 'ON'
+  instrument: eps
+  parameter: coverage_thresholds
+  value:
+    mandatory_kt: 50
+    opt_in_kt: 10
+  unit: kt
+  currency_basis: n/a
+  effective_from: 2022-01-01
+  effective_to: null
+  legal_status: in_force
+  confidence: high
+  freshness: guidance
+  sources:
+  - url: https://www.ontario.ca/page/emissions-performance-standards-program
+    title: Emissions Performance Standards program
+    publisher: Government of Ontario
+    published: 2025-11-05
+    retrieved: 2026-09-29
+    locator: 'Registration: mandatory and voluntary participation (O. Reg. 241/19, s. 2)'
+    excerpt: reported emissions of at least 10,000 tonnes of CO2 equivalent in one or more reporting year from 2014
+      onward
+    source_type: primary_gov
+  - url: https://www.ieta.org/uploads/wp-content/2025/09/IETA-Business-brief-Ontario-EPS-Sept_2025.pdf
+    title: 'Business Brief: Ontario EPS'
+    publisher: IETA
+    published: 2025-09-01
+    retrieved: 2026-09-29
+    locator: p. 1, Overall cap and trajectory
+    excerpt: The Ontario EPS applies to facilities that emit over 50,000 tCO2e per year.
+    source_type: secondary
+  notes: ontario.ca gives the mandatory test as reported emissions of at least 50,000 t CO2e; opt-in limited to
+    regulated industrial activities. EPS pricing took effect 2022-01-01 per IETA.
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending

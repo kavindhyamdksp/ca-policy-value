@@ -1,0 +1,64 @@
+# bc/obps.yaml — PolicyValue CA ledger (CC BY 4.0). Quote the key "ON".
+records:
+- id: bc.obps.price
+  jurisdiction: BC
+  instrument: obps
+  parameter: compliance_charge_rate
+  value:
+    2024: 80
+    2025: 95
+    2026: 110
+    2027: 125
+    2028: 140
+    2029: 155
+    2030: 170
+  unit: CAD/t
+  currency_basis: nominal
+  effective_from: 2024-01-01
+  effective_to: null
+  legal_status: in_force
+  confidence: medium
+  freshness: guidance
+  sources:
+  - url: https://www2.gov.bc.ca/assets/gov/environment/climate-change/ind/obps/guidance/bc_obps_program_and_reporting_guidance.pdf
+    title: B.C. OBPS Program & Reporting Guidance (March 2026)
+    publisher: Government of British Columbia (CleanBC)
+    published: null
+    retrieved: 2026-09-29
+    locator: Part 4 - Compliance Mechanisms, Table 3. Compliance Charge Rates 2024-2030, p. 17
+    excerpt: Calendar year Compliance Charge Rate per tonnes CO2e 2024 $80 2025 $95 2026 $110 2027 $125 2028 $140
+      2029 $155 2030 $170
+    source_type: primary_gov
+  notes: Guidance dated March 2026 (no day shown). Table 3 is an image; WebFetch could not parse the PDF, so the
+    page was rendered locally from the fetched bytes and read visually. The 2024 rate ($80) matches the ~$80 reported;
+    schedule shown is BC's own, and any realignment with the national trajectory is not reflected in this source.
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending
+- id: bc.obps.threshold
+  jurisdiction: BC
+  instrument: obps
+  parameter: mandatory_participation_threshold
+  value:
+    mandatory_kt: 10
+  unit: kt
+  currency_basis: n/a
+  effective_from: 2024-04-01
+  effective_to: null
+  legal_status: in_force
+  confidence: high
+  freshness: guidance
+  sources:
+  - url: https://www2.gov.bc.ca/assets/gov/environment/climate-change/ind/obps/guidance/bc_obps_program_and_reporting_guidance.pdf
+    title: B.C. OBPS Program & Reporting Guidance (March 2026)
+    publisher: Government of British Columbia (CleanBC)
+    published: null
+    retrieved: 2026-09-29
+    locator: Part 2 - Eligibility, p. 9
+    excerpt: mandatory for producers of regulated industrial products (see Appendix 1) under the GGIRCA that emit
+      above 10,000 tonnes of carbon dioxide equivalent (CO2e)
+    source_type: primary_gov
+  notes: Guidance says 'above 10,000' tCO2e/yr for regulated products; reporting operations are defined as '10,000
+    or more'. Operations below the threshold may apply to opt in. The B.C. OBPS page (last updated 2026-04-13) gives
+    April 1, 2024 as the start date; text was extracted locally from the fetched PDF bytes.
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending

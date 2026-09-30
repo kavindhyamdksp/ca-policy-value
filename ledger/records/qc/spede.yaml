@@ -1,0 +1,71 @@
+# qc/spede.yaml — PolicyValue CA ledger (CC BY 4.0). Quote the key "ON".
+records:
+- id: qc.spede.coverage
+  jurisdiction: QC
+  instrument: spede
+  parameter: coverage
+  value:
+    emitter_threshold_kt: 25
+    fuel_distributors_covered: 'yes'
+  unit: text
+  currency_basis: n/a
+  effective_from: 2015-01-01
+  effective_to: null
+  legal_status: in_force
+  confidence: high
+  freshness: guidance
+  sources:
+  - url: https://www.environnement.gouv.qc.ca/changements/carbone/Couverture-en.htm
+    title: Québec cap-and-trade system - Coverage
+    publisher: MELCCFP (Gouvernement du Québec)
+    published: 2024-12-06
+    retrieved: 2026-09-29
+    locator: Emitters / grand emitters paragraph
+    excerpt: must cover their emissions starting January 1st of the year when their emissions reach the 25,000 mt
+      CO2 eq. threshold
+    source_type: primary_gov
+  - url: https://www.environnement.gouv.qc.ca/changements/carbone/Couverture-en.htm
+    title: Québec cap-and-trade system - Coverage
+    publisher: MELCCFP (Gouvernement du Québec)
+    published: 2024-12-06
+    retrieved: 2026-09-29
+    locator: Fuel distributors paragraph (200 litres threshold)
+    excerpt: Emitters carrying out fuel distribution activities must cover the emissions associated with the use
+      of the products which it distributes
+    source_type: primary_gov
+  notes: Fuel distributors (including natural gas) have been covered since the second compliance period starting
+    2015-01-01, once they distribute more than 200 litres of fuel; emitters have been covered since 2013. The ICAP
+    URL given (icapcarbonaction.com/en/node/1147) resolves to 'Canada publishes new carbon price trajectory' (2026-05-27),
+    not the Québec factsheet, so it was not used.
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending
+- id: qc.spede.reserve_escalation
+  jurisdiction: QC
+  instrument: spede
+  parameter: reserve_price_escalation
+  value:
+    real_rate: 0.05
+    plus_inflation: 'yes'
+  unit: fraction
+  currency_basis: n/a
+  effective_from: 2026-01-01
+  effective_to: null
+  legal_status: in_force
+  confidence: high
+  freshness: guidance
+  sources:
+  - url: https://ww2.arb.ca.gov/sites/default/files/2025-12/nc-2026_annual_reserve_price_notice_joint_auction.pdf
+    title: California Cap-and-Invest Program and Québec Cap-and-Trade System 2026 Annual Auction Reserve Price Notice
+    publisher: CARB and MELCCFP
+    published: 2025-12-01
+    retrieved: 2026-09-29
+    locator: Annual Auction Reserve Prices section, p. 2
+    excerpt: multiplying the Annual Auction Reserve Price for the previous calendar year by a quantity equal to
+      5 percent plus a measure of inflation
+    source_type: primary_gov
+  notes: 'The notice cites Article 49 of the Québec Regulation. Québec''s inflation term is the indexation rate
+    in s. 83.3 of the Financial Administration Act, not CPI (2.05% for 2026: C$24.73 to C$26.47). effective_from
+    is the 2026 notice year, since the source gives no start date for the formula. legisquebec.gouv.qc.ca returned
+    403.'
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending

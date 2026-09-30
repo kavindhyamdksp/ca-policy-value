@@ -1,0 +1,62 @@
+# federal/ccus_itc.yaml — PolicyValue CA ledger (CC BY 4.0). Quote the key "ON".
+records:
+- id: fed.ccus_itc.rates
+  jurisdiction: FED
+  instrument: ccus_itc
+  parameter: rates
+  value:
+    dac_to_2035: 0.6
+    capture_to_2035: 0.5
+    tsu_to_2035: 0.375
+    dac_2036_2040: 0.3
+    capture_2036_2040: 0.25
+    tsu_2036_2040: 0.1875
+  unit: fraction
+  currency_basis: n/a
+  effective_from: 2022-01-01
+  effective_to: 2040-12-31
+  legal_status: proposed
+  confidence: medium
+  freshness: announcement
+  sources:
+  - url: https://gowlingwlg.com/en/insights-resources/articles/2025/clean-economy-investment-tax-credits-budget-2025
+    title: 'Clean economy investment tax credits: the latest from the FES 2024 and Budget 2025'
+    publisher: Gowling WLG
+    published: 2025-11-13
+    retrieved: 2026-09-29
+    locator: (e) Carbon Capture, Utilization, and Storage ITC
+    excerpt: 60 per cent for eligible capture equipment used in a direct air capture project (reduced to 30 per
+      cent for expenditures from 2031 to 2040)
+    source_type: secondary
+  - url: https://gowlingwlg.com/en/insights-resources/articles/2025/clean-economy-investment-tax-credits-budget-2025
+    title: 'Clean economy investment tax credits: the latest from the FES 2024 and Budget 2025'
+    publisher: Gowling WLG
+    published: 2025-11-13
+    retrieved: 2026-09-29
+    locator: (e) Carbon Capture, Utilization, and Storage ITC
+    excerpt: 50 per cent for all other eligible capture equipment (reduced to 25 per cent ...) and 37.5 per cent
+      ... (reduced to 18.75 per cent
+    source_type: secondary
+  - url: https://gowlingwlg.com/en/insights-resources/articles/2025/clean-economy-investment-tax-credits-budget-2025
+    title: 'Clean economy investment tax credits: the latest from the FES 2024 and Budget 2025'
+    publisher: Gowling WLG
+    published: 2025-11-13
+    retrieved: 2026-09-29
+    locator: (e) Carbon Capture, Utilization, and Storage ITC, Budget 2025 paragraph
+    excerpt: so that the full credit rates will apply to eligible expenditures incurred from the start of 2022 to
+      the end of 2035.
+    source_type: secondary
+  - url: https://www.torys.com/en/our-latest-thinking/torys-quarterly/q2-2026/clean-economy-investment-tax-credits
+    title: Clean economy investment tax credits (Torys Quarterly, Q2 2026)
+    publisher: Torys LLP
+    published: null
+    retrieved: 2026-09-29
+    locator: CCUS ITC discussion
+    excerpt: the reduced credit rates will apply from 2036 to the end of 2040
+    source_type: secondary
+  notes: 'Rate values match the expected table. The CRA "What is the CCUS ITC" page fetched today did not state
+    rates, so no primary source supports enactment; legal_status is set to proposed (Gowling: "Budget 2025 proposes
+    to extend") pending a primary check, although Torys (Q2 2026) describes the 2036-2040 reduced period as current
+    law.'
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending
