@@ -1,6 +1,6 @@
 # IMPLEMENTATION_PLAN.md — PolicyValue CA
 
-*Plan version **v1.4** — 2026-09-30. This is the single, living plan for the project. It is updated whenever research or validation changes the product definition. See the [revision history](#12-plan-revision-history) at the end.*
+*Plan version **v1.5** — 2026-10-06. This is the single, living plan for the project. It is updated whenever research or validation changes the product definition. See the [revision history](#12-plan-revision-history) at the end.*
 
 **Governing documents:**
 - [DECISION.md](DECISION.md): the REFOCUS verdict, the owner decision (free, non-commercial), gates G1–G2 and stop criteria
@@ -19,7 +19,7 @@
 | **Effort** | Phase 1 MVP: ~110–150 h: 8 weeks at 15–20 h/week to the `v0.1.0` release, then pilots (M7) to week 12. (Phase 0 interviews were removed on 2026-09-30.) |
 | **Operating cost** | $0 (GitHub, Actions, Pages). Maintenance target ≤ 15 h/month. |
 | **Gates** | G1 pilot usefulness → G2 open adoption (see DECISION.md). Gates block evidence-dependent product and policy decisions only; reversible engineering proceeds in parallel (§2.6). Every open gate, its evidence and its next action: **[§2.7 gate register](#27-gate-register-what-is-blocked-why-and-what-clears-it)**. |
-| **Status (2026-09-30)** | v0.1.0 released (M1–M6). v0.2.0 engineering complete (§2.6): registry, contracts, sensitivity, CCfD strike solver, ledger export/review queue, pilot tooling, ledger-v2026.10.1. **Free, non-commercial, open source** (owner decision). Next critical path: design-partner pilots (M7) and the tax review. |
+| **Status (2026-10-06)** | v0.1.0 released (M1–M6). v0.2.0 engineering complete (§2.6): registry, contracts, sensitivity, CCfD strike solver, ledger export/review queue, pilot tooling, ledger-v2026.10.1. v0.2.1 / ledger-v2026.10.2: CCUS rates and the CCA phase-out from primary text (D2, D4 resolved). **Free, non-commercial, open source** (owner decision). Next critical path: design-partner pilots (M7) and the tax review. |
 
 ---
 
@@ -141,6 +141,14 @@ Updates in v0.2.0 (2026-09-30):
 | D16 | Record ids and plan-level assumptions moved to `src/pv/registry.yaml` | Keep policy structure out of formula modules; new systems/provinces become records + a registry entry |
 | D17 | Case digest omits unset optional fields (one-time change of all case/run hashes in v0.2.0) | Additive model fields no longer change existing cases' hashes |
 
+Updates in v0.2.1 / ledger-v2026.10.2 (2026-10-06):
+
+| # | Change | Why |
+|---|---|---|
+| D2 | **Resolved.** `fed.ccus_itc.rates` is `in_force` from ITA s. 127.44(1) (primary legal text) | The consolidated Act states the rates, including the Budget 2025 extension to 2035 |
+| D4 | **Resolved.** `fed.cca.expensing` 2030–31 = 0.75 and 2032–33 = 0.55, derived from Reg. 1100(2) A.1 and 1104(4.01); Class 53 keeps 100% to 2033 (`fed.cca.expensing_classes` `53: 1.0`); Class 43.2 is confirmed absent | Primary text of the Regulations retrieved; the kernel no longer stops for in-service 2030–2033 |
+| D18 | The enhanced first-year deduction is the whole year-1 claim; the remainder starts declining balance in year 2 | Bug: with a fraction below 100%, the kernel also claimed half the class rate on the remainder in year 1. Without effect while only 100%/0% were in the ledger |
+
 ### 2.6 v0.2.0 engineering record (M8, 2026-09-30)
 
 Ungated engineering done ahead of the pilots, so that the gates, when they clear, lead straight to
@@ -165,10 +173,9 @@ Only items below are open. Everything else in this plan is done or is scoped out
 | Gate / blocker | Why work cannot safely continue past it | Evidence or input that clears it | Already prepared | Next executable action once cleared |
 |---|---|---|---|---|
 | **G1 / M7 design-partner pilots** | Needs real partners with live projects (a user action) | ≥3 pilot notes in `docs/validation/pilots/` with `decision_changed_or_derisked: yes`; freshness SLA held 60 days; maintenance ≤15 h/month | Pilot kit with outreach text, case templates, `--overrides`, feedback form with structured front matter, `tools/pilot_scorecard.py`, `pv ledger due` | Fix issues found in pilots; G1 read-out; choose Phase 2 items from partner feedback |
-| **D12 human tax review** (ITC/CCA records) | ITC/CCA treatment is legal interpretation; a wrong eligibility or class statement can harm users (§10) | Signed-off review by a tax-literate reviewer of `fed.ct_itc.*`, `fed.ce_itc.rate`, `fed.ccus_itc.rates`, `fed.cca.*` and methodology §3 | Records flagged `human tax review pending`; warnings where the kernel does not check entity/labour rules; `pv ledger export` gives the reviewer a single browsable file | Apply findings to records (and `reviewer`), release a ledger tag, re-run `pv drift` |
-| **CCA expensing phase-out 2030–2033** (D4) | Percentages are policy values; no primary source retrieved. Secondary sources (BDO, Advisor.ca) state 75% (2030–31) and 55% (2032–33), and one names Class 43.2, conflicting with EY | Primary text: ITA/Income Tax Regulations as amended by Bill C-15, or a Finance Canada/CRA page stating the percentages and classes | Kernel stops with a clear message for in-service 2030–2033; override path documented | Add 2030–2033 to `fed.cca.expensing`; update `fed.cca.expensing_classes` if 43.2 is confirmed; drift |
+| **D12 human tax review** (ITC/CCA records) | ITC/CCA treatment is legal interpretation; a wrong eligibility or class statement can harm users (§10) | Signed-off review by a tax-literate reviewer of `fed.ct_itc.*`, `fed.ce_itc.rate`, `fed.ccus_itc.rates`, `fed.cca.*` and methodology §3 (D2/D4 now cite primary text, which narrows the review to interpretation) | Records flagged `human tax review pending`; warnings where the kernel does not check entity/labour rules; `pv ledger export` gives the reviewer a single browsable file | Apply findings to records (and `reviewer`), release a ledger tag, re-run `pv drift` |
 | **CE ITC qualifying entity and labour rule** | Mapping the case's entity types to s. 127.491 "qualifying entity" and applying s. 127.46 are interpretations | Tax review (above) of the mapping and the labour reduction | Rate in ledger; kernel warns that both are unchecked; registry supports `entities`/`labour_rate` per measure | Add `fed.ce_itc.entities` (and a labour record) and wire them in `registry.yaml`; the labour rule shape for CE (a reduction, not a replacement rate) needs a small kernel change |
-| **`fed.ccus_itc.rates` legal status** (D2) | Only secondary sources state the rates; the record stays `proposed` | Primary legal text (ITA s. 127.44) or CRA page stating the rates | `itc_rate_key` makes the component explicit; grid/MC can treat the ITC as uncertain | Update the record's status and sources; drift |
+| **Accelerated CCA outside the expensing classes** (found 2026-10-06 in Reg. 1100(2)) | Reaccelerated investment incentive property (acquired after 2024, in use before 2034) in other classes gets A.1 factor 1/2 before 2030 and no half-year rule to 2033 (e.g. Class 8: 30% in year 1, not 10%). The kernel applies the half-year rule, so the `cca_class_if_ineligible` path (CT ITC denied) is conservative. It changes `golden_hp_qc`'s base NPV and depends on the acquisition date, which the case does not hold | Tax review (D12) confirms the reading and the acquisition-date assumption | Primary text cited in `fed.cca.expensing` sources; this row | Add a factor record for other classes and an `acquired` date (default: in-service year) to the case; drift the golden cases |
 | **Policy events** (§7): AB TIER floor regulation (due 2026-12-31), federal benchmark publication, ON EPS alignment, ITC domestic content, NIR 2027 | External facts that have not happened yet | The published regulation/benchmark/decision | Legal-status model; drift test proves the floor flip on `golden_ab_abatement_ccfd`; `pv ledger due` | Update records, tag a ledger release, publish the drift report |
 | **Credit-use limits and long/short position** (SPEC FR-2 `position`) | Per-system credit-use and banking rules are policy data not yet in the ledger, and whether they matter is a pilot question | Primary sources for TIER/EPS/OBPS credit-use limits; partner feedback in pilots (G1) | Fund-price cap; caveat in methodology | Add records + a position field and rule in `pv.carbon` |
 | **Partial tax capacity** (loss carryforward) | Loss rules are tax interpretation (D12) and demand is unproven | Tax review + partner demand | `tax_capacity: full/none` | Add a carryforward schedule to `pv.cashflow` |
@@ -196,7 +203,7 @@ Each record's source is taken from the research files and re-verified when enter
 | `fed.ct_itc.domestic_content` | Consultation 2026-02-13 to 03-13; outcome pending | proposed | Finance Canada | V |
 | `fed.ccus_itc.rates` | 60% DAC / 50% capture / 37.5% T&S&U to 2035; half 2036–2040 | in_force (C-15) | ITA; Gowling; Torys | V |
 | `fed.ce_itc.rate` | 15%; eligible entities incl. Crowns, municipal, Indigenous-owned corps — **rate entered 2026-09-30 from ITA s. 127.491; entities pending tax review** | in_force (C-15, 2026-03-26) | Finance; Torys; Justice Laws | V (rate entered) |
-| `fed.cca.expensing` | 100% first-year for Classes 43.1/53 (and ZEV classes) available for use before 2030; phase-out 2030–2033 | in_force (C-15) | EY tax alert | V (phase-out schedule: C) |
+| `fed.cca.expensing` | 100% first-year for Classes 43.1/53 (and ZEV classes) available for use before 2030; phase-out 2030–2033 (75%, 55%) | in_force (C-15) | Income Tax Regulations s. 1100(2), 1104(4.01); EY tax alert | V |
 | `fed.cca.class_rates` | 43.1 = 30%, 43.2 = 50%, 53 = 50% DB (normal rates) | in_force | ITR Schedule II | C |
 | `fed.nir.grid_ef` | Average grid factors: QC 2.5, ON 73.8, AB 335, BC 22.8 g/kWh (+NS 528 reference) — **entered 2026-09-30 from NIR Annex 7 (2024 consumption intensity): QC 2.565, ON 73.313, AB 346.102, BC 18.064** | observation (annual) | NIR 2026 CSV (ECCC Data Mart); HQ; BC gov; Alberta.ca; TAF/IESO | V (entered) |
 | `fed.nir.gas_ef` | ~50 kg CO2e/GJ (HHV) | observation | NIR Annex 6 | C |
@@ -243,7 +250,7 @@ Notation: year index *t* = 1..N (operating years), *y(t)* calendar year, τ tax 
 - ITC rate: `ρ = schedule(y_in_service)`; if `!labour_ok` and the measure has a labour rule → reduced rate. ITC is zero if the entity is not eligible for that measure.
 - `ITC = ρ · s_elig · (capex − assistance)`, received at `t = lag`.
 - UCC base: `U = capex − ITC − assistance`.
-- CCA: if the class is expensing-eligible and in-service within the window → `CCA_1 = U·expensing_pct(y)`, and the remainder follows the declining balance at the class rate. Otherwise declining balance with the half-year rule.
+- CCA: if the class is expensing-eligible and in-service within the window → `CCA_1 = U·expensing_pct(y)` (the whole year-1 claim), and the remainder follows the declining balance at the class rate from year 2. Otherwise declining balance with the half-year rule.
 - If `tax_capacity = none` or the entity is non-taxable: no tax on operating flows, no CCA shield, and ITC only if the measure is refundable and the entity is eligible.
 
 **4.3 Cash flow and metrics**
@@ -376,3 +383,4 @@ Ledger maintenance (`pv ledger due`, §7 events) continues on its own cadence al
 | v1.2 | 2026-09-29 | **MVP v0.1.0 built** (M1–M6; M7 kit prepared):<br>• ledger `ledger-v2026.10.0`, 34 source-verified entries, 4 records left to user input<br>• kernel reproduces the oracle exactly (ΔNPV < $0.01, Δbreakeven < 10⁻¹² $/t)<br>• 3 golden cases, drift CI, docs; deviations D1–D13 in §2.5 | Build session; source fetches 2026-09-29 |
 | v1.3 | 2026-09-30 | **v0.2.0 engineering (M8)** pulled forward past gates where no evidence was needed:<br>• registry; results/case schemas; sensitivity; CCfD strike solver; `--overrides`; ledger export/review queue; case templates; gate scorecards; demo kit builder; packaging CI<br>• bugs fixed: MC vs deterministic carbon rules (D14), CCUS rate selection (D15)<br>• ledger-v2026.10.1: grid intensity and CE ITC rate from primary sources; expensing classes into the ledger<br>• gate register §2.7; Phase 2 split into built vs gated | Execution rule: gates block evidence-dependent decisions only |
 | v1.4 | 2026-09-30 | **Free, non-commercial, open source** (owner decision): Phase 0 and gate G0 removed (interviews, recruitment, competitor demos, demo kit, G0 scorecard deleted); pilots follow the MVP directly; G2 restated as open adoption; commercial criteria dropped; pilot kit gains partner outreach | Owner decision 2026-09-30 |
+| v1.5 | 2026-10-06 | **Primary-text pass (v0.2.1, ledger-v2026.10.2)**: D2 and D4 resolved from the ITA and Income Tax Regulations; CCA year-1 fix (D18); new gate row for accelerated CCA outside the expensing classes | Gate register: primary text retrieved |

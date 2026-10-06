@@ -54,7 +54,7 @@ def test_cashflow_csv_totals_match_npv() -> None:
 
 
 def test_cli_validate_run_show_drift(tmp_path: Path) -> None:
-    r = runner.invoke(app, ["validate", "--as-of", "2026-09-30", "--cases", str(ROOT / "cases")])
+    r = runner.invoke(app, ["validate", "--as-of", "2026-10-06", "--cases", str(ROOT / "cases")])
     assert r.exit_code == 0, r.output
     r = runner.invoke(app, ["validate", "--as-of", "2027-09-29"])
     assert r.exit_code == 1 and "stale" in r.output

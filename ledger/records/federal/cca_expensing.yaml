@@ -10,15 +10,60 @@ records:
     2027: 1.0
     2028: 1.0
     2029: 1.0
+    2030: 0.75
+    2031: 0.75
+    2032: 0.55
+    2033: 0.55
     2034: 0.0
   unit: fraction
   currency_basis: n/a
   effective_from: 2025-01-01
   effective_to: null
   legal_status: in_force
-  confidence: medium
+  confidence: high
   freshness: statute
   sources:
+  - url: https://laws-lois.justice.gc.ca/eng/regulations/C.R.C.,_c._945/section-1100.html
+    title: Income Tax Regulations (C.R.C., c. 945), section 1100
+    publisher: Justice Laws Website (Department of Justice Canada)
+    published: 2026-06-18
+    retrieved: 2026-10-06
+    locator: s. 1100(2), formula
+    excerpt: adjusted by adding the positive or negative amount determined by the formula A(B) + A.1(B.1) − 0.5(C)
+    source_type: primary_legal
+  - url: https://laws-lois.justice.gc.ca/eng/regulations/C.R.C.,_c._945/section-1100.html
+    title: Income Tax Regulations (C.R.C., c. 945), section 1100
+    publisher: Justice Laws Website (Department of Justice Canada)
+    published: 2026-06-18
+    retrieved: 2026-10-06
+    locator: s. 1100(2), description of A.1, para. (b)(i)
+    excerpt: if the class is Class 43.1, (i) 2 1/3, for property that became available for use by the taxpayer
+      before 2030
+    source_type: primary_legal
+  - url: https://laws-lois.justice.gc.ca/eng/regulations/C.R.C.,_c._945/section-1100.html
+    title: Income Tax Regulations (C.R.C., c. 945), section 1100
+    publisher: Justice Laws Website (Department of Justice Canada)
+    published: 2026-06-18
+    retrieved: 2026-10-06
+    locator: s. 1100(2), description of A.1, para. (b)(ii)
+    excerpt: (ii) 1 1/2, for property that became available for use by the taxpayer in 2030 or 2031
+    source_type: primary_legal
+  - url: https://laws-lois.justice.gc.ca/eng/regulations/C.R.C.,_c._945/section-1100.html
+    title: Income Tax Regulations (C.R.C., c. 945), section 1100
+    publisher: Justice Laws Website (Department of Justice Canada)
+    published: 2026-06-18
+    retrieved: 2026-10-06
+    locator: s. 1100(2), description of A.1, para. (b)(iii)
+    excerpt: (iii) 5/6, for property that became available for use by the taxpayer after 2031
+    source_type: primary_legal
+  - url: https://laws-lois.justice.gc.ca/eng/regulations/C.R.C.,_c._945/section-1104.html
+    title: Income Tax Regulations (C.R.C., c. 945), section 1104
+    publisher: Justice Laws Website (Department of Justice Canada)
+    published: 2026-06-18
+    retrieved: 2026-10-06
+    locator: s. 1104(4.01), definition of reaccelerated investment incentive property, para. (a)
+    excerpt: (a) is acquired by the taxpayer after 2024 and becomes available for use before 2034
+    source_type: primary_legal
   - url: https://www.ey.com/en_gl/technical/tax-alerts/canada-substantively-enacts-capital-cost-allowance-and-other-business-income-tax-measures-in-bill-c-15
     title: Canada substantively enacts capital cost allowance and other business income tax measures in Bill C-15
     publisher: EY
@@ -54,21 +99,23 @@ records:
     excerpt: Introducing a Productivity Super-Deduction – a set of enhanced tax incentives covering all new capital
       investment
     source_type: primary_gov
-  notes: Value is the enhanced first-year deduction as a fraction of cost, keyed by available-for-use year, for
-    property acquired on or after 2025-01-01. Neither source gives the 2030-2033 phase-out percentages, so those
-    years are omitted. 2034 = 0.0 means no enhanced deduction (normal CCA applies). EY names Class 43.1, Class 53
-    and ZEV classes 54-56, but not Class 43.2. The CRA AII page (modified 2025-07-21) still shows the earlier 43.1/43.2
-    phase-out (75% for 2024-2025, 55% for 2026-2027), which C-15 superseded for property acquired from 2025. C-15
-    received Royal Assent on 2026-03-26 (Finance release).
-  recorded_at: 2026-09-29
-  reviewer: source fetch 2026-09-29 (automated); human tax review pending
+  notes: Value is the whole first-year deduction as a fraction of cost, keyed by available-for-use year, for
+    reaccelerated investment incentive property (acquired after 2024, available for use before 2034). Derived
+    from Reg. 1100(2) as class rate x (1 + A.1 factor), with no half-year reduction because element C excludes
+    this property. Class 43.1 at 30% gives 0.30 x (1 + 7/3) = 1.00 before 2030, 0.30 x 2.5 = 0.75 in 2030-2031,
+    0.30 x (1 + 5/6) = 0.55 in 2032-2033 (the same fractions follow for Class 43 M&P property, Class 54/56 at
+    30% and Class 55 at 40%). Class 53 has a flat A.1 factor of 1 (see fed.cca.expensing_classes). 2034 = 0.0
+    means no enhanced deduction (normal CCA with the half-year rule). Regulations current to 2026-09-21, last
+    amended 2026-06-18. C-15 received Royal Assent on 2026-03-26 (Finance release).
+  recorded_at: 2026-10-06
+  reviewer: primary text fetch 2026-10-06 (automated; resolves D4); human tax review pending
 - id: fed.cca.expensing_classes
   jurisdiction: FED
   instrument: cca
   parameter: immediate_expensing_classes
   value:
     '43.1': eligible
-    '53': eligible
+    '53': 1.0
     '54': eligible
     '55': eligible
     '56': eligible
@@ -80,6 +127,23 @@ records:
   confidence: medium
   freshness: statute
   sources:
+  - url: https://laws-lois.justice.gc.ca/eng/regulations/C.R.C.,_c._945/section-1100.html
+    title: Income Tax Regulations (C.R.C., c. 945), section 1100
+    publisher: Justice Laws Website (Department of Justice Canada)
+    published: 2026-06-18
+    retrieved: 2026-10-06
+    locator: s. 1100(2), description of A.1, para. (f)(i)
+    excerpt: if the property is included in Class 53 or — for property acquired after 2025 — is included in
+      Class 43
+    source_type: primary_legal
+  - url: https://laws-lois.justice.gc.ca/eng/regulations/C.R.C.,_c._945/section-1100.html
+    title: Income Tax Regulations (C.R.C., c. 945), section 1100
+    publisher: Justice Laws Website (Department of Justice Canada)
+    published: 2026-06-18
+    retrieved: 2026-10-06
+    locator: s. 1100(2), description of A.1, para. (f)(i)
+    excerpt: (i) 1, for property included in Class 53,
+    source_type: primary_legal
   - url: https://www.ey.com/en_gl/technical/tax-alerts/canada-substantively-enacts-capital-cost-allowance-and-other-business-income-tax-measures-in-bill-c-15
     title: Canada substantively enacts capital cost allowance and other business income tax measures in Bill C-15
     publisher: EY
@@ -98,20 +162,13 @@ records:
     excerpt: clean energy generation and energy conservation equipment included in Class 43.1, and zero-emission
       vehicles included in Classes 54, 55 and 56
     source_type: secondary
-  - url: https://www.canada.ca/en/department-finance/news/2026/03/legislation-passes-to-implement-budget-2025-canada-strong.html
-    title: 'Legislation passes to implement Budget 2025: Canada Strong'
-    publisher: Department of Finance Canada
-    published: 2026-03-26
-    retrieved: 2026-09-29
-    locator: News release, list of measures
-    excerpt: Introducing a Productivity Super-Deduction – a set of enhanced tax incentives covering all new capital
-      investment
-    source_type: primary_gov
   notes: Classes eligible for the fed.cca.expensing first-year deduction (property acquired on or after
-    2025-01-01). Class 43.2 is not named by the source, so it is not listed; a class absent from this table
-    gets normal declining-balance CCA. Previously hard-coded in the kernel (43.1 and 53); moved to the ledger
-    so the fact carries provenance. EY page re-fetched 2026-09-29 to confirm the class list.
-  recorded_at: 2026-09-29
+    2025-01-01). `eligible` follows the fed.cca.expensing phase-out; a number is a first-year fraction that
+    holds for every year the series is positive. Class 53 = 1.0 because its A.1 factor is 1 in every year at a
+    50% rate (0.50 x 2); Class 53 itself only takes property acquired before 2026. Class 43.2 is not listed in
+    A.1 of Reg. 1100(2) and takes property acquired before 2025 only, so it is not listed; a class absent from
+    this table gets normal declining-balance CCA. Primary text fetched 2026-10-06.
+  recorded_at: 2026-10-06
   reviewer: source fetch 2026-09-29 (automated); human tax review pending
 - id: fed.cca.class_rates
   jurisdiction: FED

@@ -55,7 +55,7 @@ Keep contact details in a private list outside this repository. A short invitati
 | `set project.itc_rate_key to one of: …` | The ITC rate record holds several rates (CCUS): name the component, e.g. `capture_to_2035` |
 | `supply prices.natural_gas_gj` | Enter your delivered gas price ex-carbon, $/GJ |
 | `... below min_legal_status` | The record exists but is not yet law at your threshold; lower `min_legal_status` or override it |
-| `phase-out unverified` | Your in-service year falls in 2030–2033; override `fed.cca.expensing` for that year |
+| `fed.cca.expensing has no value for available-for-use year …` | Your ledger or override lacks that year; override `fed.cca.expensing` for it, citing your source |
 | `province parsed as boolean` | Write `province: "ON"` with quotes |
 
 ## Feedback form

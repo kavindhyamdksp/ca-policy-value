@@ -63,6 +63,14 @@ Resume: read this + CLAUDE.md only, continue at the first unchecked item. Open g
 - [x] ledger-v2026.10.1 content: fed.nir.grid_ef (NIR Annex 7), fed.ce_itc.rate (ITA 127.491), fed.cca.expensing_classes
 - [x] docs: developer guide; user guide, methodology, architecture, README; plan v1.3 with gate register
 - [ ] (user) merge, tag v0.2.0 + ledger-v2026.10.1, optional Pages — see plan §2.7
+## M9 Primary-text pass (v0.2.1, ledger-v2026.10.2, 2026-10-06)
+- [x] D2: fed.ccus_itc.rates proposed → in_force (ITA s. 127.44(1))
+- [x] D4: fed.cca.expensing 2030–33 phase-out + Class 53 fixed fraction (Reg. 1100(2), 1104(4.01))
+- [x] D18: enhanced first-year deduction is the whole year-1 claim (regression tests)
+- [x] drift vs ledger-v2026.10.0: no NPV or decision change; docs, changelog, plan v1.5
+- [ ] (user) merge, tag v0.2.1 + ledger-v2026.10.2
+- [ ] (tax review) accelerated CCA outside expensing classes (plan §2.7 row)
+
 - [ ] (user) M7 pilots: find ≥3 partners (docs/validation/pilot_kit.md) → G1 read-out
 - [ ] (user) tax review of ITC/CCA records
 
@@ -71,10 +79,9 @@ Resume: read this + CLAUDE.md only, continue at the first unchecked item. Open g
 - fed.ce_itc.rate — RESOLVED 2026-09-30 (rate only; entities/labour pending tax review)
 - bc.carbon_tax — gov.bc.ca page 404 and news release cert error; unused by kernel (non-covered BC = $0)
 - ref.gas.delivered — no industrial $/GJ in OEB QRAM or FortisBC page; kernel: prices.natural_gas_gj required
-- Partial: fed.cca.expensing 2030–33 phase-out % not stated (override required for those in-service years;
-  secondary leads 75%/55%, primary source still needed);
-  fed.carbon.benchmark_path 2028–29/2031–39 not stated (linear interpolation);
-  fed.ccus_itc.rates entered as proposed (secondary sources only)
+- fed.cca.expensing 2030–33 — RESOLVED 2026-10-06 (Reg. 1100(2) A.1 + 1104(4.01): 75% / 55%; Class 53 100%)
+- fed.ccus_itc.rates — RESOLVED 2026-10-06 (ITA s. 127.44(1): in_force)
+- Partial: fed.carbon.benchmark_path 2028–29/2031–39 not stated (linear interpolation)
 
 ## Deviations
-Recorded in IMPLEMENTATION_PLAN.md §2.5 (D1–D17). Biggest: D12 tax review not done; D1 now 2 records (gas reference by design, BC carbon tax unused).
+Recorded in IMPLEMENTATION_PLAN.md §2.5 (D1–D18). Biggest: D12 tax review not done; D1 now 2 records (gas reference by design, BC carbon tax unused).

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "policyvalue-ca"
-version = "0.2.0"
+version = "0.2.1"
 description = "Realized policy value for Canadian industrial decarbonization projects: a cited policy ledger plus a deterministic valuation kernel."
 readme = "README.md"
 requires-python = ">=3.11"

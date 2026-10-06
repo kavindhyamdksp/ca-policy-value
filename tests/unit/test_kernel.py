@@ -232,29 +232,70 @@ def test_missing_records_require_user_input() -> None:
                 },
             )
         )
-    with pytest.raises(LedgerError, match="phase-out"):
+    with pytest.raises(LedgerError, match="fed.cca.expensing has no value for available-for-use year 2031"):
         model(
             case(
+                overrides=[ov("fed.cca.expensing", {2029: 1.0, 2034: 0.0})],
                 project={
                     "in_service": "2031-06-30",
                     "life_years": 3,
                     "capex": [{"year": 0, "amount": 1e6}],
                     "technology_class": "heat_pump_air_source",
-                }
+                },
             )
         )
-    with pytest.raises(LedgerError, match="fed.ccus_itc.rates unavailable: below min_legal_status"):
-        model(
-            case(
-                project={
-                    "in_service": "2026-12-31",
-                    "life_years": 3,
-                    "capex": [{"year": 0, "amount": 1e6}],
-                    "technology_class": "x",
-                    "itc_measure": "ccus",
-                }
-            )
+    # D2 resolved: the CCUS rates are in force (ITA s. 127.44(1)), so an enacted-only view resolves them
+    m, _ = model(
+        case(
+            project={
+                "in_service": "2026-12-31",
+                "life_years": 3,
+                "capex": [{"year": 0, "amount": 1e6}],
+                "technology_class": "x",
+                "itc_measure": "ccus",
+                "itc_rate_key": "dac_to_2035",
+            },
         )
+    )
+    assert m.ti.rho == 0.6
+
+
+def _cca_case(in_service: str, cls: str = "43.1") -> dict:
+    return case(
+        project={
+            "in_service": in_service,
+            "life_years": 4,
+            "capex": [{"year": 0, "amount": 1e6}],
+            "technology_class": "heat_pump_air_source",
+            "cca_class": cls,
+        }
+    )
+
+
+@pytest.mark.parametrize(
+    ("in_service", "first"), [("2029-06-30", 1.0), ("2031-06-30", 0.75), ("2033-06-30", 0.55)]
+)
+def test_expensing_phase_out_claims_exactly_the_first_year_fraction(in_service: str, first: float) -> None:
+    """Reg. 1100(2) A.1: year 1 claims rate x (1 + factor) of cost and no half-year on the remainder
+    (D18: the kernel used to add a half-rate claim on the remainder in year 1)."""
+    m, _ = model(_cca_case(in_service))
+    cca = m.cca(True, 0.0)
+    ucc = 1e6
+    assert cca[1] == pytest.approx(ucc * first)
+    assert cca[2] == pytest.approx(ucc * (1 - first) * 0.30)  # declining balance from year 2
+    assert cca[1:].sum() <= ucc
+
+
+def test_after_the_window_normal_half_year_cca() -> None:
+    m, _ = model(_cca_case("2034-06-30"))
+    assert m.cca(True, 0.0)[1] == pytest.approx(1e6 * 0.30 / 2)
+
+
+def test_class_53_keeps_full_expensing_through_2033() -> None:
+    m, _ = model(_cca_case("2032-06-30", "53"))
+    assert m.cca(True, 0.0)[1] == pytest.approx(1e6)  # A.1(f)(i): factor 1 at 50% in every window year
+    late, _ = model(_cca_case("2034-06-30", "53"))
+    assert late.cca(True, 0.0)[1] == pytest.approx(1e6 * 0.50 / 2)
 
 
 def _itc_case(measure: str, in_service: str = "2026-12-31", **project: object) -> dict:
