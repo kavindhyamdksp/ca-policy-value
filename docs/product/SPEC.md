@@ -148,7 +148,7 @@ Results are also emitted as JSON (schema-versioned) and CSV cash flows.
 | Reproducibility test failures | 0 |
 | External citations or forks of the ledger | ≥ 3 (a signal for the open-ledger wedge) |
 
-## 9. Open questions (to resolve at G0)
+## 9. Open questions (to resolve through pilots and user feedback)
 
 1. Do covered-facility analysts value carbon at headline, at market price, or leave it out (ConocoPhillips-style breakevens)? The memo must support the breakeven framing either way.
 2. Is CCfD bid/strike analysis the sharpest wedge, or annual compliance-driven project screening?

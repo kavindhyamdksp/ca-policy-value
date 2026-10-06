@@ -1,0 +1,29 @@
+# federal/ce_itc.yaml — PolicyValue CA ledger (CC BY 4.0). Quote the key "ON".
+records:
+- id: fed.ce_itc.rate
+  jurisdiction: FED
+  instrument: ce_itc
+  parameter: specified_percentage
+  value: 0.15
+  unit: fraction
+  currency_basis: n/a
+  effective_from: 2024-04-16
+  effective_to: 2034-12-31
+  legal_status: in_force
+  confidence: high
+  freshness: statute
+  sources:
+  - url: https://laws-lois.justice.gc.ca/eng/acts/I-3.3/section-127.491.html
+    title: Income Tax Act, section 127.491 (clean electricity investment tax credit)
+    publisher: Justice Laws Website (Department of Justice Canada)
+    published: 2026-06-18
+    retrieved: 2026-09-30
+    locator: s. 127.491(1), definition "specified percentage", para. (b); Act current to 2026-09-21
+    excerpt: subject to paragraph (a), on or after April 16, 2024 and before January 1, 2035, 15%
+    source_type: primary_legal
+  notes: Rate for clean electricity property acquired 2024-04-16 to 2034-12-31 (nil before and after). The
+    credit is available only to a "qualifying entity" (qualifying corporation or qualifying trust, s.
+    127.491(1)); the kernel does not map case entity types to that definition and does not apply the
+    labour-requirement reduction (s. 127.46), and says so in a warning. published = the Act's last-amended date.
+  recorded_at: 2026-09-30
+  reviewer: source fetch 2026-09-30 (automated); human tax review pending

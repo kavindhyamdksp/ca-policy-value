@@ -1,0 +1,251 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kavindhyamdksp/ca-policy-value/src/pv/schemas/results.v1.schema.json",
+  "title": "PolicyValue CA results (pv.results/v1)",
+  "description": "Machine-readable output of `pv run`. v1 changes are additive only: new optional keys may appear; existing keys keep their meaning. Money in CAD nominal; carbon in CAD/t.",
+  "type": "object",
+  "required": ["schema", "engine", "case_id", "run_hash", "inputs", "decision", "metrics", "value_stack",
+               "carbon", "tax", "robustness", "emissions", "warnings", "overrides", "provenance"],
+  "additionalProperties": false,
+  "$defs": {
+    "num": {"type": ["number", "null"]},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "date": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+    "value": {"oneOf": [{"type": "number"}, {"type": "string"}, {"type": "object"}]}
+  },
+  "properties": {
+    "schema": {"const": "pv.results/v1"},
+    "engine": {"type": "string", "pattern": "^policyvalue-ca "},
+    "case_id": {"type": "string"},
+    "run_hash": {"$ref": "#/$defs/sha256", "description": "sha256 of case digest | ledger digest | seed"},
+    "inputs": {
+      "type": "object",
+      "required": ["case_sha256", "ledger_version", "ledger_sha256", "seed", "as_of", "min_legal_status", "conventions"],
+      "additionalProperties": false,
+      "properties": {
+        "case_sha256": {"$ref": "#/$defs/sha256"},
+        "ledger_version": {"type": "string"},
+        "ledger_sha256": {"$ref": "#/$defs/sha256"},
+        "seed": {"type": ["integer", "null"]},
+        "as_of": {"$ref": "#/$defs/date"},
+        "min_legal_status": {"enum": ["announced", "proposed", "enacted", "in_force"]},
+        "conventions": {"enum": ["standard", "validation_v1"]},
+        "overrides_file": {"type": ["string", "null"]}
+      }
+    },
+    "decision": {
+      "type": "object",
+      "required": ["answer", "base_case", "npv", "deciding_terms"],
+      "additionalProperties": false,
+      "properties": {
+        "answer": {"enum": ["GO", "NO-GO", "DEPENDS-ON"]},
+        "base_case": {"enum": ["GO", "NO-GO"]},
+        "npv": {"type": "number"},
+        "deciding_terms": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "required": ["npv", "irr", "payback_simple_years", "payback_discounted_years", "discount_rate", "operating_years"],
+      "additionalProperties": false,
+      "properties": {
+        "npv": {"type": "number"},
+        "irr": {"$ref": "#/$defs/num"},
+        "payback_simple_years": {"$ref": "#/$defs/num"},
+        "payback_discounted_years": {"$ref": "#/$defs/num"},
+        "discount_rate": {"type": "number"},
+        "operating_years": {"type": "array", "items": {"type": "integer"}, "minItems": 2, "maxItems": 2}
+      }
+    },
+    "value_stack": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["step", "npv", "delta"],
+        "additionalProperties": false,
+        "properties": {"step": {"type": "string"}, "npv": {"type": "number"}, "delta": {"type": "number"}}
+      }
+    },
+    "carbon": {
+      "type": "object",
+      "required": ["kind", "scenario", "floor_mode", "floor_in_base", "ccfd", "covered_tonnes_per_yr", "path",
+                   "band_levelized", "breakeven_flat", "breakeven_position"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {"enum": ["none", "qc", "covered"], "description": "qc = cap-and-trade (all gas users)"},
+        "scenario": {"enum": ["low", "base", "high", "upper_bound_headline"]},
+        "floor_mode": {"enum": ["auto", "as_announced", "half", "none"]},
+        "floor_in_base": {"type": "boolean"},
+        "ccfd": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "object", "required": ["strike", "term_end", "volume_share"], "additionalProperties": false,
+             "properties": {"strike": {"type": "number"}, "term_end": {"type": "integer"}, "volume_share": {"type": "number"}}}
+          ]
+        },
+        "covered_tonnes_per_yr": {"type": "number"},
+        "path": {"type": "object", "propertyNames": {"pattern": "^[0-9]{4}$"}, "additionalProperties": {"type": "number"}},
+        "band_levelized": {
+          "type": "object",
+          "required": ["low", "base", "high", "upper_bound_headline"],
+          "additionalProperties": false,
+          "properties": {"low": {"type": "number"}, "base": {"type": "number"}, "high": {"type": "number"},
+                         "upper_bound_headline": {"type": "number"}}
+        },
+        "breakeven_flat": {"$ref": "#/$defs/num"},
+        "breakeven_position": {"type": "string"}
+      }
+    },
+    "tax": {
+      "type": "object",
+      "required": ["rate", "itc_measure", "eligibility", "itc_granted", "itc_rate_if_granted", "itc_amount", "cca_class"],
+      "additionalProperties": false,
+      "properties": {
+        "rate": {"type": "number"},
+        "itc_measure": {"enum": ["ct", "ccus", "ce", "none"]},
+        "eligibility": {"enum": ["likely", "case_by_case", "not_listed", "n/a"]},
+        "itc_granted": {"type": "boolean"},
+        "itc_rate_if_granted": {"type": "number"},
+        "itc_amount": {"type": "number"},
+        "cca_class": {"type": "string"}
+      }
+    },
+    "robustness": {
+      "type": "object",
+      "required": ["grid", "monte_carlo"],
+      "additionalProperties": false,
+      "properties": {
+        "grid": {
+          "oneOf": [
+            {"type": "null"},
+            {
+              "type": "object",
+              "required": ["dimensions", "go_share", "go_count", "n_states", "minimal_go_conditions", "states"],
+              "additionalProperties": false,
+              "properties": {
+                "dimensions": {"type": "object", "additionalProperties": {"type": "array"}},
+                "go_share": {"$ref": "#/$defs/num"},
+                "go_count": {"type": "integer"},
+                "n_states": {"type": "integer"},
+                "minimal_go_conditions": {"type": "array", "items": {"type": "object"}},
+                "states": {
+                  "type": "array",
+                  "items": {"type": "object", "required": ["state", "npv", "go"], "additionalProperties": false,
+                            "properties": {"state": {"type": "object"}, "npv": {"type": "number"}, "go": {"type": "boolean"}}}
+                }
+              }
+            }
+          ]
+        },
+        "monte_carlo": {
+          "oneOf": [
+            {"type": "null"},
+            {
+              "type": "object",
+              "required": ["draws", "seed", "mean", "p10", "p50", "p90", "p_npv_positive", "itc_probability"],
+              "additionalProperties": false,
+              "properties": {
+                "draws": {"type": "integer"}, "seed": {"type": "integer"}, "mean": {"type": "number"},
+                "p10": {"type": "number"}, "p50": {"type": "number"}, "p90": {"type": "number"},
+                "p_npv_positive": {"type": "number", "minimum": 0, "maximum": 1},
+                "itc_probability": {"$ref": "#/$defs/num"}
+              }
+            }
+          ]
+        },
+        "sensitivity": {
+          "description": "Added in engine 0.2 (additive).",
+          "oneOf": [
+            {"type": "null"},
+            {
+              "type": "object",
+              "required": ["base_npv", "rows"],
+              "additionalProperties": false,
+              "properties": {
+                "base_npv": {"type": "number"},
+                "rows": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["variable", "low_input", "high_input", "npv_low", "npv_high", "swing", "decision_changes"],
+                    "additionalProperties": false,
+                    "properties": {
+                      "variable": {"enum": ["capex", "gas_price", "electricity_price", "opex", "credit_price", "discount_rate"]},
+                      "low_input": {"type": "number"}, "high_input": {"type": "number"},
+                      "npv_low": {"type": "number"}, "npv_high": {"type": "number"},
+                      "swing": {"type": "number", "minimum": 0}, "decision_changes": {"type": "boolean"}
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "ccfd_strike": {
+          "description": "Added in engine 0.2 (additive).",
+          "oneOf": [
+            {"type": "null"},
+            {
+              "type": "object",
+              "required": ["term_end", "volume_share", "hurdle_rate", "target_p", "npv_zero_strike", "target_p_strike", "note"],
+              "additionalProperties": false,
+              "properties": {
+                "term_end": {"type": ["integer", "null"]}, "volume_share": {"type": "number"},
+                "hurdle_rate": {"$ref": "#/$defs/num"}, "target_p": {"$ref": "#/$defs/num"},
+                "npv_zero_strike": {"$ref": "#/$defs/num"}, "target_p_strike": {"$ref": "#/$defs/num"},
+                "note": {"type": ["string", "null"]}
+              }
+            }
+          ]
+        }
+      }
+    },
+    "emissions": {
+      "type": "object",
+      "required": ["onsite_avoided_t_per_yr", "grid_added_t_per_yr", "net_avoided_t_per_yr", "net_share_of_onsite",
+                   "lifetime_onsite_t", "lifetime_net_t", "grid_basis", "grid_ef_g_kwh",
+                   "abatement_cost_onsite_per_t", "abatement_cost_net_per_t"],
+      "additionalProperties": false,
+      "properties": {
+        "onsite_avoided_t_per_yr": {"type": "number"}, "grid_added_t_per_yr": {"type": "number"},
+        "net_avoided_t_per_yr": {"type": "number"}, "net_share_of_onsite": {"$ref": "#/$defs/num"},
+        "lifetime_onsite_t": {"type": "number"}, "lifetime_net_t": {"type": "number"},
+        "grid_basis": {"type": "string"}, "grid_ef_g_kwh": {"type": "number"},
+        "abatement_cost_onsite_per_t": {"$ref": "#/$defs/num"}, "abatement_cost_net_per_t": {"$ref": "#/$defs/num"}
+      }
+    },
+    "warnings": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "overrides": {
+      "type": "array",
+      "items": {"type": "object", "required": ["record", "value", "reason"], "additionalProperties": false,
+                "properties": {"record": {"type": "string"}, "value": {"$ref": "#/$defs/value"}, "reason": {"type": "string"}}}
+    },
+    "provenance": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "value", "unit", "legal_status", "effective_from", "used_in", "overridden",
+                     "override_reason", "stale", "retrieved", "sources"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string"},
+          "value": {"$ref": "#/$defs/value"},
+          "unit": {"type": "string"},
+          "legal_status": {"enum": ["announced", "proposed", "enacted", "in_force", "superseded", "repealed", "observation"]},
+          "effective_from": {"$ref": "#/$defs/date"},
+          "used_in": {"enum": ["base", "scenario"]},
+          "overridden": {"type": "boolean"},
+          "override_reason": {"type": ["string", "null"]},
+          "stale": {"type": "boolean"},
+          "retrieved": {"$ref": "#/$defs/date"},
+          "sources": {
+            "type": "array", "minItems": 1,
+            "items": {"type": "object", "required": ["url", "title", "publisher", "retrieved"], "additionalProperties": false,
+                      "properties": {"url": {"type": "string"}, "title": {"type": "string"}, "publisher": {"type": "string"},
+                                     "retrieved": {"$ref": "#/$defs/date"}}}
+          }
+        }
+      }
+    }
+  }
+}

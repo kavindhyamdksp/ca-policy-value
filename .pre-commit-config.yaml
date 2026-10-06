@@ -9,7 +9,7 @@ repos:
     hooks:
       - id: mypy
         name: mypy (strict, src)
-        entry: mypy src
+        entry: mypy
         language: system
         pass_filenames: false
         types: [python]

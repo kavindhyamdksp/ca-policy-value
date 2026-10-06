@@ -64,13 +64,14 @@
     "net_share_of_onsite": 1.0,
     "onsite_avoided_t_per_yr": 50000.0
   },
-  "engine": "policyvalue-ca 0.1.0",
+  "engine": "policyvalue-ca 0.2.0",
   "inputs": {
     "as_of": "2026-10-15",
-    "case_sha256": "01111be0e88848d9d37be6ef52f5688d4b1de116f80eccf3323fcf0ac651cbfd",
+    "case_sha256": "00f89fdab8501b2e8cfc4dd966c8296ea9f8362181d129190a1b1ea779dfa2c2",
     "conventions": "standard",
-    "ledger_sha256": "7559cefc78444e20b3c9dd51f0fcf60411352ca33e76862477c27b2c4f591297",
+    "ledger_sha256": "b8201a9f82eeec1a6968f5f1f82fa4ac4e73f3702ce37fd0caec154626b829e3",
     "min_legal_status": "enacted",
+    "overrides_file": null,
     "seed": 20260929
   },
   "metrics": {
@@ -308,6 +309,44 @@
       }
     },
     {
+      "effective_from": "2025-01-01",
+      "id": "fed.cca.expensing_classes",
+      "legal_status": "in_force",
+      "overridden": false,
+      "override_reason": null,
+      "retrieved": "2026-09-29",
+      "sources": [
+        {
+          "publisher": "EY",
+          "retrieved": "2026-09-29",
+          "title": "Canada substantively enacts capital cost allowance and other business income tax measures in Bill C-15",
+          "url": "https://www.ey.com/en_gl/technical/tax-alerts/canada-substantively-enacts-capital-cost-allowance-and-other-business-income-tax-measures-in-bill-c-15"
+        },
+        {
+          "publisher": "EY",
+          "retrieved": "2026-09-29",
+          "title": "Canada substantively enacts capital cost allowance and other business income tax measures in Bill C-15",
+          "url": "https://www.ey.com/en_gl/technical/tax-alerts/canada-substantively-enacts-capital-cost-allowance-and-other-business-income-tax-measures-in-bill-c-15"
+        },
+        {
+          "publisher": "Department of Finance Canada",
+          "retrieved": "2026-09-29",
+          "title": "Legislation passes to implement Budget 2025: Canada Strong",
+          "url": "https://www.canada.ca/en/department-finance/news/2026/03/legislation-passes-to-implement-budget-2025-canada-strong.html"
+        }
+      ],
+      "stale": false,
+      "unit": "text",
+      "used_in": "base",
+      "value": {
+        "43.1": "eligible",
+        "53": "eligible",
+        "54": "eligible",
+        "55": "eligible",
+        "56": "eligible"
+      }
+    },
+    {
       "effective_from": "2026-01-01",
       "id": "ref.tax.corporate",
       "legal_status": "in_force",
@@ -340,6 +379,15 @@
     }
   ],
   "robustness": {
+    "ccfd_strike": {
+      "hurdle_rate": null,
+      "note": null,
+      "npv_zero_strike": 91.6,
+      "target_p": 0.8,
+      "target_p_strike": 94.34,
+      "term_end": 2040,
+      "volume_share": 1.0
+    },
     "grid": {
       "dimensions": {
         "ccfd": [
@@ -543,9 +591,50 @@
       "p90": 3949165.81,
       "p_npv_positive": 0.5119,
       "seed": 20260929
+    },
+    "sensitivity": {
+      "base_npv": -2092496.78,
+      "rows": [
+        {
+          "decision_changes": true,
+          "high_input": 1.2,
+          "low_input": 0.8,
+          "npv_high": -6499904.19,
+          "npv_low": 2314910.62,
+          "swing": 8814814.81,
+          "variable": "capex"
+        },
+        {
+          "decision_changes": true,
+          "high_input": 0.1,
+          "low_input": 0.06,
+          "npv_high": -4294300.06,
+          "npv_low": 524044.44,
+          "swing": 4818344.51,
+          "variable": "discount_rate"
+        },
+        {
+          "decision_changes": false,
+          "high_input": 1.2,
+          "low_input": 0.8,
+          "npv_high": -3840891.25,
+          "npv_low": -344102.32,
+          "swing": 3496788.94,
+          "variable": "opex"
+        },
+        {
+          "decision_changes": false,
+          "high_input": 1.3,
+          "low_input": 0.7,
+          "npv_high": -1580322.67,
+          "npv_low": -2604670.9,
+          "swing": 1024348.24,
+          "variable": "credit_price"
+        }
+      ]
     }
   },
-  "run_hash": "9f5ca68fa5cc717bf4e58539e012714b673c4f6d7b5ee288484ce0410a420d8b",
+  "run_hash": "e6165ae71783f599fa1ef2abd3c8c90553b8d69fbc405565d8efa68c70d90b9d",
   "schema": "pv.results/v1",
   "tax": {
     "cca_class": "43.1",

@@ -1,22 +1,25 @@
-"""`pv` command line: validate, run, drift, ledger show."""
+"""`pv` command line: validate, run, drift, schema, case template, ledger show/due/export."""
 
 from __future__ import annotations
 
 import datetime as dt
 import json
 import sys
+from importlib import resources
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Literal
 
 import typer
 
-from pv import __version__
-from pv.case import load_case
+from pv import __version__, schemas
+from pv import export as ledger_export
+from pv.case import load_case, load_overrides, with_overrides
 from pv.drift import drift as run_drift
 from pv.drift import render as render_drift
 from pv.ledger import (
     FRESHNESS_SLA_DAYS,
     LedgerError,
+    Override,
     load_ledger,
     load_ledger_at,
 )
@@ -26,12 +29,24 @@ from pv.ledger import (
 from pv.report import render_html, render_markdown
 from pv.results import cashflows_csv, evaluate, to_json
 
+CaseKind = Literal["heat_pump", "abatement"]
+
 app = typer.Typer(no_args_is_help=True, add_completion=False, help="PolicyValue CA: realized policy value.")
-ledger_app = typer.Typer(no_args_is_help=True, help="Inspect the policy ledger.")
+ledger_app = typer.Typer(no_args_is_help=True, help="Inspect, maintain and publish the policy ledger.")
 app.add_typer(ledger_app, name="ledger")
+case_app = typer.Typer(no_args_is_help=True, help="Start a new case.")
+app.add_typer(case_app, name="case")
 
 LedgerOpt = Annotated[
     Path | None, typer.Option("--ledger", help="Ledger directory (default: bundled ledger/)")
+]
+OverridesOpt = Annotated[
+    Path | None,
+    typer.Option(
+        "--overrides",
+        help="YAML list of {record, value, reason} applied after the case's own overrides "
+        "(for licensed or private values kept out of committed case files)",
+    ),
 ]
 
 
@@ -94,13 +109,15 @@ def run(
     ledger: LedgerOpt = None,
     ledger_ref: Annotated[str | None, typer.Option(help="Use the ledger at this git tag/commit")] = None,
     html: Annotated[bool, typer.Option("--html/--no-html")] = True,
+    overrides: OverridesOpt = None,
 ) -> None:
     """Value case(s): writes results.json, cashflows.csv, memo.md and memo.html per case."""
     led = load_ledger_at(ledger_ref) if ledger_ref else load_ledger(ledger)
+    extra = _extra_overrides(overrides)
     for f in case_files:
         try:
-            case = load_case(f)
-            res, model, _ = evaluate(case, led)
+            case = with_overrides(load_case(f), extra)
+            res, model, _ = evaluate(case, led, overrides_file=overrides.name if overrides else None)
         except (LedgerError, ValueError) as ex:
             typer.echo(f"{f}: {ex}", err=True)
             raise typer.Exit(2) from ex
@@ -127,15 +144,59 @@ def drift(
         Path | None, typer.Option("--json", help="Also write the drift report as JSON")
     ] = None,
     fail_on_flip: Annotated[bool, typer.Option(help="Exit 1 if any decision flips")] = False,
+    overrides: OverridesOpt = None,
 ) -> None:
     """Re-run saved cases against two ledger versions; list record changes and flipped decisions."""
     a = load_ledger_at(from_ref)
     b = load_ledger() if to_ref == "WORKTREE" else load_ledger_at(to_ref)
-    d = run_drift(sorted(cases.glob("*.yaml")), a, b)
+    d = run_drift(sorted(cases.glob("*.yaml")), a, b, extra_overrides=_extra_overrides(overrides))
     typer.echo(render_drift(d))
     if json_out:
         json_out.write_text(json.dumps(d, indent=2, sort_keys=True, default=str) + "\n")
     raise typer.Exit(1 if fail_on_flip and d["flips"] else 0)
+
+
+def _extra_overrides(path: Path | None) -> tuple[Override, ...]:
+    if path is None:
+        return ()
+    try:
+        return load_overrides(path)
+    except (OSError, ValueError) as ex:
+        typer.echo(f"{path}: {ex}", err=True)
+        raise typer.Exit(2) from ex
+
+
+def _write(text: str, out: Path | None) -> None:
+    if out is None:
+        typer.echo(text, nl=False)
+    else:
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(text)
+        typer.echo(f"wrote {out}", err=True)
+
+
+@app.command()
+def schema(
+    name: Annotated[schemas.SchemaName, typer.Argument(help="case | results | record")],
+    out: Annotated[Path | None, typer.Option(help="Write to this file instead of stdout")] = None,
+) -> None:
+    """Print a JSON Schema: case files, results.json (pv.results/v1) or ledger record files."""
+    _write(json.dumps(schemas.get(name), indent=2, sort_keys=True) + "\n", out)
+
+
+@case_app.command("template")
+def case_template(
+    kind: Annotated[
+        CaseKind, typer.Option(help="heat_pump (fuel switching) or abatement (large emitter, CCfD)")
+    ] = "heat_pump",
+    out: Annotated[Path | None, typer.Option(help="Write to this file instead of stdout")] = None,
+) -> None:
+    """Print a commented case template with synthetic placeholder values to replace."""
+    text = (resources.files("pv") / "templates" / "cases" / f"{kind}.yaml").read_text()
+    if out is not None and out.exists():
+        typer.echo(f"{out} exists; not overwriting", err=True)
+        raise typer.Exit(1)
+    _write(text, out)
 
 
 @ledger_app.command("show")
@@ -163,6 +224,42 @@ def ledger_show(
         return
     for r in recs:
         typer.echo(json.dumps(r.model_dump(mode="json"), indent=2, ensure_ascii=False))
+
+
+@ledger_app.command("due")
+def ledger_due(
+    within: Annotated[int, typer.Option(help="List entries due within this many days")] = 30,
+    ledger: LedgerOpt = None,
+    as_of: Annotated[str | None, typer.Option(help="Reference date (default: today)")] = None,
+    json_out: Annotated[bool, typer.Option("--json", help="Print JSON instead of a table")] = False,
+) -> None:
+    """Review queue: entries that breach (or will breach) their freshness SLA, with source URLs."""
+    led = load_ledger(ledger)
+    rows = ledger_export.review_queue(led, _date(as_of), within)
+    if json_out:
+        typer.echo(json.dumps(rows, indent=2))
+        return
+    for r in rows:
+        state = "STALE" if r["days_left"] < 0 else f"{r['days_left']}d"
+        typer.echo(f"{r['id']:34} {r['legal_status']:11} {r['freshness']:18} due {r['due']}  {state}")
+    typer.echo(f"{len(rows)} entries due within {within} days · ledger {led.version}")
+
+
+@ledger_app.command("export")
+def ledger_export_cmd(
+    out: Annotated[Path, typer.Option(help="Output directory")] = Path("out/ledger"),
+    ledger: LedgerOpt = None,
+    ledger_ref: Annotated[str | None, typer.Option(help="Export the ledger at this git tag/commit")] = None,
+    as_of: Annotated[str | None, typer.Option(help="Freshness reference date (default: today)")] = None,
+) -> None:
+    """Write the ledger as records.json, records.csv and a static index.html (publishable as-is)."""
+    led = load_ledger_at(ledger_ref) if ledger_ref else load_ledger(ledger)
+    when = _date(as_of)
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "records.json").write_text(ledger_export.ledger_json(led, when))
+    (out / "records.csv").write_text(ledger_export.ledger_csv(led, when))
+    (out / "index.html").write_text(ledger_export.ledger_html(led, when))
+    typer.echo(f"{len(led.records)} entries → {out}/ (records.json, records.csv, index.html)")
 
 
 if __name__ == "__main__":  # pragma: no cover

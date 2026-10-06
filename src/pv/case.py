@@ -12,6 +12,7 @@ import yaml
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from pv.ledger import MinStatus, Override
+from pv.registry import registry
 
 Province = Literal["AB", "ON", "BC", "QC"]
 System = Literal["tier", "eps", "bc_obps", "fed_obps", "spede", "none"]
@@ -60,6 +61,7 @@ class Project(_M):
     capex: tuple[CapexItem, ...] = Field(min_length=1)
     technology_class: str
     itc_measure: Literal["ct", "ccus", "ce", "none"] = "ct"
+    itc_rate_key: str | None = None  # key in a table-valued rate record, e.g. capture_to_2035 (CCUS)
     itc_eligible_share: float | None = Field(default=None, ge=0, le=1)
     cca_class: str = "43.1"
     cca_class_if_ineligible: str = "8"
@@ -131,9 +133,41 @@ class MonteCarlo(_M):
         return self
 
 
+class Sensitivity(_M):
+    """One-way sensitivity: relative ± on capex, prices and opex; absolute ± on the discount rate."""
+
+    capex: float | None = Field(default=None, gt=0, lt=1)
+    gas_price: float | None = Field(default=None, gt=0, lt=1)
+    electricity_price: float | None = Field(default=None, gt=0, lt=1)
+    opex: float | None = Field(default=None, gt=0, lt=1)
+    credit_price: float | None = Field(default=None, gt=0, lt=1)  # on the market price, before cap/floor/CCfD
+    discount_rate: float | None = Field(default=None, gt=0, lt=0.5)
+
+
+class CcfdStrike(_M):
+    """Solve for the minimum CCfD strike (term and volume from here, else from policy.ccfd)."""
+
+    term_end: int | None = None
+    volume_share: float | None = Field(default=None, gt=0, le=1)
+    hurdle_rate: float | None = Field(
+        default=None, gt=-0.99
+    )  # NPV >= 0 at this rate (default: discount rate)
+    target_p: float | None = Field(default=None, gt=0, lt=1)  # also solve P(NPV>0) >= target (needs MC)
+    max_strike: float = Field(default=1000.0, gt=0)
+    tolerance: float = Field(default=0.01, gt=0)
+
+
 class Robustness(_M):
     grid: tuple[GridDim, ...] = ()
     monte_carlo: MonteCarlo | None = None
+    sensitivity: Sensitivity | None = None
+    ccfd_strike: CcfdStrike | None = None
+
+    @model_validator(mode="after")
+    def _strike_needs_mc(self) -> Robustness:
+        if self.ccfd_strike and self.ccfd_strike.target_p is not None and self.monte_carlo is None:
+            raise ValueError("robustness.ccfd_strike.target_p needs robustness.monte_carlo")
+        return self
 
 
 class Case(_M):
@@ -149,13 +183,23 @@ class Case(_M):
     robustness: Robustness = Robustness()
     overrides: tuple[Override, ...] = ()
 
+    @model_validator(mode="after")
+    def _strike_term(self) -> Case:
+        cs = self.robustness.ccfd_strike
+        if cs and cs.term_end is None and self.policy.ccfd is None:
+            raise ValueError("robustness.ccfd_strike.term_end is required when policy.ccfd is not set")
+        return self
+
     def digest(self) -> str:
-        return hashlib.sha256(json.dumps(self.model_dump(mode="json"), sort_keys=True).encode()).hexdigest()
+        """sha256 of the case content. Unset optional sections (None) are omitted, so adding a new optional
+        field to the model does not change the digest of existing cases."""
+        payload = self.model_dump(mode="json", exclude_none=True)
+        return hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
 
     @property
     def carbon_kind(self) -> Literal["none", "qc", "covered"]:
-        if self.facility.province == "QC":
-            return "qc"
+        if self.facility.province in registry().carbon.cap_and_trade:
+            return "qc"  # cap-and-trade (results schema v1 label)
         if self.facility.covered and self.facility.system != "none":
             return "covered"
         return "none"
@@ -164,3 +208,19 @@ class Case(_M):
 def load_case(path: str | Path) -> Case:
     raw = yaml.safe_load(Path(path).read_text())
     return Case.model_validate(raw)
+
+
+def load_overrides(path: str | Path) -> tuple[Override, ...]:
+    """Overrides kept outside the case file (e.g. licensed prices that must never be committed).
+
+    The file is a YAML list of {record, value, reason}, or a mapping with an `overrides:` list."""
+    raw = yaml.safe_load(Path(path).read_text())
+    items = raw.get("overrides") if isinstance(raw, dict) else raw
+    if not isinstance(items, list) or not items:
+        raise ValueError(f"{path}: expected a non-empty list of overrides (record, value, reason)")
+    return tuple(Override.model_validate(o) for o in items)
+
+
+def with_overrides(case: Case, extra: tuple[Override, ...]) -> Case:
+    """Case with `extra` overrides applied after its own (a later override of the same record wins)."""
+    return case.model_copy(update={"overrides": (*case.overrides, *extra)})

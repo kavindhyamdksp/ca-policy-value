@@ -1,0 +1,39 @@
+# PolicyValue CA case template — electrification / fuel switching (e.g. process heat pump).
+# EVERY VALUE BELOW IS A SYNTHETIC PLACEHOLDER. Replace each one marked REPLACE with your project data.
+# Field reference: docs/user_guide.md §2 · editor schema: `pv schema case --out case.schema.json`
+case_id: my-heat-pump                    # REPLACE: output folder name
+as_of: 2026-10-15                        # REPLACE: ledger view date
+min_legal_status: enacted                # announced | proposed | enacted | in_force
+facility:
+  province: "ON"                         # REPLACE: AB | "ON" | BC | QC (always quote "ON")
+  system: eps                            # REPLACE: tier | eps | bc_obps | fed_obps | spede | none
+  covered: true                          # REPLACE: is the facility in an output-based pricing system?
+  entity: taxable_corp
+  labour_requirements_met: true
+  tax_capacity: full
+project:
+  in_service: 2027-06-30                 # REPLACE: available-for-use date (t = 0)
+  life_years: 20
+  capex: [{year: 0, amount: 2000000}]    # REPLACE
+  technology_class: heat_pump_process    # REPLACE: key in the CT ITC eligibility table (`pv ledger show fed.ct_itc.eligibility_classes`)
+  itc_measure: ct
+  itc_eligible_share: 1.0                # REPLACE: share of capex that is CT ITC property
+  cca_class: "43.1"
+  energy_deltas: {natural_gas_gj: -30000, electricity_mwh: 2500}   # REPLACE: per year; negative = avoided
+  opex_delta: 20000                      # REPLACE: $/yr, + = added cost
+prices:
+  natural_gas_gj: 6.0                    # REPLACE: your delivered gas price ex-carbon, $/GJ (no ledger default)
+  electricity_mwh: 80.0                  # REPLACE: your electricity price, $/MWh
+  escalation: 0.02
+finance: {discount_rate: 0.08, itc_receipt_lag_years: 1}
+policy:
+  credit_price_scenario: base
+  itc_granted: null                      # null = granted unless the class is not_listed
+  grid_factor: average
+robustness:
+  grid: [itc_granted, coverage, credit_scenario]
+  sensitivity: {capex: 0.2, gas_price: 0.3, electricity_price: 0.3, opex: 0.2, credit_price: 0.3, discount_rate: 0.02}
+# Overrides: any ledger value can be replaced with a reason, e.g. your own grid intensity (the ledger holds
+# ECCC's provincial average, fed.nir.grid_ef). Licensed credit prices belong in a separate, uncommitted file:
+#   pv run case.yaml --overrides prices.local.yaml
+overrides: []

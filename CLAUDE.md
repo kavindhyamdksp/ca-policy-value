@@ -9,6 +9,7 @@ Later sessions: read this + PROGRESS.md only. Do not re-read docs/research/01–
   CCA 43.1/43.2/53 expensing, grid/gas emission factors, policy-regime robustness, decision drift.
 - NOT: web app/server/DB, grant or utility-rebate data, buildings/BEPS, MACC workflow,
   credit-price forecasting, energy simulation, LLM calls in code, NS/SK/CFR (Phase 2).
+- Free, non-commercial, open source (owner decision 2026-09-30): no Phase 0/G0, no paid tiers; pilots are next.
 - Outputs are scenario analyses, not tax/investment advice. Ledger CC BY 4.0, code Apache-2.0,
   no proprietary price data committed (users inject licensed prices via overrides).
 
@@ -66,8 +67,9 @@ notes, reviewer, recorded_at, supersedes`.
   20% DB when clean-tech ineligible, params floor table).
 - The oracle `validation/` is frozen — never edit. Tests may import it read-only.
 - Local venv: `.venv` (Python 3.14). Commands: `pytest -q -x --no-header -p no:cacheprovider`,
-  `ruff check --quiet`, `mypy --no-error-summary src | head -40`. /usr/bin/grep, not `grep`.
-- Git: branch `mvp`, commit per green checkpoint with PROGRESS.md, push per milestone, one PR at end.
+  `ruff check --quiet`, `mypy --no-error-summary | head -40` (src + tools). /usr/bin/grep, not `grep`.
+- Git: feature branch per milestone, commit per green checkpoint with PROGRESS.md, one PR per milestone.
+- Record ids live in `src/pv/registry.yaml`, never in kernel code. Open gates: IMPLEMENTATION_PLAN.md §2.7.
 
 ## Oracle targets (validation/results.md; NPV $M, tolerance ±$5k NPV, ±$1/t breakeven)
 Example 1 — process HP: capex 3.5M, s_elig 0.85, gas 50,824 GJ/yr (43,200/0.85), elec 4,000 MWh,

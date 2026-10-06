@@ -6,14 +6,12 @@ from dataclasses import dataclass
 
 from pv.case import Case
 from pv.ledger import LedgerError, LedgerView
-
-GRID_EF = "fed.nir.grid_ef"
-GAS_EF = "fed.nir.gas_ef"
+from pv.registry import registry
 
 
 def gas_ef(case: Case, view: LedgerView) -> float:
     """t CO2e per GJ of natural gas (province-specific if the record is a table)."""
-    rec = view.get(GAS_EF)
+    rec = view.get(registry().emissions.gas_ef)
     return rec.num(case.facility.province) if isinstance(rec.value, dict) else rec.num()
 
 
@@ -22,7 +20,7 @@ def grid_ef_g_kwh(case: Case, view: LedgerView) -> tuple[float, str]:
         if case.policy.marginal_grid_ef_g_kwh is None:
             raise LedgerError("grid_factor=marginal requires policy.marginal_grid_ef_g_kwh")
         return case.policy.marginal_grid_ef_g_kwh, "marginal (user input)"
-    rec = view.get(GRID_EF)
+    rec = view.get(registry().emissions.grid_ef)
     v = rec.num(case.facility.province) if isinstance(rec.value, dict) else rec.num()
     return v, "average (overridden)" if rec.overridden else "average (ledger)"
 

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "policyvalue-ca"
-version = "0.1.0"
+version = "0.2.0"
 description = "Realized policy value for Canadian industrial decarbonization projects: a cited policy ledger plus a deterministic valuation kernel."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -62,7 +62,7 @@ ignore = ["RUF001", "RUF002", "RUF003"]
 [tool.mypy]
 strict = true
 python_version = "3.12"  # numpy>=2.3 stubs use PEP 695 syntax
-files = ["src"]
+files = ["src", "tools"]
 plugins = ["pydantic.mypy"]
 
 [[tool.mypy.overrides]]

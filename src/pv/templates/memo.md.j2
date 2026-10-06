@@ -59,6 +59,14 @@ Minimal conditions under which every state is GO: {% if r.robustness.grid.minima
 {% if mc.itc_probability is not none %}
 ITC eligibility drawn with p = {{ mc.itc_probability }}.
 {% endif %}{% endif %}
+{% if r.robustness.sensitivity %}{% set sn = r.robustness.sensitivity %}One-way sensitivity (each input moved alone; base NPV {{ m(sn.base_npv) }} $M), largest swing first:
+
+| Input | Low → high | NPV low $M | NPV high $M | Swing $M | Decision changes |
+|---|---|---:|---:|---:|---|
+{% for s in sn.rows %}| {{ s.variable }} | {% if s.variable == "discount_rate" %}{{ "%.1f"|format(s.low_input * 100) }}% → {{ "%.1f"|format(s.high_input * 100) }}%{% else %}×{{ s.low_input }} → ×{{ s.high_input }}{% endif %} | {{ m(s.npv_low) }} | {{ m(s.npv_high) }} | {{ "%.2f"|format(s.swing / 1e6) }} | {{ "**yes**" if s.decision_changes else "no" }} |
+{% endfor %}
+{% endif %}{% if r.robustness.ccfd_strike %}{% set cs = r.robustness.ccfd_strike %}CCfD strike solver (term to {{ cs.term_end }}, {{ "%.0f"|format(cs.volume_share * 100) }}% of volume{% if cs.hurdle_rate is not none %}, hurdle {{ "%.1f"|format(cs.hurdle_rate * 100) }}%{% endif %}): minimum strike for NPV ≥ 0 **{{ d(cs.npv_zero_strike) }}/t**{% if cs.target_p is not none %}; for P(NPV>0) ≥ {{ "%.0f"|format(cs.target_p * 100) }}% **{{ d(cs.target_p_strike) }}/t**{% endif %}.{% if cs.note %} *{{ cs.note }}.*{% endif %}
+{% endif %}
 ## 5. Emissions
 
 | | t/yr |

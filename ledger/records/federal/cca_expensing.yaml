@@ -62,6 +62,57 @@ records:
     received Royal Assent on 2026-03-26 (Finance release).
   recorded_at: 2026-09-29
   reviewer: source fetch 2026-09-29 (automated); human tax review pending
+- id: fed.cca.expensing_classes
+  jurisdiction: FED
+  instrument: cca
+  parameter: immediate_expensing_classes
+  value:
+    '43.1': eligible
+    '53': eligible
+    '54': eligible
+    '55': eligible
+    '56': eligible
+  unit: text
+  currency_basis: n/a
+  effective_from: 2025-01-01
+  effective_to: null
+  legal_status: in_force
+  confidence: medium
+  freshness: statute
+  sources:
+  - url: https://www.ey.com/en_gl/technical/tax-alerts/canada-substantively-enacts-capital-cost-allowance-and-other-business-income-tax-measures-in-bill-c-15
+    title: Canada substantively enacts capital cost allowance and other business income tax measures in Bill C-15
+    publisher: EY
+    published: 2026-03-03
+    retrieved: 2026-09-29
+    locator: CCA - reaccelerated investment incentive and immediate expensing
+    excerpt: immediate expensing is reinstated for manufacturing or processing machinery and equipment included
+      in Class 53
+    source_type: secondary
+  - url: https://www.ey.com/en_gl/technical/tax-alerts/canada-substantively-enacts-capital-cost-allowance-and-other-business-income-tax-measures-in-bill-c-15
+    title: Canada substantively enacts capital cost allowance and other business income tax measures in Bill C-15
+    publisher: EY
+    published: 2026-03-03
+    retrieved: 2026-09-29
+    locator: CCA - reaccelerated investment incentive and immediate expensing
+    excerpt: clean energy generation and energy conservation equipment included in Class 43.1, and zero-emission
+      vehicles included in Classes 54, 55 and 56
+    source_type: secondary
+  - url: https://www.canada.ca/en/department-finance/news/2026/03/legislation-passes-to-implement-budget-2025-canada-strong.html
+    title: 'Legislation passes to implement Budget 2025: Canada Strong'
+    publisher: Department of Finance Canada
+    published: 2026-03-26
+    retrieved: 2026-09-29
+    locator: News release, list of measures
+    excerpt: Introducing a Productivity Super-Deduction – a set of enhanced tax incentives covering all new capital
+      investment
+    source_type: primary_gov
+  notes: Classes eligible for the fed.cca.expensing first-year deduction (property acquired on or after
+    2025-01-01). Class 43.2 is not named by the source, so it is not listed; a class absent from this table
+    gets normal declining-balance CCA. Previously hard-coded in the kernel (43.1 and 53); moved to the ledger
+    so the fact carries provenance. EY page re-fetched 2026-09-29 to confirm the class list.
+  recorded_at: 2026-09-29
+  reviewer: source fetch 2026-09-29 (automated); human tax review pending
 - id: fed.cca.class_rates
   jurisdiction: FED
   instrument: cca

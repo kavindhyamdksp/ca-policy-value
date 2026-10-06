@@ -1,6 +1,6 @@
 # PROGRESS.md — PolicyValue CA MVP build
 
-Resume: read this + CLAUDE.md only, continue at the first unchecked item. Branch `mvp`.
+Resume: read this + CLAUDE.md only, continue at the first unchecked item. Open gates: IMPLEMENTATION_PLAN.md §2.7.
 
 ## Setup
 - [x] One-time distillation → CLAUDE.md, PROGRESS.md
@@ -41,7 +41,6 @@ Resume: read this + CLAUDE.md only, continue at the first unchecked item. Branch
 - [x] README quick-start, docs/user_guide.md, docs/methodology.md
 
 ## M7 prep
-- [x] docs/validation/interview_guide.md
 - [x] docs/validation/pilot_kit.md
 
 ## Release
@@ -51,14 +50,31 @@ Resume: read this + CLAUDE.md only, continue at the first unchecked item. Branch
 - [x] IMPLEMENTATION_PLAN.md: ticks, deviations (§2.5 D1–D13), §12 row v1.2
 - [x] tag v0.1.0, gh release, PR #1 mvp→main (all 19 checks green incl. drift), merged
 
+## M8 Post-MVP engineering (v0.2.0, 2026-09-30)
+- [x] registry.yaml (record wiring, assumptions); expensing classes moved to ledger
+- [x] vectorized evaluator; one-way sensitivity; CCfD strike solver (NPV, hurdle, target P)
+- [x] fixes: MC vs deterministic carbon rules (D14); CCUS rate key + CE/CCUS window (D15)
+- [x] results.v1 / case / record schemas + `pv schema`; stable case digest
+- [x] `--overrides FILE` (run, drift); `pv case template`; `pv ledger due/export`; ledger-site workflow
+- [x] tools: pilot scorecard (G1); pilot kit with partner outreach
+- [x] owner decision 2026-09-30: free, non-commercial, open source; Phase 0/G0 removed (interviews, recruitment,
+  competitor demos, demo kit deleted); G2 = open adoption
+- [x] CI: wheel smoke test outside checkout, tools job, mypy on tools
+- [x] ledger-v2026.10.1 content: fed.nir.grid_ef (NIR Annex 7), fed.ce_itc.rate (ITA 127.491), fed.cca.expensing_classes
+- [x] docs: developer guide; user guide, methodology, architecture, README; plan v1.3 with gate register
+- [ ] (user) merge, tag v0.2.0 + ledger-v2026.10.1, optional Pages — see plan §2.7
+- [ ] (user) M7 pilots: find ≥3 partners (docs/validation/pilot_kit.md) → G1 read-out
+- [ ] (user) tax review of ITC/CCA records
+
 ## Unverified (omitted from ledger; kernel requires user input)
-- fed.nir.grid_ef — NIR intensity table not retrievable (Data Mart redirect); kernel: override fed.nir.grid_ef or grid_factor: marginal
-- fed.ce_itc.rate — neither Finance C-15 release nor Torys states the 15% rate/entities; kernel: override for itc_measure: ce
+- fed.nir.grid_ef — RESOLVED 2026-09-30 (ECCC Data Mart file API: api/path_contents + api/file)
+- fed.ce_itc.rate — RESOLVED 2026-09-30 (rate only; entities/labour pending tax review)
 - bc.carbon_tax — gov.bc.ca page 404 and news release cert error; unused by kernel (non-covered BC = $0)
 - ref.gas.delivered — no industrial $/GJ in OEB QRAM or FortisBC page; kernel: prices.natural_gas_gj required
-- Partial: fed.cca.expensing 2030–33 phase-out % not stated (override required for those in-service years);
+- Partial: fed.cca.expensing 2030–33 phase-out % not stated (override required for those in-service years;
+  secondary leads 75%/55%, primary source still needed);
   fed.carbon.benchmark_path 2028–29/2031–39 not stated (linear interpolation);
   fed.ccus_itc.rates entered as proposed (secondary sources only)
 
 ## Deviations
-Recorded in IMPLEMENTATION_PLAN.md §2.5 (D1–D13). Biggest: D12 tax review not done; D1 four records left to user input.
+Recorded in IMPLEMENTATION_PLAN.md §2.5 (D1–D17). Biggest: D12 tax review not done; D1 now 2 records (gas reference by design, BC carbon tax unused).

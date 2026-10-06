@@ -57,8 +57,14 @@ Carbon cash flow C_t = ΔE · v_t, where ΔE is avoided covered tonnes per year:
   `not_listed`). By default the claim is granted unless the class is `not_listed`; set `policy.itc_granted`
   to assert your own view, and use the `itc_granted` grid dimension to test it.
 - ITC = ρ · s_elig · (capex − other assistance), received at t = lag.
-- UCC U = capex − ITC − assistance. If the claim is granted and the class (43.1 or 53; the fetched source does not
-  name 43.2) is in the immediate-expensing window for the in-service year: CCA_1 = U · expensing%, remainder by declining balance
+- CE and CCUS ITCs: ρ is the ledger rate (`fed.ce_itc.rate`: 15%, ITA s. 127.491; `fed.ccus_itc.rates`,
+  proposed). A table-valued rate record (CCUS: capture / transport-storage-use / DAC × period) requires
+  `project.itc_rate_key` to name the component — the kernel never picks one for you. A scalar rate applies
+  only when the in-service year is inside the record's validity window, else ρ = 0 with a warning. The kernel
+  does not check qualifying-entity status or labour rules for these measures and warns accordingly.
+- UCC U = capex − ITC − assistance. If the claim is granted and the class is listed in
+  `fed.cca.expensing_classes` (43.1, 53, 54–56; the source does not name 43.2) and the in-service year is in
+  the immediate-expensing window: CCA_1 = U · expensing%, remainder by declining balance
   at the class rate with the half-year rule. Otherwise declining balance at `cca_class_if_ineligible`.
 - Non-taxable entities or `tax_capacity: none`: no tax on operating flows and no CCA shield; the ITC is kept
   only where the entity is eligible (the CT/CE ITCs are refundable for eligible entities).
@@ -91,19 +97,36 @@ Carbon cash flow C_t = ΔE · v_t, where ΔE is avoided covered tonnes per year:
   triangular capex multiplier; Bernoulli ITC eligibility with p from the eligibility map (likely 0.9,
   case-by-case 0.6, not listed 0.1) unless overridden. ITC and UCC scale with the capex draw. Reports mean,
   P10/P50/P90 and P(NPV > 0). With all σ = 0, one regime, degenerate capex and p ∈ {0, 1}, the MC mean equals
-  the deterministic NPV (property-tested).
+  the deterministic NPV (property-tested for every scenario, with and without a CCfD). The MC applies the
+  same carbon rules as the deterministic kernel: the headline upper bound and QC cap-and-trade paths are
+  taken as they are (no fund cap, floor or CCfD).
+- **One-way sensitivity** (`robustness.sensitivity`): each input moved alone to its low and high value,
+  everything else at the base case — capex, gas price, electricity price and opex by a relative ±δ, the
+  market credit price by ±δ *before* the fund cap, floor and CCfD (so a floor or strike can absorb the
+  change), and the discount rate by an absolute ±δ. Reports NPV at both ends, the swing, and whether either
+  end changes the base-case decision; rows are sorted by swing (a tornado).
+- **CCfD strike solver** (`robustness.ccfd_strike`): the minimum strike K (term and volume share from the
+  spec or the case's CCfD) with NPV(K) ≥ 0 at the discount rate, or at `hurdle_rate` if given (an IRR
+  target). Realized value max(K, m) is non-decreasing in K, so NPV and P(NPV>0) are monotone and bisection
+  on [0, `max_strike`] converges to `tolerance` ($0.01/t by default). With `target_p`, it also finds the
+  minimum K with P(NPV>0) ≥ target under the case's Monte Carlo, re-using the same seeded draws for every K
+  (common random numbers). Returns null when no strike up to `max_strike` suffices, 0 when the project is
+  GO without a contract, and "not applicable" outside output-based systems.
 
 ## 6. Emissions (`pv.emissions`)
 
 On-site avoided t/yr = −gas GJ × EF_gas (or the supplied covered delta). Grid added t/yr = MWh × EF_grid / 1000
-(g/kWh), average from the ledger or an override, marginal from user input. Net = on-site − grid; lifetime =
+(g/kWh): the average from the ledger (`fed.nir.grid_ef`, ECCC NIR provincial *consumption* intensity, which
+includes losses — the load a facility adds) or an override, or a marginal factor from user input. Net = on-site − grid; lifetime =
 × N. Abatement cost = −NPV / Σ tonnes_t d_t, on the on-site and net bases (negative = the project pays).
 
 ## 7. Reproducibility
 
 The kernel reads no clock and makes no network calls; the CLI passes dates in. `results.json` is serialized
 with sorted keys and rounded values and carries `run_hash` = sha256(case digest | ledger content digest |
-seed). CI compares the results.json SHA-256 across ubuntu/macOS × Python 3.11–3.13.
+seed). The case digest omits unset optional sections, so adding an optional field to the case model
+does not change the hash of existing cases. `results.json` conforms to the published JSON Schema
+`pv.results/v1` (`pv schema results`); v1 evolves additively only. CI compares the results.json SHA-256 across ubuntu/macOS × Python 3.11–3.13.
 
 ## 8. Validation against the research oracle
 
@@ -126,8 +149,9 @@ Carlo reproduces the oracle's Example 3 distribution (with the $85 CCfD, P(NPV >
   2026 price is held flat as the cap.
 - **ITC eligibility is a judgement.** Process and waste-heat heat pumps and electric boilers are not listed in
   NRCan's guidance at release. Obtain tax advice; model the uncertainty with the grid and MC.
-- **Unverified at release** (user input required): average grid intensity, delivered gas prices, the Clean
-  Electricity ITC rate, and the 2030–2033 expensing phase-out percentages.
+- **Not in the ledger** (user input required): delivered gas prices (`prices.natural_gas_gj`) and the
+  2030–2033 expensing phase-out percentages (override `fed.cca.expensing`). Grid intensity and the Clean
+  Electricity ITC rate were added in ledger-v2026.10.1.
 - Credit-use limits, long/short positions, banking and offsets are not modelled (a fund-price cap only).
 - Capex spread over several years is treated as available for use at t = 0 for ITC/CCA purposes.
 - Scenario analysis only; not tax, legal, accounting or investment advice.

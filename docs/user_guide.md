@@ -15,8 +15,16 @@ Python 3.11–3.13. Everything runs offline; nothing you type leaves your machin
 
 ## 2. Write a case
 
-A case is one YAML file. Start from the closest golden case in `cases/` and edit it. Every field below is
-optional unless marked **required**.
+A case is one YAML file. Start from a template — every placeholder is marked `REPLACE` — or from the
+closest golden case in `cases/`:
+
+```bash
+pv case template --kind heat_pump --out my-project.yaml     # fuel switching / electrification
+pv case template --kind abatement --out my-project.yaml     # large emitter, CCfD, strike solver
+pv schema case --out case.schema.json                      # JSON Schema for editor completion/validation
+```
+
+Every field below is optional unless marked **required**.
 
 ```yaml
 case_id: my-project                # required; also the output folder name
@@ -35,6 +43,7 @@ project:
   capex: [{year: 0, amount: 3500000}]   # required; year relative to t=0
   technology_class: heat_pump_process   # required; looked up in fed.ct_itc.eligibility_classes
   itc_measure: ct                  # ct | ccus | ce | none
+  itc_rate_key: null               # required when the rate record is a table, e.g. capture_to_2035 for ccus
   itc_eligible_share: 0.85         # share of capex eligible for the ITC (default 1.0)
   cca_class: "43.1"                # class if clean-tech eligible (expensing window applies to 43.1 and 53)
   cca_class_if_ineligible: "8"     # class used when the ITC claim is denied
@@ -57,6 +66,10 @@ policy:
   marginal_grid_ef_g_kwh: null
 robustness:
   grid: [floor_status, itc_granted, ccfd, coverage, credit_scenario]   # any subset
+  sensitivity:                     # one-way (tornado); omit any input to skip it
+    {capex: 0.2, gas_price: 0.3, electricity_price: 0.3, opex: 0.2, credit_price: 0.3, discount_rate: 0.02}
+  ccfd_strike:                     # minimum CCfD strike; term/volume default to policy.ccfd
+    {term_end: 2040, volume_share: 1.0, hurdle_rate: null, target_p: 0.8}   # target_p needs monte_carlo
   monte_carlo:
     draws: 10000
     seed: 20260929
@@ -73,16 +86,31 @@ overrides:
 ### Overrides
 
 Any ledger record can be overridden. `reason` is mandatory, and every override appears in the memo's
-warnings and provenance appendix. Use overrides for licensed prices (ClearBlue, Argus…) — they are never
-committed to the ledger — and for values the ledger does not yet carry:
+warnings and provenance appendix.
 
-| Missing from ledger v2026.10.0 | Supply instead |
+**Licensed or private values** (ClearBlue, Argus, broker quotes, internal prices) belong in a separate file
+that is never committed, not in the case file:
+
+```bash
+cat > prices.local.yaml <<'YAML'        # *.local.yaml is git-ignored
+- {record: ab.tier.credit_obs, value: {base: 25, low: 22}, reason: "broker quote 2026-10-10"}
+YAML
+pv run my-project.yaml --overrides prices.local.yaml
+pv drift --from ledger-v2026.10.0 --overrides prices.local.yaml
+```
+
+These are applied after the case's own overrides (a later override of the same record wins), included in
+the run hash, and named in `results.json` (`inputs.overrides_file`). Outputs show override values, so keep
+`out/` as confidential as the prices.
+
+Values the ledger does not carry:
+
+| Not in ledger v2026.10.1 | Supply instead |
 |---|---|
-| `fed.nir.grid_ef` (average grid intensity) | `overrides: [{record: fed.nir.grid_ef, value: {QC: 2.5}, reason: ...}]`, or `grid_factor: marginal` |
-| `ref.gas.delivered` | `prices.natural_gas_gj` |
-| `fed.ce_itc.rate` (only for `itc_measure: ce`) | override `fed.ce_itc.rate` |
-| CCA expensing phase-out for in-service 2030–2033 | override `fed.cca.expensing`, e.g. `{2031: 0.5}` |
+| `ref.gas.delivered` | `prices.natural_gas_gj` (your delivered tariff) |
+| CCA expensing phase-out for in-service 2030–2033 | override `fed.cca.expensing`, e.g. `{2031: 0.75}`, citing your source |
 | CT ITC labour rate after 2033 | override `fed.ct_itc.labour_rate` |
+| `fed.ccus_itc.rates` below `min_legal_status: proposed` | lower `min_legal_status` or override, and set `project.itc_rate_key` |
 
 If a required value is missing, `pv run` stops and names the record or field to supply.
 
@@ -102,14 +130,16 @@ The memo sections:
    order (interactions are non-additive, so order matters).
 3. **Breakeven vs realizable band** — the flat carbon price the project needs, against the levelized
    low / base / high realizable value and the headline upper bound.
-4. **Robustness** — the grid table and Monte Carlo percentiles.
+4. **Robustness** — the grid table, Monte Carlo percentiles, the one-way sensitivity (tornado) table and
+   the CCfD strike solver, when requested.
 5. **Emissions** — on-site avoided, grid added, net, and abatement cost.
 6. **Assumptions, overrides, warnings** — including any announced/proposed record used in the base case,
    any override, and any record past its freshness SLA.
 7. **Provenance appendix** — every ledger record used, with value, legal status, source links and retrieval dates.
 8. **Not-advice notice.**
 
-`results.json` holds the same content in machine-readable form; `cashflows.csv` holds the annual base-case
+`results.json` holds the same content in machine-readable form and conforms to the published JSON
+Schema (`pv schema results`; `pv.results/v1`, additive changes only); `cashflows.csv` holds the annual base-case
 cash flows by component (open it in Excel).
 
 ## 4. Keep decisions current: `pv drift`
@@ -124,13 +154,16 @@ Drift re-runs every case in `--cases` under both ledgers and lists changed recor
 whose answer or base-case decision flipped, with the changed records each case used. Each run is evaluated
 as of the later of the case's `as_of` and the ledger's latest recording, so new records are visible.
 
-## 5. Inspect and validate the ledger
+## 5. Inspect, validate, maintain and publish the ledger
 
 ```bash
 pv ledger show                       # all records with legal status, value, unit, days left before stale
 pv ledger show fed.ct_itc.rate_schedule
 pv validate                          # exits 1 on any error; --lenient reports stale records as warnings
-pv validate --as-of 2026-09-29 --cases cases
+pv validate --as-of 2026-09-30 --cases cases
+pv ledger due --within 30            # review queue: entries due for re-verification, with source URLs
+pv ledger export --out site          # records.json, records.csv and a static index.html (publishable as-is)
+pv schema record                     # JSON Schema of a ledger file
 ```
 
 To add or update a record, follow [ledger/RECORD_FORMAT.md](../ledger/RECORD_FORMAT.md): every number must
@@ -153,5 +186,6 @@ print(res["decision"], res["carbon"]["breakeven_flat"])
 
 Industrial projects in AB, ON, BC and QC plus federal measures only. No grant or utility-rebate data, no
 buildings, no credit-price forecasts (prices are dated observations or your inputs), no energy simulation.
-Credit-use limits and long/short positions are modelled simply (fund-price cap only). See
+Credit-use limits and long/short positions are modelled simply (fund-price cap only). CE/CCUS ITC
+entity eligibility and labour rules are not checked (the memo warns). See
 [methodology.md](methodology.md#caveats).

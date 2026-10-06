@@ -49,24 +49,25 @@
     "npv": 1216787.03
   },
   "emissions": {
-    "abatement_cost_net_per_t": -49.36,
+    "abatement_cost_net_per_t": -48.99,
     "abatement_cost_onsite_per_t": -47.63,
-    "grid_added_t_per_yr": 91.2,
-    "grid_basis": "average (overridden)",
-    "grid_ef_g_kwh": 22.8,
-    "lifetime_net_t": 50220.0,
+    "grid_added_t_per_yr": 72.3,
+    "grid_basis": "average (ledger)",
+    "grid_ef_g_kwh": 18.064,
+    "lifetime_net_t": 50599.0,
     "lifetime_onsite_t": 52044.0,
-    "net_avoided_t_per_yr": 2511.0,
-    "net_share_of_onsite": 0.965,
+    "net_avoided_t_per_yr": 2529.9,
+    "net_share_of_onsite": 0.9722,
     "onsite_avoided_t_per_yr": 2602.2
   },
-  "engine": "policyvalue-ca 0.1.0",
+  "engine": "policyvalue-ca 0.2.0",
   "inputs": {
     "as_of": "2026-10-15",
-    "case_sha256": "50b17fa75cb253f26f0cb9de62a1738aab52cbae9de43ffa4d1f3543bb87ba7e",
+    "case_sha256": "a42745217a88a946c0c819bbcc22df8e0552e2a7fdd03c21abf78fb4ac508991",
     "conventions": "standard",
-    "ledger_sha256": "7559cefc78444e20b3c9dd51f0fcf60411352ca33e76862477c27b2c4f591297",
+    "ledger_sha256": "b8201a9f82eeec1a6968f5f1f82fa4ac4e73f3702ce37fd0caec154626b829e3",
     "min_legal_status": "enacted",
+    "overrides_file": null,
     "seed": 20260929
   },
   "metrics": {
@@ -80,15 +81,7 @@
     "payback_discounted_years": 9.33,
     "payback_simple_years": 6.13
   },
-  "overrides": [
-    {
-      "reason": "User input: average BC grid intensity from the research phase (fed.nir.grid_ef unverified in ledger v0.1)",
-      "record": "fed.nir.grid_ef",
-      "value": {
-        "BC": 22.8
-      }
-    }
-  ],
+  "overrides": [],
   "provenance": [
     {
       "effective_from": "2025-12-01",
@@ -261,6 +254,44 @@
       }
     },
     {
+      "effective_from": "2025-01-01",
+      "id": "fed.cca.expensing_classes",
+      "legal_status": "in_force",
+      "overridden": false,
+      "override_reason": null,
+      "retrieved": "2026-09-29",
+      "sources": [
+        {
+          "publisher": "EY",
+          "retrieved": "2026-09-29",
+          "title": "Canada substantively enacts capital cost allowance and other business income tax measures in Bill C-15",
+          "url": "https://www.ey.com/en_gl/technical/tax-alerts/canada-substantively-enacts-capital-cost-allowance-and-other-business-income-tax-measures-in-bill-c-15"
+        },
+        {
+          "publisher": "EY",
+          "retrieved": "2026-09-29",
+          "title": "Canada substantively enacts capital cost allowance and other business income tax measures in Bill C-15",
+          "url": "https://www.ey.com/en_gl/technical/tax-alerts/canada-substantively-enacts-capital-cost-allowance-and-other-business-income-tax-measures-in-bill-c-15"
+        },
+        {
+          "publisher": "Department of Finance Canada",
+          "retrieved": "2026-09-29",
+          "title": "Legislation passes to implement Budget 2025: Canada Strong",
+          "url": "https://www.canada.ca/en/department-finance/news/2026/03/legislation-passes-to-implement-budget-2025-canada-strong.html"
+        }
+      ],
+      "stale": false,
+      "unit": "text",
+      "used_in": "base",
+      "value": {
+        "43.1": "eligible",
+        "53": "eligible",
+        "54": "eligible",
+        "55": "eligible",
+        "56": "eligible"
+      }
+    },
+    {
       "effective_from": "2023-03-28",
       "id": "fed.ct_itc.eligibility_classes",
       "legal_status": "in_force",
@@ -399,25 +430,46 @@
       }
     },
     {
-      "effective_from": "1900-01-01",
+      "effective_from": "2024-01-01",
       "id": "fed.nir.grid_ef",
-      "legal_status": "in_force",
-      "overridden": true,
-      "override_reason": "User input: average BC grid intensity from the research phase (fed.nir.grid_ef unverified in ledger v0.1)",
-      "retrieved": "2026-10-15",
+      "legal_status": "observation",
+      "overridden": false,
+      "override_reason": null,
+      "retrieved": "2026-09-30",
       "sources": [
         {
-          "publisher": "case file",
-          "retrieved": "2026-10-15",
-          "title": "User override: User input: average BC grid intensity from the research phase (fed.nir.grid_ef unverified in ledger v0.1)",
-          "url": "urn:pv:user-override"
+          "publisher": "Environment and Climate Change Canada",
+          "retrieved": "2026-09-30",
+          "title": "National Inventory Report 1990-2024, Annex 7: Electricity in Canada: Summary and Intensity Tables (EN_Annex7_Electricity_Intensity.xlsx)",
+          "url": "https://data-donnees.az.ec.gc.ca/api/file?path=%2Fsubstances%2Fmonitor%2Fcanada-s-official-greenhouse-gas-inventory%2FC-Tables-Electricity-Canada-Provinces-Territories%2FEN_Annex7_Electricity_Intensity.xlsx"
+        },
+        {
+          "publisher": "Environment and Climate Change Canada",
+          "retrieved": "2026-09-30",
+          "title": "National Inventory Report 1990-2024, Annex 7: Electricity in Canada: Summary and Intensity Tables (EN_Annex7_Electricity_Intensity.xlsx)",
+          "url": "https://data-donnees.az.ec.gc.ca/api/file?path=%2Fsubstances%2Fmonitor%2Fcanada-s-official-greenhouse-gas-inventory%2FC-Tables-Electricity-Canada-Provinces-Territories%2FEN_Annex7_Electricity_Intensity.xlsx"
+        },
+        {
+          "publisher": "Environment and Climate Change Canada",
+          "retrieved": "2026-09-30",
+          "title": "National Inventory Report 1990-2024, Annex 7: Electricity in Canada: Summary and Intensity Tables (EN_Annex7_Electricity_Intensity.xlsx)",
+          "url": "https://data-donnees.az.ec.gc.ca/api/file?path=%2Fsubstances%2Fmonitor%2Fcanada-s-official-greenhouse-gas-inventory%2FC-Tables-Electricity-Canada-Provinces-Territories%2FEN_Annex7_Electricity_Intensity.xlsx"
+        },
+        {
+          "publisher": "Environment and Climate Change Canada",
+          "retrieved": "2026-09-30",
+          "title": "National Inventory Report 1990-2024, Annex 7: Electricity in Canada: Summary and Intensity Tables (EN_Annex7_Electricity_Intensity.xlsx)",
+          "url": "https://data-donnees.az.ec.gc.ca/api/file?path=%2Fsubstances%2Fmonitor%2Fcanada-s-official-greenhouse-gas-inventory%2FC-Tables-Electricity-Canada-Provinces-Territories%2FEN_Annex7_Electricity_Intensity.xlsx"
         }
       ],
       "stale": false,
-      "unit": "text",
+      "unit": "g/kWh",
       "used_in": "base",
       "value": {
-        "BC": 22.8
+        "AB": 346.102,
+        "BC": 18.064,
+        "ON": 73.313,
+        "QC": 2.565
       }
     },
     {
@@ -478,6 +530,7 @@
     }
   ],
   "robustness": {
+    "ccfd_strike": null,
     "grid": {
       "dimensions": {
         "coverage": [
@@ -622,9 +675,68 @@
       "p90": 2376276.89,
       "p_npv_positive": 0.5476,
       "seed": 20260929
+    },
+    "sensitivity": {
+      "base_npv": 1216787.03,
+      "rows": [
+        {
+          "decision_changes": true,
+          "high_input": 1.3,
+          "low_input": 0.7,
+          "npv_high": 2480451.17,
+          "npv_low": -46877.1,
+          "swing": 2527328.27,
+          "variable": "gas_price"
+        },
+        {
+          "decision_changes": false,
+          "high_input": 1.3,
+          "low_input": 0.7,
+          "npv_high": 379383.28,
+          "npv_low": 2054190.78,
+          "swing": 1674807.5,
+          "variable": "electricity_price"
+        },
+        {
+          "decision_changes": false,
+          "high_input": 1.3,
+          "low_input": 0.7,
+          "npv_high": 1836674.18,
+          "npv_low": 596899.88,
+          "swing": 1239774.3,
+          "variable": "credit_price"
+        },
+        {
+          "decision_changes": false,
+          "high_input": 0.1,
+          "low_input": 0.06,
+          "npv_high": 738010.81,
+          "npv_low": 1819530.43,
+          "swing": 1081519.61,
+          "variable": "discount_rate"
+        },
+        {
+          "decision_changes": false,
+          "high_input": 1.2,
+          "low_input": 0.8,
+          "npv_high": 812439.81,
+          "npv_low": 1621134.25,
+          "swing": 808694.44,
+          "variable": "capex"
+        },
+        {
+          "decision_changes": false,
+          "high_input": 1.2,
+          "low_input": 0.8,
+          "npv_high": 1167059.97,
+          "npv_low": 1266514.09,
+          "swing": 99454.13,
+          "variable": "opex"
+        }
+      ]
     }
   },
-  "run_hash": "461144bcc014d2f5e8b589169a30f1c06edf9d613c5c495c6e4323782ef1115b",
+  "run_hash": "f2a5e34a8a3b0057c64ed6d63b58388f4c291f35a7703ddc4d570474cf7cd7cb",
   "schema": "pv.results/v1",
   "tax": {
     "cca_class": "43.1",
@@ -662,7 +774,5 @@
       "step": "+ CCfD"
     }
   ],
-  "warnings": [
-    "Override: fed.nir.grid_ef = {'BC': 22.8} (User input: average BC grid intensity from the research phase (fed.nir.grid_ef unverified in ledger v0.1))"
-  ]
+  "warnings": []
 }
