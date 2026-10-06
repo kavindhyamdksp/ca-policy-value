@@ -16,7 +16,9 @@ pv validate --cases cases
 
 CI (`.github/workflows/ci.yml`) runs the same, plus the OS × Python matrix with a byte-identical
 `results.json` check, a wheel built and run from outside the checkout, and the tools job. `drift.yml` posts
-the decision impact of every PR that touches `ledger/` or `cases/`.
+the decision impact of every PR that touches `ledger/` or `cases/`. `freshness.yml` runs weekly: it lists
+records due within 30 days (`pv ledger due`), reports the 60-day SLA history (`pv ledger sla`) and fails once
+any record is stale, so a quiet repository still notifies the maintainer.
 
 ## Layers and where policy lives
 

@@ -1,0 +1,25 @@
+name: Usage report
+description: Tell us you used the ledger or kernel (this is how adoption is measured, gate G2)
+title: "[usage] "
+labels: ["usage"]
+body:
+  - type: dropdown
+    id: what
+    attributes:
+      label: What did you use?
+      multiple: true
+      options: ["Ledger data", "Kernel / memo (pv run)", "pv drift", "Ledger export (CSV/JSON/HTML)"]
+    validations: {required: true}
+  - type: dropdown
+    id: who
+    attributes:
+      label: Your context
+      options: ["Covered facility", "Consultant / engineering firm", "Project developer", "Researcher / NGO / policy", "Other"]
+    validations: {required: true}
+  - type: textarea
+    id: notes
+    attributes:
+      label: What worked, what didn't (optional)
+  - type: markdown
+    attributes:
+      value: Please do not include client, facility or personal data.

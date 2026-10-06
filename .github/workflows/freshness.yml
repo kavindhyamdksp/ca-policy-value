@@ -1,0 +1,36 @@
+name: ledger-freshness
+
+# Gate G1 needs the freshness SLA held for 60 days (DECISION.md). CI only validates on push/PR, so a quiet
+# repository would drift past an SLA unnoticed. This weekly job lists records due within 30 days, reports the
+# 60-day SLA history, and fails (which notifies the maintainer) once any record is stale.
+on:
+  schedule:
+    - cron: "41 6 * * 1"   # weekly, Monday
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  freshness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12", cache: pip}
+      - run: pip install -e .
+      - name: review queue and SLA history (report only)
+        run: |
+          {
+            echo '## Ledger review queue (due within 30 days)'
+            echo '```'
+            pv ledger due --within 30
+            echo '```'
+            echo '## Freshness SLA history (gate G1)'
+            echo '```'
+            pv ledger sla --days 60 || true
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: no stale records today
+        run: pv validate --strict

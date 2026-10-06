@@ -93,7 +93,16 @@ Pilot NN · segment: ______ · province: __ · date: ____-__-__
 
 ## G1 read-out
 
-After ≥3 pilots, run `python tools/pilot_scorecard.py docs/validation/pilots` and summarize against
-[DECISION.md](../../DECISION.md) gate G1: pilots completed, decisions changed or sharpened, time to first
+Log every maintenance session (ledger refreshes, fixes, pilot support) as a row in
+[maintenance_log.csv](maintenance_log.csv): `date,hours,area,note`, area one of ledger/code/pilots/docs/other.
+
+After ≥3 pilots, run the full read-out, which checks all three G1 criteria (pilots, 60-day freshness SLA
+from git history, hours per month) and flags the 0.25 FTE stop criterion:
+
+```bash
+python tools/pilot_scorecard.py docs/validation/pilots --maintenance-log docs/validation/maintenance_log.csv --freshness-days 60
+```
+
+Then summarize against [DECISION.md](../../DECISION.md) gate G1: pilots completed, decisions changed or sharpened, time to first
 memo, ledger corrections received, and whether partners would use it again.
 Update DECISION.md, SPEC.md and IMPLEMENTATION_PLAN.md with the outcome.

@@ -17,7 +17,7 @@ from typer.testing import CliRunner
 from pv import export, schemas
 from pv.case import Case, load_case, load_overrides, with_overrides
 from pv.cli import app
-from pv.ledger import _jsonable, load_ledger
+from pv.ledger import Ledger, _jsonable, load_ledger
 from pv.results import evaluate
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -126,6 +126,32 @@ def test_review_queue_orders_by_urgency() -> None:
     assert [r["days_left"] for r in q] == sorted(r["days_left"] for r in q)
     assert {r["freshness"] for r in q} >= {"market_observation"}  # 100-day SLA passed
     assert export.review_queue(LEDGER, TODAY, within_days=-1) == []  # nothing stale today
+
+
+def test_sla_history_counts_clean_days_ending_at_as_of() -> None:
+    start = dt.date(2026, 10, 1)
+
+    def published(d: dt.date) -> Ledger | None:
+        return LEDGER if d >= start else None  # the ledger appears on 2026-10-01
+
+    s = export.sla_history(published, dt.date(2026, 10, 10), 10)
+    assert s["streak_days"] == 10 and s["met"] and s["stale_days"] == []
+    s = export.sla_history(published, dt.date(2026, 10, 10), 60)
+    assert s["streak_days"] == 10 and not s["met"] and s["days_without_ledger"] == 50
+    breach = dt.date(2027, 1, 7) + dt.timedelta(days=1)  # first day past the 100-day SLA
+    s = export.sla_history(published, breach + dt.timedelta(days=2), 5)
+    assert s["streak_days"] == 0 and not s["met"]
+    assert s["stale_days"][0]["date"] == breach.isoformat()
+    assert "ab.tier.credit_obs" in s["stale_days"][0]["stale"]
+
+
+def test_cli_ledger_sla_reads_git_history() -> None:
+    r = runner.invoke(app, ["ledger", "sla", "--days", "3", "--as-of", "2027-06-30"])
+    assert r.exit_code == 1 and "NOT YET" in r.output and "stale:" in r.output
+    r = runner.invoke(app, ["ledger", "sla", "--days", "3", "--as-of", "2027-06-30", "--json"])
+    assert r.exit_code == 1 and json.loads(r.output)["window_days"] == 3
+    r = runner.invoke(app, ["ledger", "sla", "--ref", "no-such-ref"])
+    assert r.exit_code == 2
 
 
 # ---------------------------------------------------------------- templates

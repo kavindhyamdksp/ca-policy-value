@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: >-
+  If you use the PolicyValue CA ledger or kernel, please cite it as below, with the ledger tag
+  (e.g. ledger-v2026.10.2) you used: every memo and results.json records it.
+type: software
+title: "PolicyValue CA: an open ledger of Canadian industrial carbon-pricing and clean-economy tax parameters, with a deterministic project-valuation kernel"
+authors:
+  - name: "PolicyValue CA contributors"
+repository-code: "https://github.com/kavindhyamdksp/ca-policy-value"
+license: Apache-2.0
+version: 0.2.1
+keywords:
+  - carbon pricing
+  - Canada
+  - output-based pricing
+  - investment tax credits
+  - carbon contracts for difference
+  - decarbonization
+  - project valuation
+references:
+  - type: data
+    title: "PolicyValue CA policy ledger"
+    authors:
+      - name: "PolicyValue CA contributors"
+    license: CC-BY-4.0
+    repository-code: "https://github.com/kavindhyamdksp/ca-policy-value/tree/main/ledger"

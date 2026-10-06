@@ -1,9 +1,10 @@
-"""`pv` command line: validate, run, drift, schema, case template, ledger show/due/export."""
+"""`pv` command line: validate, run, drift, schema, case template, ledger show/due/export/sla."""
 
 from __future__ import annotations
 
 import datetime as dt
 import json
+import subprocess
 import sys
 from importlib import resources
 from pathlib import Path
@@ -22,6 +23,7 @@ from pv.ledger import (
     Override,
     load_ledger,
     load_ledger_at,
+    published_on,
 )
 from pv.ledger import (
     validate as validate_ledger,
@@ -260,6 +262,37 @@ def ledger_export_cmd(
     (out / "records.csv").write_text(ledger_export.ledger_csv(led, when))
     (out / "index.html").write_text(ledger_export.ledger_html(led, when))
     typer.echo(f"{len(led.records)} entries → {out}/ (records.json, records.csv, index.html)")
+
+
+@ledger_app.command("sla")
+def ledger_sla(
+    days: Annotated[int, typer.Option(min=1, help="Window that must be free of stale records")] = 60,
+    ref: Annotated[
+        str, typer.Option(help="Git ref whose first-parent history is the published ledger")
+    ] = "HEAD",
+    as_of: Annotated[str | None, typer.Option(help="Last day of the window (default: today)")] = None,
+    json_out: Annotated[bool, typer.Option("--json", help="Print JSON instead of a summary")] = False,
+) -> None:
+    """Freshness SLA history (gate G1): was every record within its SLA on each of the last N days?
+    Exit 0 if the whole window was clean, 1 otherwise."""
+    try:
+        s = ledger_export.sla_history(published_on(ref), _date(as_of), days)
+    except (LedgerError, subprocess.CalledProcessError) as ex:
+        typer.echo(f"cannot read ledger history at {ref}: {ex}", err=True)
+        raise typer.Exit(2) from ex
+    if json_out:
+        typer.echo(json.dumps(s, indent=2))
+    else:
+        verdict = "MET" if s["met"] else "NOT YET"
+        typer.echo(
+            f"Freshness SLA, {s['window_days']} days to {s['as_of']}: {verdict} — "
+            f"{s['streak_days']} consecutive clean days"
+        )
+        if s["days_without_ledger"]:
+            typer.echo(f"  {s['days_without_ledger']} days in the window predate the ledger")
+        for d in s["stale_days"]:
+            typer.echo(f"  {d['date']} stale: {', '.join(d['stale'])}")
+    raise typer.Exit(0 if s["met"] else 1)
 
 
 if __name__ == "__main__":  # pragma: no cover

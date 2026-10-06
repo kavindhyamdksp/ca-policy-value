@@ -84,7 +84,7 @@ extension points in the [developer guide](docs/developer_guide.md).
   treatment is the largest NPV swing factor, and a CCfD moves P(NPV>0) from 0% to 76% in the Alberta example.
   → [quantitative validation](docs/research/04_quantitative_validation.md), [DECISION.md](DECISION.md)
 - **Next: pilots.** Practitioners run it on real projects and tell us what to fix — see the
-  [pilot kit](docs/validation/pilot_kit.md). Interested? Open an issue.
+  [pilot kit](docs/validation/pilot_kit.md). Interested? Open a *Usage report* issue.
 
 ## Development
 
@@ -96,8 +96,16 @@ ruff check && mypy
 
 CI runs lint, strict typing, the test matrix (ubuntu + macOS × Python 3.11–3.13) with a byte-identical
 `results.json` check across the matrix, a wheel built and run from outside the checkout, ledger validation,
-a weekly link check, and `pv drift` on every PR that touches `ledger/` or `cases/`. The static ledger site
+a weekly link check, a weekly freshness check (`pv ledger due`, `pv ledger sla`), and `pv drift` on every
+PR that touches `ledger/` or `cases/`. The static ledger site
 (`pv ledger export`) deploys to GitHub Pages from the manual `ledger-site` workflow.
+
+## Cite, correct, contribute
+
+- **Cite:** [CITATION.cff](CITATION.cff); name the ledger tag you used (every memo records it).
+- **Correct the ledger:** open a *Ledger correction* issue with the source, or a PR — see
+  [CONTRIBUTING.md](CONTRIBUTING.md).
+- **Used it?** A short *Usage report* issue (no client data) is how adoption is measured.
 
 ## Licences
 
