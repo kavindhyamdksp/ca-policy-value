@@ -15,10 +15,34 @@ records:
   currency_basis: n/a
   effective_from: 2022-01-01
   effective_to: 2040-12-31
-  legal_status: proposed
-  confidence: medium
-  freshness: announcement
+  legal_status: in_force
+  confidence: high
+  freshness: statute
   sources:
+  - url: https://laws-lois.justice.gc.ca/eng/acts/I-3.3/section-127.44.html
+    title: Income Tax Act (R.S.C., 1985, c. 1 (5th Supp.)), section 127.44
+    publisher: Justice Laws Website (Department of Justice Canada)
+    published: 2026-06-18
+    retrieved: 2026-10-06
+    locator: s. 127.44(1), definition of specified percentage, para. (a)(i)
+    excerpt: (i) directly from ambient air (A) after 2021 and before 2036, 60%, (B) after 2035 and before 2041, 30%
+    source_type: primary_legal
+  - url: https://laws-lois.justice.gc.ca/eng/acts/I-3.3/section-127.44.html
+    title: Income Tax Act (R.S.C., 1985, c. 1 (5th Supp.)), section 127.44
+    publisher: Justice Laws Website (Department of Justice Canada)
+    published: 2026-06-18
+    retrieved: 2026-10-06
+    locator: s. 127.44(1), definition of specified percentage, para. (a)(ii)
+    excerpt: (ii) other than directly from ambient air (A) after 2021 and before 2036, 50%, (B) after 2035 and before 2041, 25%
+    source_type: primary_legal
+  - url: https://laws-lois.justice.gc.ca/eng/acts/I-3.3/section-127.44.html
+    title: Income Tax Act (R.S.C., 1985, c. 1 (5th Supp.)), section 127.44
+    publisher: Justice Laws Website (Department of Justice Canada)
+    published: 2026-06-18
+    retrieved: 2026-10-06
+    locator: s. 127.44(1), definition of specified percentage, para. (b)
+    excerpt: (i) after 2021 and before 2036, 37 1/2%, (ii) after 2035 and before 2041, 18 3/4%, or (iii) after 2040, 0%
+    source_type: primary_legal
   - url: https://gowlingwlg.com/en/insights-resources/articles/2025/clean-economy-investment-tax-credits-budget-2025
     title: 'Clean economy investment tax credits: the latest from the FES 2024 and Budget 2025'
     publisher: Gowling WLG
@@ -54,9 +78,10 @@ records:
     locator: CCUS ITC discussion
     excerpt: the reduced credit rates will apply from 2036 to the end of 2040
     source_type: secondary
-  notes: 'Rate values match the expected table. The CRA "What is the CCUS ITC" page fetched today did not state
-    rates, so no primary source supports enactment; legal_status is set to proposed (Gowling: "Budget 2025 proposes
-    to extend") pending a primary check, although Torys (Q2 2026) describes the 2036-2040 reduced period as current
-    law.'
-  recorded_at: 2026-09-29
-  reviewer: source fetch 2026-09-29 (automated); human tax review pending
+  notes: Rates by when the expenditure is incurred (capture from ambient air, other capture, and transportation,
+    storage or use), read from the consolidated ITA (current to 2026-09-21, last amended 2026-06-18), which shows
+    the Budget 2025 extension of the full rates to the end of 2035. The kernel applies the rate chosen with
+    project.itc_rate_key; it does not split expenditures by year incurred. Upgraded from proposed (secondary
+    sources only) on 2026-10-06; resolves D2.
+  recorded_at: 2026-10-06
+  reviewer: primary text fetch 2026-10-06 (automated; resolves D2); human tax review pending

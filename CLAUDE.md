@@ -29,7 +29,7 @@ Later sessions: read this + PROGRESS.md only. Do not re-read docs/research/01–
   - C_t = ΔE_covered · v_t; ΔE = gas_GJ_avoided × EF_gas unless supplied.
 - **Tax**: ρ = schedule(in_service year); labour not met → reduced rate; 0 if entity ineligible.
   ITC = ρ·s_elig·(capex − assistance), received at t = lag. UCC U = capex − ITC − assistance.
-  Expensing-eligible class in window → CCA_1 = U·expensing_pct(y), rest DB at class rate;
+  Expensing-eligible class in window → CCA_1 = U·expensing_pct(y) (whole yr-1 claim), rest DB from yr 2;
   else DB with half-year rule. validation_v1 + ineligible → Class-8-like 20% DB (10% in yr 1).
   Non-taxable / tax_capacity none → no tax on flows, no CCA shield, ITC only if refundable & eligible.
 - **Cash flow**: CF_0 = −capex_0; CF_t = (1−τ)(S_gas + C − E_el − O) + τ·CCA + ITC·[t=lag].

@@ -64,12 +64,12 @@
     "net_share_of_onsite": 1.0,
     "onsite_avoided_t_per_yr": 50000.0
   },
-  "engine": "policyvalue-ca 0.2.0",
+  "engine": "policyvalue-ca 0.2.1",
   "inputs": {
     "as_of": "2026-10-15",
     "case_sha256": "00f89fdab8501b2e8cfc4dd966c8296ea9f8362181d129190a1b1ea779dfa2c2",
     "conventions": "standard",
-    "ledger_sha256": "b8201a9f82eeec1a6968f5f1f82fa4ac4e73f3702ce37fd0caec154626b829e3",
+    "ledger_sha256": "06862dcb69837aca68bd2da2e629ceaf3d558ca719fb61178bccb316329698e6",
     "min_legal_status": "enacted",
     "overrides_file": null,
     "seed": 20260929
@@ -269,8 +269,38 @@
       "legal_status": "in_force",
       "overridden": false,
       "override_reason": null,
-      "retrieved": "2026-09-29",
+      "retrieved": "2026-10-06",
       "sources": [
+        {
+          "publisher": "Justice Laws Website (Department of Justice Canada)",
+          "retrieved": "2026-10-06",
+          "title": "Income Tax Regulations (C.R.C., c. 945), section 1100",
+          "url": "https://laws-lois.justice.gc.ca/eng/regulations/C.R.C.,_c._945/section-1100.html"
+        },
+        {
+          "publisher": "Justice Laws Website (Department of Justice Canada)",
+          "retrieved": "2026-10-06",
+          "title": "Income Tax Regulations (C.R.C., c. 945), section 1100",
+          "url": "https://laws-lois.justice.gc.ca/eng/regulations/C.R.C.,_c._945/section-1100.html"
+        },
+        {
+          "publisher": "Justice Laws Website (Department of Justice Canada)",
+          "retrieved": "2026-10-06",
+          "title": "Income Tax Regulations (C.R.C., c. 945), section 1100",
+          "url": "https://laws-lois.justice.gc.ca/eng/regulations/C.R.C.,_c._945/section-1100.html"
+        },
+        {
+          "publisher": "Justice Laws Website (Department of Justice Canada)",
+          "retrieved": "2026-10-06",
+          "title": "Income Tax Regulations (C.R.C., c. 945), section 1100",
+          "url": "https://laws-lois.justice.gc.ca/eng/regulations/C.R.C.,_c._945/section-1100.html"
+        },
+        {
+          "publisher": "Justice Laws Website (Department of Justice Canada)",
+          "retrieved": "2026-10-06",
+          "title": "Income Tax Regulations (C.R.C., c. 945), section 1104",
+          "url": "https://laws-lois.justice.gc.ca/eng/regulations/C.R.C.,_c._945/section-1104.html"
+        },
         {
           "publisher": "EY",
           "retrieved": "2026-09-29",
@@ -305,6 +335,10 @@
         "2027": 1.0,
         "2028": 1.0,
         "2029": 1.0,
+        "2030": 0.75,
+        "2031": 0.75,
+        "2032": 0.55,
+        "2033": 0.55,
         "2034": 0.0
       }
     },
@@ -314,13 +348,19 @@
       "legal_status": "in_force",
       "overridden": false,
       "override_reason": null,
-      "retrieved": "2026-09-29",
+      "retrieved": "2026-10-06",
       "sources": [
         {
-          "publisher": "EY",
-          "retrieved": "2026-09-29",
-          "title": "Canada substantively enacts capital cost allowance and other business income tax measures in Bill C-15",
-          "url": "https://www.ey.com/en_gl/technical/tax-alerts/canada-substantively-enacts-capital-cost-allowance-and-other-business-income-tax-measures-in-bill-c-15"
+          "publisher": "Justice Laws Website (Department of Justice Canada)",
+          "retrieved": "2026-10-06",
+          "title": "Income Tax Regulations (C.R.C., c. 945), section 1100",
+          "url": "https://laws-lois.justice.gc.ca/eng/regulations/C.R.C.,_c._945/section-1100.html"
+        },
+        {
+          "publisher": "Justice Laws Website (Department of Justice Canada)",
+          "retrieved": "2026-10-06",
+          "title": "Income Tax Regulations (C.R.C., c. 945), section 1100",
+          "url": "https://laws-lois.justice.gc.ca/eng/regulations/C.R.C.,_c._945/section-1100.html"
         },
         {
           "publisher": "EY",
@@ -329,10 +369,10 @@
           "url": "https://www.ey.com/en_gl/technical/tax-alerts/canada-substantively-enacts-capital-cost-allowance-and-other-business-income-tax-measures-in-bill-c-15"
         },
         {
-          "publisher": "Department of Finance Canada",
+          "publisher": "EY",
           "retrieved": "2026-09-29",
-          "title": "Legislation passes to implement Budget 2025: Canada Strong",
-          "url": "https://www.canada.ca/en/department-finance/news/2026/03/legislation-passes-to-implement-budget-2025-canada-strong.html"
+          "title": "Canada substantively enacts capital cost allowance and other business income tax measures in Bill C-15",
+          "url": "https://www.ey.com/en_gl/technical/tax-alerts/canada-substantively-enacts-capital-cost-allowance-and-other-business-income-tax-measures-in-bill-c-15"
         }
       ],
       "stale": false,
@@ -340,7 +380,7 @@
       "used_in": "base",
       "value": {
         "43.1": "eligible",
-        "53": "eligible",
+        "53": 1.0,
         "54": "eligible",
         "55": "eligible",
         "56": "eligible"
@@ -634,7 +674,7 @@
       ]
     }
   },
-  "run_hash": "e6165ae71783f599fa1ef2abd3c8c90553b8d69fbc405565d8efa68c70d90b9d",
+  "run_hash": "adbcb830c62feb48764e2d38f73fecb1e6c52e7381b19b7dd0c1f84a68dc54f2",
   "schema": "pv.results/v1",
   "tax": {
     "cca_class": "43.1",

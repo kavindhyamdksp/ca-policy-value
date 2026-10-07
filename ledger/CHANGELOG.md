@@ -3,6 +3,32 @@
 Ledger releases are git tags `ledger-vYYYY.MM.N`. Each entry lists added, changed and removed records.
 Run `pv drift --from <old tag> --to <new tag>` to see the decision impact on saved cases.
 
+## ledger-v2026.10.2 — 2026-10-06
+
+37 entries / 36 record ids. Decision impact on the golden cases (`pv drift --from ledger-v2026.10.0`): no NPV
+or decision changes (all three cases are in service in 2026, inside the 100% window).
+
+Changed
+- `fed.cca.expensing` (in_force, confidence medium → high): adds the 2030–2033 phase-out, 0.75 (2030–2031)
+  and 0.55 (2032–2033), the first-year fraction for Class 43.1 derived from Income Tax Regulations
+  s. 1100(2), element A.1 (factors 2 1/3, 1 1/2, 5/6 at a 30% rate, no half-year rule), with the window from
+  s. 1104(4.01) (acquired after 2024, available for use before 2034). Primary text fetched 2026-10-06
+  (Regulations current to 2026-09-21). Resolves D4.
+- `fed.cca.expensing_classes`: Class 53 is now `1.0` (a fixed first-year fraction: A.1(f)(i) factor 1 at a
+  50% rate in every window year) instead of following the 43.1 phase-out. Class 43.2 confirmed absent
+  (not in A.1). Primary sources added.
+- `fed.ccus_itc.rates`: `proposed` → `in_force` (confidence medium → high, freshness statute). Primary
+  source: Income Tax Act s. 127.44(1), "specified percentage" (Act current to 2026-09-21, last amended
+  2026-06-18), which states 60/50/37.5% to the end of 2035 and 30/25/18.75% for 2036–2040. Resolves D2.
+
+Kernel (v0.2.1, same release): an enhanced first-year deduction is now the whole year-1 claim; the
+remainder starts declining balance in year 2 (D18). Before, a phase-out fraction below 100% also got a
+half-rate claim on the remainder in year 1.
+
+Still not included (user input required)
+- `ref.gas.delivered` — supply `prices.natural_gas_gj`.
+- `bc.carbon_tax` — unused by the kernel.
+
 ## ledger-v2026.10.1 — 2026-09-30
 
 37 entries / 36 record ids. Decision impact on the golden cases (`pv drift --from ledger-v2026.10.0`): no NPV

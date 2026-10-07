@@ -105,12 +105,11 @@ the run hash, and named in `results.json` (`inputs.overrides_file`). Outputs sho
 
 Values the ledger does not carry:
 
-| Not in ledger v2026.10.1 | Supply instead |
+| Not in ledger v2026.10.2 | Supply instead |
 |---|---|
 | `ref.gas.delivered` | `prices.natural_gas_gj` (your delivered tariff) |
-| CCA expensing phase-out for in-service 2030–2033 | override `fed.cca.expensing`, e.g. `{2031: 0.75}`, citing your source |
 | CT ITC labour rate after 2033 | override `fed.ct_itc.labour_rate` |
-| `fed.ccus_itc.rates` below `min_legal_status: proposed` | lower `min_legal_status` or override, and set `project.itc_rate_key` |
+| CCUS ITC component | set `project.itc_rate_key` (e.g. `capture_to_2035`); the rates are in force |
 
 If a required value is missing, `pv run` stops and names the record or field to supply.
 

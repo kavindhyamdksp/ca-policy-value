@@ -6,7 +6,7 @@ import datetime as dt
 
 from pv.ledger import load_ledger, validate
 
-RELEASE = dt.date(2026, 9, 30)  # ledger-v2026.10.1
+RELEASE = dt.date(2026, 10, 6)  # ledger-v2026.10.2
 
 
 def test_seed_ledger_valid_at_release() -> None:

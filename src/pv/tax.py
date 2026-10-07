@@ -22,13 +22,43 @@ def eligibility_probability(eligibility: str) -> float | None:
     return registry().assumptions.itc_eligibility_probability.get(eligibility)
 
 
-def expensing_classes(view: LedgerView) -> frozenset[str]:
-    """CCA classes eligible for immediate expensing (ledger), or the registry fallback for older ledgers."""
+def _expensing_table(view: LedgerView) -> dict[str, object]:
     cca = registry().tax.cca
     if view.has(cca.expensing_classes):
-        table = view.get(cca.expensing_classes).table()
-        return frozenset(k for k, v in table.items() if _truthy(v))
-    return frozenset(cca.expensing_classes_fallback)
+        return dict(view.get(cca.expensing_classes).table())
+    return {c: "eligible" for c in cca.expensing_classes_fallback}
+
+
+def _fixed_fraction(v: object) -> float | None:
+    """A numeric class entry is a first-year fraction that holds for the whole enhanced window."""
+    return float(v) if isinstance(v, int | float) and not isinstance(v, bool) and v > 0 else None
+
+
+def expensing_classes(view: LedgerView) -> frozenset[str]:
+    """CCA classes eligible for the enhanced first-year deduction (ledger), or the registry fallback for
+    older ledgers. An entry is `eligible` (follows fed.cca.expensing) or a fixed first-year fraction."""
+    return frozenset(k for k, v in _expensing_table(view).items() if _truthy(v) or _fixed_fraction(v))
+
+
+def expensing_fraction(view: LedgerView, cls: str, year: int) -> float:
+    """Enhanced first-year deduction as a fraction of UCC for `cls` available for use in `year` (0 = none).
+
+    The fed.cca.expensing series sets the window and the phased fraction; a class whose entry is a number
+    keeps that fraction for every year in which the series is positive (Reg. 1100(2) A.1(f)(i): Class 53)."""
+    ids = registry().tax.cca
+    if not view.has(ids.expensing) or cls not in expensing_classes(view):
+        return 0.0
+    sched = view.get(ids.expensing).series()
+    got = sched.get(year)
+    if got is None:
+        if year < min(sched) or year > max(sched):
+            return 0.0
+        raise LedgerError(
+            f"{ids.expensing} has no value for available-for-use year {year}; "
+            "supply it via overrides[] with a reason"
+        )
+    fixed = _fixed_fraction(_expensing_table(view)[cls])
+    return fixed if fixed is not None and got > 0 else got
 
 
 @dataclass(frozen=True)
@@ -149,7 +179,11 @@ def itc_amount(case: Case, ti: TaxInputs, capex: float) -> float:
 def cca_schedule(
     case: Case, view: LedgerView, ucc: float, granted: bool, n: int, *, expensing_allowed: bool = True
 ) -> F:
-    """CCA claims for t = 0..n (index 0 unused). Expensing window per the ledger, else half-year DB."""
+    """CCA claims for t = 0..n (index 0 unused).
+
+    Enhanced first-year deduction (ledger window and fraction): year 1 claims exactly that fraction of UCC
+    (Reg. 1100(2) A.1 already includes the year's normal allowance, and no half-year rule applies); the
+    remainder follows declining balance from year 2. Otherwise declining balance with the half-year rule."""
     out = np.zeros(n + 1)
     cls = case.project.cca_class if granted else case.project.cca_class_if_ineligible
     y = case.project.in_service.year
@@ -157,20 +191,8 @@ def cca_schedule(
         rate = VALIDATION_DB_RATE
         pct = 0.0
     else:
-        pct = 0.0
         ids = registry().tax.cca
-        if expensing_allowed and view.has(ids.expensing) and cls in expensing_classes(view):
-            sched = view.get(ids.expensing).series()
-            got = sched.get(y)
-            if got is None:
-                if y < min(sched) or y > max(sched):
-                    got = 0.0
-                else:
-                    raise LedgerError(
-                        f"{ids.expensing} has no value for available-for-use year {y} (phase-out "
-                        "unverified); supply it via overrides[] with a reason"
-                    )
-            pct = got
+        pct = expensing_fraction(view, cls, y) if expensing_allowed else 0.0
         rates = view.get(ids.class_rates).table() if case.conventions != "validation_v1" else {}
         if case.conventions == "validation_v1":
             rate = VALIDATION_DB_RATE
@@ -178,10 +200,10 @@ def cca_schedule(
             if cls not in rates:
                 raise LedgerError(f"CCA class {cls} not in {ids.class_rates}; supply it via overrides[]")
             rate = float(rates[cls])
-    first = ucc * pct
-    bal = ucc - first
+    first = ucc * pct if pct > 0 else ucc * rate / 2
+    bal = ucc
     for i in range(1, n + 1):
-        claim = bal * (rate / 2 if i == 1 else rate)
-        out[i] = claim + (first if i == 1 else 0.0)
+        claim = first if i == 1 else bal * rate
+        out[i] = claim
         bal -= claim
     return out.astype(np.float64)

@@ -58,14 +58,20 @@ Carbon cash flow C_t = ΔE · v_t, where ΔE is avoided covered tonnes per year:
   to assert your own view, and use the `itc_granted` grid dimension to test it.
 - ITC = ρ · s_elig · (capex − other assistance), received at t = lag.
 - CE and CCUS ITCs: ρ is the ledger rate (`fed.ce_itc.rate`: 15%, ITA s. 127.491; `fed.ccus_itc.rates`,
-  proposed). A table-valued rate record (CCUS: capture / transport-storage-use / DAC × period) requires
+  ITA s. 127.44). A table-valued rate record (CCUS: capture / transport-storage-use / DAC × period) requires
   `project.itc_rate_key` to name the component — the kernel never picks one for you. A scalar rate applies
   only when the in-service year is inside the record's validity window, else ρ = 0 with a warning. The kernel
   does not check qualifying-entity status or labour rules for these measures and warns accordingly.
 - UCC U = capex − ITC − assistance. If the claim is granted and the class is listed in
-  `fed.cca.expensing_classes` (43.1, 53, 54–56; the source does not name 43.2) and the in-service year is in
-  the immediate-expensing window: CCA_1 = U · expensing%, remainder by declining balance
-  at the class rate with the half-year rule. Otherwise declining balance at `cca_class_if_ineligible`.
+  `fed.cca.expensing_classes` (43.1, 53, 54–56; 43.2 is not in Reg. 1100(2) A.1) and the in-service year is
+  in the enhanced window (available for use before 2034): CCA_1 = U · expensing%, the whole year-1 claim
+  (100% before 2030, 75% in 2030–31, 55% in 2032–33; Class 53 stays at 100%), then declining balance at the
+  class rate from year 2. Otherwise declining balance with the half-year rule (at `cca_class_if_ineligible`
+  when the claim is denied).
+- Conservative simplification: outside the listed classes, property acquired after 2024 also gets an
+  accelerated first year under Reg. 1100(2) (e.g. Class 8: 30% instead of 10% before 2030). The kernel
+  applies the half-year rule there, which understates CCA on the ITC-denied path; see the gate register
+  (plan §2.7) pending tax review.
 - Non-taxable entities or `tax_capacity: none`: no tax on operating flows and no CCA shield; the ITC is kept
   only where the entity is eligible (the CT/CE ITCs are refundable for eligible entities).
 
@@ -149,9 +155,9 @@ Carlo reproduces the oracle's Example 3 distribution (with the $85 CCfD, P(NPV >
   2026 price is held flat as the cap.
 - **ITC eligibility is a judgement.** Process and waste-heat heat pumps and electric boilers are not listed in
   NRCan's guidance at release. Obtain tax advice; model the uncertainty with the grid and MC.
-- **Not in the ledger** (user input required): delivered gas prices (`prices.natural_gas_gj`) and the
-  2030–2033 expensing phase-out percentages (override `fed.cca.expensing`). Grid intensity and the Clean
-  Electricity ITC rate were added in ledger-v2026.10.1.
+- **Not in the ledger** (user input required): delivered gas prices (`prices.natural_gas_gj`). Grid intensity
+  and the Clean Electricity ITC rate were added in ledger-v2026.10.1; the 2030–2033 expensing phase-out and
+  the in-force CCUS rates in ledger-v2026.10.2.
 - Credit-use limits, long/short positions, banking and offsets are not modelled (a fund-price cap only).
 - Capex spread over several years is treated as available for use at t = 0 for ITC/CCA purposes.
 - Scenario analysis only; not tax, legal, accounting or investment advice.
