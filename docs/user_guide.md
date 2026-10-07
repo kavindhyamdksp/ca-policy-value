@@ -161,6 +161,7 @@ pv ledger show fed.ct_itc.rate_schedule
 pv validate                          # exits 1 on any error; --lenient reports stale records as warnings
 pv validate --as-of 2026-09-30 --cases cases
 pv ledger due --within 30            # review queue: entries due for re-verification, with source URLs
+pv ledger sla --days 60               # gate G1: were all records within their SLA on each of the last 60 days?
 pv ledger export --out site          # records.json, records.csv and a static index.html (publishable as-is)
 pv schema record                     # JSON Schema of a ledger file
 ```

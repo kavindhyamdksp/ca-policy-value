@@ -106,6 +106,17 @@ def test_three_dim_grid_under_one_second() -> None:
     assert time.perf_counter() - t0 < 1.0
 
 
+def test_full_grid_of_72_states_under_one_second() -> None:
+    """SPEC NFR: a single case with a 64-state grid runs in < 1 s. All five dimensions give 3·2·2·2·3 = 72."""
+    raw = _ex3(ccfd={"strike": 85, "term_end": 2040})
+    raw["robustness"] = {"grid": ["floor_status", "itc_granted", "ccfd", "coverage", "credit_scenario"]}
+    t0 = time.perf_counter()
+    m, _ = model(raw)
+    g = robustness.grid(m)
+    assert time.perf_counter() - t0 < 1.0
+    assert g["n_states"] == 72
+
+
 def test_regime_probabilities_must_sum_to_one() -> None:
     with pytest.raises(ValueError):
         MonteCarlo.model_validate({"regimes": {"a": {"p": 0.5}}})

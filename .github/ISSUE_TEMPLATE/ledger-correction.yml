@@ -1,0 +1,37 @@
+name: Ledger correction
+description: A ledger value, date or legal status is wrong or out of date
+title: "[ledger] <record id>: "
+labels: ["ledger"]
+body:
+  - type: input
+    id: record
+    attributes:
+      label: Record id
+      description: As shown by `pv ledger show` or in the memo's provenance appendix (e.g. ab.tier.floor)
+    validations: {required: true}
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is wrong
+      description: Current value/date/status, and what it should be
+    validations: {required: true}
+  - type: input
+    id: url
+    attributes:
+      label: Source URL
+      description: Prefer the primary source (statute, regulation, government page)
+    validations: {required: true}
+  - type: textarea
+    id: excerpt
+    attributes:
+      label: Excerpt and locator
+      description: Up to 25 words quoted verbatim, plus the section/table/paragraph
+    validations: {required: true}
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Does it change a decision you know of?
+      options: ["Don't know", "No", "Yes"]
+  - type: markdown
+    attributes:
+      value: Please do not include client, facility or personal data.

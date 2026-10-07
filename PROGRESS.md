@@ -71,6 +71,14 @@ Resume: read this + CLAUDE.md only, continue at the first unchecked item. Open g
 - [ ] (user) merge, tag v0.2.1 + ledger-v2026.10.2
 - [ ] (tax review) accelerated CCA outside expensing classes (plan §2.7 row)
 
+## M10 Goals audit (2026-10-06)
+- [x] G1 measurable: `pv ledger sla` (60-day freshness from git history), maintenance log, scorecard checks all 3 criteria + 0.25 FTE stop
+- [x] weekly `freshness.yml` (due within 30 d, SLA history, fails when stale)
+- [x] G2 scaffolding: CITATION.cff, CONTRIBUTING.md, ledger-correction + usage-report issue forms, README section
+- [x] SPEC NFR: 72-state grid < 1 s test (was 12 states)
+- [ ] (user) make the repository public (G2 cannot start while private)
+- [ ] (maintainer) re-verify 12 records before 2027-01-07 and 18 before 2027-03-28 (plan §2.7)
+
 - [ ] (user) M7 pilots: find ≥3 partners (docs/validation/pilot_kit.md) → G1 read-out
 - [ ] (user) tax review of ITC/CCA records
 

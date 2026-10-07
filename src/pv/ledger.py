@@ -8,7 +8,7 @@ import itertools
 import json
 import os
 import subprocess
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass, field
 from importlib import resources
 from pathlib import Path
@@ -393,6 +393,42 @@ def load_ledger_at(ref: str, repo: Path | None = None) -> Ledger:
     if errs:
         raise LedgerError(f"ledger at {ref} invalid:\n  " + "\n  ".join(errs))
     return Ledger(tuple(recs), ref, _digest(recs))
+
+
+def commit_on(day: dt.date, ref: str = "HEAD", repo: Path | None = None) -> str | None:
+    """The last first-parent commit of `ref` made on or before `day` (None if the history starts later)."""
+    repo = repo or default_ledger_dir().parent
+    out = subprocess.run(
+        [
+            "git",
+            "-C",
+            str(repo),
+            "rev-list",
+            "-1",
+            "--first-parent",
+            f"--before={day.isoformat()}T23:59:59",
+            ref,
+        ],
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout.strip()
+    return out or None
+
+
+def published_on(ref: str = "HEAD", repo: Path | None = None) -> Callable[[dt.date], Ledger | None]:
+    """day → the ledger as committed on `ref` at the end of that day (loaded once per commit)."""
+    cache: dict[str, Ledger] = {}
+
+    def at(day: dt.date) -> Ledger | None:
+        sha = commit_on(day, ref, repo)
+        if sha is None:
+            return None
+        if sha not in cache:
+            cache[sha] = load_ledger_at(sha, repo)
+        return cache[sha]
+
+    return at
 
 
 # ---------------------------------------------------------------- validators (plan §5.4)
