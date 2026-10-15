@@ -2,6 +2,8 @@
 
 **What a decarbonization project is actually worth under Canadian policy as it really is.**
 
+Created and maintained by Kavindhya Dasanayaka. Developed with AI coding assistance; every ledger value cites a primary source.
+
 PolicyValue CA is an open, source-cited **ledger** of the Canadian carbon-pricing and clean-economy tax
 parameters that decide industrial projects (federal + AB, ON, BC, QC), plus a deterministic **kernel**.
 From the ledger and your project case it computes realized after-tax value, a policy value stack, the
