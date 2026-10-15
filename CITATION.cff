@@ -5,7 +5,8 @@ message: >-
 type: software
 title: "PolicyValue CA: an open ledger of Canadian industrial carbon-pricing and clean-economy tax parameters, with a deterministic project-valuation kernel"
 authors:
-  - name: "PolicyValue CA contributors"
+  - given-names: "Kavindhya"
+    family-names: "Dasanayaka"
 repository-code: "https://github.com/kavindhyamdksp/ca-policy-value"
 license: Apache-2.0
 version: 0.2.1
@@ -21,6 +22,7 @@ references:
   - type: data
     title: "PolicyValue CA policy ledger"
     authors:
-      - name: "PolicyValue CA contributors"
+      - given-names: "Kavindhya"
+        family-names: "Dasanayaka"
     license: CC-BY-4.0
     repository-code: "https://github.com/kavindhyamdksp/ca-policy-value/tree/main/ledger"
