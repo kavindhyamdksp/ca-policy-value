@@ -1,6 +1,6 @@
 # PROGRESS.md — PolicyValue CA MVP build
 
-Resume: read this + CLAUDE.md only, continue at the first unchecked item. Open gates: IMPLEMENTATION_PLAN.md §2.7.
+Resume: read this + AGENTS.md only, continue at the first unchecked item. Open gates: IMPLEMENTATION_PLAN.md §2.7.
 
 ## Setup
 - [x] One-time distillation → CLAUDE.md, PROGRESS.md
